@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Basic initialization of the project, should be done once,
+# or if the build dir was cleared up.
+#
+# This also links a generated file "compile_commands.json" on
+# root, just because I use emacs and it kinda fixes some project
+# handling things for me.
+
+cmake -B build -G Ninja && ln -s build/compile_commands.json .

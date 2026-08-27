@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Simple runner
+
+cd build/bin && ./simple_platformer_demo
