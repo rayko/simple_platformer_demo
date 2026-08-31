@@ -5,6 +5,8 @@
   provide the main run loop.
 */
 
+#pragma once
+
 #include <string>
 #include "Logger.hpp"
 

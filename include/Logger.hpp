@@ -3,6 +3,8 @@
   A simple logger helper to output information to console.
 */
 
+#pragma once
+
 #include <string>
 
 class Logger {
