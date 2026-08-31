@@ -6,8 +6,11 @@
 */
 
 #include <string>
+#include "Logger.hpp"
 
 class GameEngine {
+  Logger m_logger;
+
 
 public:
   GameEngine();
