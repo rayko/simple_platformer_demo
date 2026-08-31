@@ -19,7 +19,7 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 include_directories(include)
-add_executable(simple_platformer_demo src/main.cpp)
+add_executable(simple_platformer_demo src/main.cpp src/GameEngine.cpp)
 set_target_properties(simple_platformer_demo PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 target_compile_features(simple_platformer_demo PRIVATE cxx_std_20)
 target_link_libraries(simple_platformer_demo PRIVATE SFML::Graphics SFML::Window SFML::System)
