@@ -10,6 +10,7 @@
 #include <memory>
 
 class Core {
+protected:
   std::shared_ptr<Logger> m_logger; // Pointer to common logger
   bool m_debugMode = false; // Emmit or not debug messages to log
   const std::string m_logOrigin = "Core";
