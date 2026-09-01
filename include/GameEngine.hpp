@@ -8,14 +8,21 @@
 #pragma once
 
 #include <string>
+
 #include "Logger.hpp"
+#include "AssetStore.hpp"
 
 class GameEngine {
-  Logger m_logger;
+  Logger m_logger = Logger("GameEngine");
+  bool m_debugMode = true;
 
+  AssetStore m_assets;
 
 public:
   GameEngine();
-  void init(const std::string & configFile);
+  void loadConfigs(const std::string &configFile);
+  void loadAssets(const std::string &configFile);
+  void setDebugMode(bool value);
+  void init();
   void run();
 };
