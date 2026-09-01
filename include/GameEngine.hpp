@@ -9,20 +9,18 @@
 
 #include <string>
 
-#include "Logger.hpp"
+#include "Core.hpp"
 #include "AssetStore.hpp"
 
-class GameEngine {
-  Logger m_logger = Logger("GameEngine");
-  bool m_debugMode = true;
-
+class GameEngine : Core {
+  const std::string m_logOrigin = "GameEngine";
   AssetStore m_assets;
 
 public:
   GameEngine();
+  GameEngine(std::shared_ptr<Logger> &logger);
   void loadConfigs(const std::string &configFile);
   void loadAssets(const std::string &configFile);
-  void setDebugMode(bool value);
   void init();
   void run();
 };
