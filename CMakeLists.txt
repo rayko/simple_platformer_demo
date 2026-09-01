@@ -20,6 +20,7 @@ FetchContent_MakeAvailable(SFML)
 
 include_directories(include)
 add_executable(simple_platformer_demo src/main.cpp
+  src/Core.cpp
   src/GameEngine.cpp
   src/Logger.cpp
   src/Vec2f.cpp
