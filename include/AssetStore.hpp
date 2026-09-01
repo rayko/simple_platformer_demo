@@ -9,7 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <string>
-#include "Logger.hpp"
+#include "Core.hpp"
 
 struct AnimationData {
   std::string name;
@@ -34,9 +34,7 @@ struct AssetStats {
   int animations = 0;
 };
 
-class AssetStore {
-  Logger m_logger = Logger("AssetStore");
-  bool m_debugMode = true;
+class AssetStore : public Core {
   AssetStats m_stats; // Just informational
   std::map<std::string, std::shared_ptr<sf::Texture>> m_textures;
   std::map<std::string, std::shared_ptr<sf::Font>> m_fonts;
@@ -54,7 +52,7 @@ class AssetStore {
 
 public:
   AssetStore();
-  void setDebugMode(bool value);
+  AssetStore(std::shared_ptr<Logger> &logger);
   void loadConfigs(const std::string &configFile);
   void init();
 

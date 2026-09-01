@@ -38,7 +38,11 @@ void Core::logError(const std::string &message) {
   m_logger->error(m_logOrigin + " - " + message);
 }
 
-void Core::exitWithError(const std::string &message, int code = 1) {
+void Core::exitWithError(const std::string &message) {
+  exitWithError(message, 1);
+}
+
+void Core::exitWithError(const std::string &message, int code) {
   if (m_logger)
     m_logger->error(m_logOrigin + " - " + message);
   exit(code);

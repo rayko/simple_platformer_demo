@@ -5,6 +5,7 @@
   these other classes, like logging, debug flags and helpers.
 */
 
+#pragma once
 
 #include "Logger.hpp"
 #include <memory>
@@ -13,7 +14,7 @@ class Core {
 protected:
   std::shared_ptr<Logger> m_logger; // Pointer to common logger
   bool m_debugMode = false; // Emmit or not debug messages to log
-  const std::string m_logOrigin = "Core";
+  std::string m_logOrigin = "Core";
 
   // Logging helpers
   void logDebug(const std::string &message);
@@ -22,6 +23,7 @@ protected:
   void logError(const std::string &message);
 
   // Simple crash with message helper
+  void exitWithError(const std::string &message);
   void exitWithError(const std::string &message, int code);
 
   // Common file opening with auto-exit

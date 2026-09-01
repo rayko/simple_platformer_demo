@@ -1,8 +1,15 @@
 #include "GameEngine.hpp"
 #include <iostream>
 
-GameEngine::GameEngine(std::shared_ptr<Logger> &logger) { m_logger = logger; }
+GameEngine::GameEngine() {
+  m_logOrigin = "GameEngine";
+}
 
+GameEngine::GameEngine(std::shared_ptr<Logger> &logger) {
+  m_logOrigin = "GameEngine";
+  m_logger = logger;
+  m_assets = AssetStore(logger);
+}
 
 void GameEngine::loadConfigs(const std::string &configFile) {
   logInfo("Reading " + configFile);

@@ -20,7 +20,7 @@ class Logger {
 
   void emmit(const std::string &message);
 public:
-  Logger();
+  Logger() {};
   void setLevel(LOGGER::LEVEL newLevel);
   void log(LOGGER::LEVEL level, const std::string &message);
   void info(const std::string &message);

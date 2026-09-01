@@ -8,12 +8,9 @@
 #pragma once
 
 #include <string>
-
-#include "Core.hpp"
 #include "AssetStore.hpp"
 
-class GameEngine : Core {
-  const std::string m_logOrigin = "GameEngine";
+class GameEngine : public Core {
   AssetStore m_assets;
 
 public:

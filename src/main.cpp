@@ -1,15 +1,16 @@
 #include "GameEngine.hpp"
+#include "Logger.hpp"
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-  std::cout << "Begin Program" << std::endl;
+  std::shared_ptr<Logger> logger = std::make_shared<Logger>();
 
-  GameEngine engine;
-  engine.setDebugMode(true);
+  logger->setLevel(LOGGER::DEBUG);
+  GameEngine engine(logger);
   engine.loadConfigs("config.txt");
   engine.loadAssets("assets.txt");
 
   engine.run();
 
-  std::cout << "End Program" << std::endl;
+  logger->debug("End Program");
 }
