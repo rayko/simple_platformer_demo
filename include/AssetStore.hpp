@@ -39,8 +39,8 @@ struct AssetStats {
 
 class AssetStore : public Core {
   AssetStats m_stats; // Just informational
-  std::map<std::string, sf::Texture> m_textures;
-  std::map<std::string, sf::Font> m_fonts;
+  std::map<std::string, std::shared_ptr<sf::Texture>> m_textures;
+  std::map<std::string, std::shared_ptr<sf::Font>> m_fonts;
   std::map<std::string, std::shared_ptr<Animation>> m_animations;
 
   // File reading helpers to extract the info
