@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <string>
+#include "Animation.hpp"
 #include "Core.hpp"
 
 struct AnimationData {
@@ -16,6 +17,8 @@ struct AnimationData {
   std::string textureName;
   int frames = 0;
   int frameDuration = 0;
+  int width;
+  int height;
 };
 
 struct FontData {
@@ -36,9 +39,9 @@ struct AssetStats {
 
 class AssetStore : public Core {
   AssetStats m_stats; // Just informational
-  std::map<std::string, std::shared_ptr<sf::Texture>> m_textures;
-  std::map<std::string, std::shared_ptr<sf::Font>> m_fonts;
-  std::map<std::string, AnimationData> m_animations;
+  std::map<std::string, sf::Texture> m_textures;
+  std::map<std::string, sf::Font> m_fonts;
+  std::map<std::string, std::shared_ptr<Animation>> m_animations;
 
   // File reading helpers to extract the info
   const AnimationData readAnimationCfg(std::ifstream &configData);
@@ -46,9 +49,9 @@ class AssetStore : public Core {
   const FontData readFontCfg(std::ifstream &configData);
 
   // Loading helpers
-  void loadTexture(const TextureData &textureData);
-  void loadFont(const FontData &fontData);
-  void loadAnimation(const AnimationData &animationData);
+  void loadTexture(const TextureData &data);
+  void loadFont(const FontData &data);
+  void loadAnimation(const AnimationData &data);
 
 public:
   AssetStore();

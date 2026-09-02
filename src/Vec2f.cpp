@@ -83,3 +83,6 @@ Vec2f Vec2f::dist(const Vec2f & other) const {
 const std::string Vec2f::str() const {
   return "(" + std::to_string(x) + "," + std::to_string(y) + ")";
 }
+
+sf::Vector2f Vec2f::toVector2f() const { return sf::Vector2f(x, y); }
+sf::Vector2i Vec2f::toVector2i() const { return sf::Vector2i(x, y); }

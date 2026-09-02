@@ -1,5 +1,7 @@
 #include "AssetStore.hpp"
+#include "Vec2f.hpp"
 #include <fstream>
+#include <string>
 
 AssetStore::AssetStore() { m_logOrigin = "AssetStore"; }
 AssetStore::AssetStore(std::shared_ptr<Logger> &logger) {
@@ -22,12 +24,15 @@ void AssetStore::loadConfigs(const std::string &configFile) {
       logDebug("Loaded texture " + tex.name + " " + tex.path);
     } else if (token == "Animation" ) {
       AnimationData anim = readAnimationCfg(fin);
+      loadAnimation(anim);
       m_stats.animations++;
-      logDebug("Loaded animation" + anim.name);
+      logDebug("Loaded animation " + anim.name);
     } else if (token == "Font") {
       FontData font = readFontCfg(fin);
       m_stats.fonts++;
       logDebug("Loaded font" + font.name + " " + font.path);
+    } else {
+      // logWarn("Unrecognized keyword: " + token);
     }
   }
 
@@ -48,8 +53,9 @@ void AssetStore::init() {
 // Helpers
 const AnimationData AssetStore::readAnimationCfg(std::ifstream &configData) {
   AnimationData item;
-  configData >> item.name >> item.textureName >> item.frames >>
-      item.frameDuration;
+  configData >> item.name >> item.textureName;
+  configData >> item.frames >> item.frameDuration;
+  configData >> item.width >> item.height;
   return item;
 }
 
@@ -65,38 +71,38 @@ const FontData AssetStore::readFontCfg(std::ifstream &configData) {
   return item;
 }
 
-void AssetStore::loadTexture(const TextureData &textureData) {
+void AssetStore::loadTexture(const TextureData &data) {
   // Fail if we already added a texture with the same name
-  if (m_textures[textureData.name])
-    exitWithError("Already loaded texture with name: " + textureData.name);
+  if (m_textures.contains(data.name))
+    exitWithError("Already loaded texture with name: " + data.name);
 
-  auto tex = std::make_shared<sf::Texture>();
-
+  m_textures[data.name] = sf::Texture();
   // Fail if we could not open the texture file
-  if (!tex->loadFromFile(textureData.path))
-    exitWithError("Could not load texture path " + textureData.path);
-
-  m_textures[textureData.name] = tex;
+  if (!m_textures[data.name].loadFromFile(data.path))
+    exitWithError("Could not load texture path " + data.path);
 }
 
-void AssetStore::loadFont(const FontData &fontData) {
+void AssetStore::loadFont(const FontData &data) {
   // Fail if we already added a texture with the same name
-  if (m_fonts[fontData.name])
-    exitWithError("Already loaded font with name: " + fontData.name);
+  if (m_fonts.contains(data.name))
+    exitWithError("Already loaded font with name: " + data.name);
 
-  auto font = std::make_shared<sf::Font>();
-
+  m_fonts[data.name] = sf::Font();
   // Fail if we could not open the texture file
-  if (!font->openFromFile(fontData.path))
-    exitWithError("Could not load font path " + fontData.path);
-
-  m_fonts[fontData.name] = font;
+  if (!m_fonts[data.name].openFromFile(data.path))
+    exitWithError("Could not load font path " + data.path);
 }
 
-void AssetStore::loadAnimation(const AnimationData &animationData) {
-  // ??
-  // TODO
-  // Check if texture exists first
-  // Check if not duplicate
-  // Create animation
+void AssetStore::loadAnimation(const AnimationData &data) {
+  if (m_animations.contains(data.name))
+    exitWithError("Already loaded animation with name: " + data.name);
+
+  if (!m_textures.contains(data.textureName))
+    exitWithError("Animation " + data.name + " points to missing texture " + data.textureName);
+
+  sf::Texture tex = m_textures[data.textureName];
+  const Vec2f size(data.width, data.height);
+  std::string name = data.name;
+  m_animations[name] = std::make_shared<Animation>(name, tex, size, data.frames,
+                                                   data.frameDuration);
 }

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <SFML/System/Vector2.hpp>
 
 class Vec2f {
  public:
@@ -50,4 +51,8 @@ class Vec2f {
   // Returns a string representation of the vector,
   // mostly for logging.
   const std::string str() const;
+
+  // Utility conversions to make SFML happy
+  sf::Vector2f toVector2f() const;
+  sf::Vector2i toVector2i() const;
 };
