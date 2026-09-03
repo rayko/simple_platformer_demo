@@ -56,6 +56,42 @@ const AnimationData AssetStore::readAnimationCfg(std::ifstream &configData) {
   configData >> item.name >> item.textureName;
   configData >> item.frames >> item.frameDuration;
   configData >> item.width >> item.height;
+
+  int modeValue;
+  // Read value for PlayMode as int
+  configData >> modeValue;
+  switch (modeValue) {
+  case (0):
+    item.playMode = Animation::PlayMode::Static;
+    break;
+  case (1):
+    item.playMode = Animation::PlayMode::Once;
+    break;
+  case (2):
+    item.playMode = Animation::PlayMode::Loop;
+    break;
+  default:
+    exitWithError("Animnation " + item.name + ": Invalid PlayMode value " + std::to_string(modeValue));
+    break;
+  }
+
+  // Read value for LoopMode as int
+  configData >> modeValue;
+  switch (modeValue) {
+  case (0):
+    item.loopMode = Animation::LoopMode::Forward;
+    break;
+  case (1):
+    item.loopMode = Animation::LoopMode::Backward;
+    break;
+  case (2):
+    item.loopMode = Animation::LoopMode::Bounce;
+    break;
+  default:
+    exitWithError("Animnation " + item.name + ": Invalid LoopMode value " + std::to_string(modeValue));
+    break;
+  }
+
   return item;
 }
 
@@ -103,6 +139,12 @@ void AssetStore::loadAnimation(const AnimationData &data) {
   std::shared_ptr<sf::Texture> tex = m_textures[data.textureName];
   const Vec2f size(data.width, data.height);
   std::string name = data.name;
-  m_animations[name] = std::make_shared<Animation>(name, *tex, size, data.frames,
-                                                   data.frameDuration);
+  m_animations[name] = std::make_shared<Animation>(name, *tex, size);
+  if (data.frames > 1) {
+    m_animations[name]->setFrameCount(data.frames);
+    m_animations[name]->setFrameDuration(data.frameDuration);
+    m_animations[name]->setPlayMode(data.playMode);
+    m_animations[name]->setLoopMode(data.loopMode);
+  }
+  // logDebug(m_animations[name]->str());
 }

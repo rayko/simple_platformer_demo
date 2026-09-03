@@ -19,6 +19,8 @@ struct AnimationData {
   int frameDuration = 0;
   int width;
   int height;
+  Animation::PlayMode playMode;
+  Animation::LoopMode loopMode;
 };
 
 struct FontData {
