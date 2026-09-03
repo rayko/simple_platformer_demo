@@ -7,14 +7,16 @@
 
 #pragma once
 #include "Components.hpp"
+#include <memory>
 #include <string>
+#include <vector>
 
 typedef std::tuple<CTransform, CLifespan, CInput, CBoxCollider, CAnimation,
                    CGravity, CState>
     ComponentTuple;
 
 class Entity {
-  // friend class EntityManager;
+  friend class EntityManager;
 
   size_t m_id;
   bool m_active = true;
@@ -51,3 +53,5 @@ public:
 
   template <typename T> void removeComponent() { getComponent<T>() = T(); }
 };
+
+typedef std::vector<std::shared_ptr<Entity>> EntityVector;
