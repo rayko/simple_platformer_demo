@@ -1,0 +1,82 @@
+/*
+  Components.hpp
+  These are the possible components to attach to
+  Entities and read when processing entities. They
+  are essentially structs made up of classes. Components
+  are not supposed to have any logic, but a small exception
+  is done here to be able to manage them from the entities
+  more easily
+*/
+
+#pragma once
+#include "Vec2f.hpp"
+
+class Component {
+public:
+  bool has = false;
+};
+
+class CTransform : public Component {
+public:
+  Vec2f pos = {0.0, 0.0};
+  Vec2f prevPos = {0.0, 0.0};
+  Vec2f scale = {1.0, 1.0};
+  Vec2f vel = {0.0, 0.0};
+  float angle = 0.0;
+
+  CTransform() {};
+  CTransform(const Vec2f &p) : pos(p) {};
+};
+
+class CState : public Component{
+public:
+  std::string state = "default";
+
+  CState() {};
+  CState(const std::string &s) : state(s) {};
+};
+
+class CLifespan : public Component{
+public:
+  size_t frames = 0;
+  size_t remaining = 0;
+
+  CLifespan() {};
+  CLifespan(size_t frames) : frames(frames), remaining(frames) {};
+};
+
+class CInput : public Component {
+public:
+  bool up = false;
+  bool down = false;
+  bool right = false;
+  bool left = false;
+  bool jump = false;
+  bool shoot = false;
+
+  CInput() {};
+};
+
+class CBoxCollider : public Component {
+public:
+  Vec2f size;
+
+  CBoxCollider() {};
+  CBoxCollider(const Vec2f &size) : size(size) {};
+};
+
+class CAnimation : public Component {
+public:
+  std::string name = "default";
+
+  CAnimation() {};
+  CAnimation(const std::string &n) : name(n) {};
+};
+
+class CGravity : public Component {
+public:
+  float speed = 0.0;
+
+  CGravity() {};
+  CGravity(float spd) : speed(spd) {};
+};
