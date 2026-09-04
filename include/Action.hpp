@@ -12,18 +12,33 @@
 class Action {
 public:
   enum class State { Start, End };
+  enum class Name {
+    None,
+    Up,
+    Down,
+    Left,
+    Right,
+    Jump,
+    Shoot,
+    Crouch,
+    Activate,
+    Escape,
+  };
+
 
   Action() {};
-  Action(const std::string &n, State s) : m_name(n), m_state(s) {};
+  Action(Name n, State s) : m_name(n), m_state(s) {};
 
   bool starting() const;
   bool ending() const;
-  const std::string &name() const;
-  const State &state() const;
+  const Name name() const;
+  const State state() const;
+  const std::string strName() const;
+  const std::string strState() const;
   const std::string toString() const;
   const std::string str() const;
 
 private:
-  const std::string m_name = "NONE";
+  const Name m_name = Name::None;
   const State m_state = State::Start;
 };
