@@ -18,4 +18,5 @@ const ActionMap &Scene::getActionMap() const { return m_actionMap; }
 
 void Scene::drawLine(const Vec2f &p1, const Vec2f &p2) {
   // TODO
+  // m_engine->window.draw(something)
 }

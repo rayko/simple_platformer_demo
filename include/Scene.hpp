@@ -42,6 +42,7 @@ public:
 
   // More functions for children to define
   virtual void update() = 0;
+  virtual void init() = 0;
 
   virtual void sDoAction(const Action &action) = 0;
   virtual void doAction(const Action &action) = 0;
