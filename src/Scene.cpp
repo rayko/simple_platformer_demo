@@ -6,7 +6,7 @@ void Scene::simulate(const size_t frames) {
   // TODO ???
 }
 
-void Scene::registerAction(int inKey, const std::string &name) {
+void Scene::registerAction(int inKey, Action::Name name) {
   m_actionMap[inKey] = name;
 }
 

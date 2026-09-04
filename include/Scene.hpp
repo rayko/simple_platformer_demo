@@ -17,7 +17,7 @@
 #include <map>
 
 // Helper type to define map of actions for scenes.
-typedef std::map<int, std::string> ActionMap;
+typedef std::map<int, Action::Name> ActionMap;
 
 class Scene : public Core {
 protected:
@@ -48,7 +48,7 @@ public:
 
   virtual void sRender() = 0;
   void simulate(const size_t frames);
-  void registerAction(int inKey, const std::string &name);
+  void registerAction(int inKey, Action::Name name);
   size_t width() const;
   size_t height() const;
   size_t currentFrame() const;
