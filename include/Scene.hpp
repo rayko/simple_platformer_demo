@@ -12,9 +12,14 @@
 #pragma once
 #include "Core.hpp"
 #include "EntityManager.hpp"
-#include "GameEngine.hpp"
 #include "Action.hpp"
 #include <map>
+
+// This is here to fix circular dependency. GameEngine will
+// require us, and we require GameEngine. Instead of using
+// include and cause the problem, we make a placeholder for
+// this name (and pray to compiler almigthy it works xD)
+class GameEngine;
 
 // Helper type to define map of actions for scenes.
 typedef std::map<int, Action::Name> ActionMap;
@@ -39,7 +44,7 @@ protected:
 public:
   Scene();
   virtual ~Scene() {};
-  Scene(GameEngine *gameEngine) : m_engine(gameEngine) {};
+  Scene(GameEngine *engine) : m_engine(engine) {};
 
   // More functions for children to define
   virtual void update() = 0;
