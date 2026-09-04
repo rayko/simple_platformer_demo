@@ -22,6 +22,7 @@ include_directories(include)
 add_executable(simple_platformer_demo src/main.cpp
   src/Core.cpp
   src/Animation.cpp
+  src/Action.cpp
   src/Entity.cpp
   src/EntityManager.cpp
   src/Scene.cpp
