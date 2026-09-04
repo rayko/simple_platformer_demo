@@ -38,6 +38,7 @@ protected:
 
 public:
   Scene();
+  virtual ~Scene() {};
   Scene(GameEngine *gameEngine) : m_engine(gameEngine) {};
 
   // More functions for children to define
