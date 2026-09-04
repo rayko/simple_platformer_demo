@@ -5,11 +5,11 @@
 */
 
 #pragma once
-#include "../Scene.hpp"
+#include "scenes/Base.hpp"
 
 namespace Scenes {
 
-  class Menu : public Scene {
+  class Menu : public Base {
   protected:
     std::string m_title;
     // Define menu stuff: items, text, positions, etc
@@ -17,7 +17,7 @@ namespace Scenes {
     void onEnd() override;
 
   public:
-    Menu(GameEngine * engine = nullptr);
+    Menu(GameEngine *engine);
     void update() override;
     void init() override;
     void sDoAction(const Action &action) override;
