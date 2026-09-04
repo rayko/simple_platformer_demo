@@ -13,6 +13,7 @@
 #include "Core.hpp"
 #include "EntityManager.hpp"
 #include "GameEngine.hpp"
+#include "Action.hpp"
 #include <map>
 
 // Helper type to define map of actions for scenes.
@@ -26,6 +27,8 @@ protected:
   bool m_paused = false;
   bool m_finished = false;
   size_t m_currentFrame = 0;
+  size_t m_width;
+  size_t m_height;
 
   // Callback we can define on a scene child to run
   // when we detect it finished. Children should override
@@ -40,9 +43,8 @@ public:
   // More functions for children to define
   virtual void update() = 0;
 
-  // Need type Action defined for these
-  // virtual void sDoAction(const Action &action) = 0;
-  // virtual void doAction(const Action &action) = 0;
+  virtual void sDoAction(const Action &action) = 0;
+  virtual void doAction(const Action &action) = 0;
 
   virtual void sRender() = 0;
   void simulate(const size_t frames);
