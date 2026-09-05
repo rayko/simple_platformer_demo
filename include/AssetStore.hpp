@@ -61,7 +61,7 @@ public:
   void loadConfigs(const std::string &configFile);
   void init();
 
-  sf::Texture getTexture(const std::string &name) const;
-  sf::Font getFont(const std::string &name) const;
-  void getAnimation(const std::string &name) const;
+  std::shared_ptr<sf::Texture> getTexture(const std::string &name) const;
+  std::shared_ptr<sf::Font> getFont(const std::string &name) const;
+  std::shared_ptr<Animation> getAnimation(const std::string &name) const;
 };

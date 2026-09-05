@@ -9,6 +9,18 @@ AssetStore::AssetStore(std::shared_ptr<Logger> &logger) {
   m_logger = logger;
 }
 
+std::shared_ptr<sf::Font> AssetStore::getFont(const std::string &name) const {
+  return m_fonts.at(name);
+}
+
+std::shared_ptr<sf::Texture> AssetStore::getTexture(const std::string &name) const {
+  return m_textures.at(name);
+}
+
+std::shared_ptr<Animation> AssetStore::getAnimation(const std::string &name) const {
+  return m_animations.at(name);
+}
+
 
 void AssetStore::loadConfigs(const std::string &configFile) {
   logInfo("Reading " + configFile);
