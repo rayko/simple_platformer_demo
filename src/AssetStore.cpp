@@ -10,14 +10,25 @@ AssetStore::AssetStore(std::shared_ptr<Logger> &logger) {
 }
 
 std::shared_ptr<sf::Font> AssetStore::getFont(const std::string &name) const {
+  int value = m_fonts.size();
+  logDebug("Font count: " + std::to_string(value));
+  if (!m_fonts.contains(name))
+    exitWithError("Queried missing font " + name);
+
   return m_fonts.at(name);
 }
 
 std::shared_ptr<sf::Texture> AssetStore::getTexture(const std::string &name) const {
+  if (!m_textures.contains(name))
+    exitWithError("Queried missing texture " + name);
+
   return m_textures.at(name);
 }
 
 std::shared_ptr<Animation> AssetStore::getAnimation(const std::string &name) const {
+  if (!m_animations.contains(name))
+    exitWithError("Queried missing animation " + name);
+
   return m_animations.at(name);
 }
 
@@ -41,8 +52,9 @@ void AssetStore::loadConfigs(const std::string &configFile) {
       logDebug("Loaded animation " + anim.name);
     } else if (token == "Font") {
       FontData font = readFontCfg(fin);
+      loadFont(font);
       m_stats.fonts++;
-      logDebug("Loaded font" + font.name + " " + font.path);
+      logDebug("Loaded font " + font.name + " " + font.path);
     } else {
       // logWarn("Unrecognized keyword: " + token);
     }

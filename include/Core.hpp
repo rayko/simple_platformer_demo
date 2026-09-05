@@ -22,9 +22,17 @@ protected:
   void logWarn(const std::string &message);
   void logError(const std::string &message);
 
+  void logDebug(const std::string &message) const;
+  void logInfo(const std::string &message) const;
+  void logWarn(const std::string &message) const;
+  void logError(const std::string &message) const;
+
   // Simple crash with message helper
   void exitWithError(const std::string &message);
   void exitWithError(const std::string &message, int code);
+
+  void exitWithError(const std::string &message) const;
+  void exitWithError(const std::string &message, int code) const;
 
   // Common file opening with auto-exit
   std::ifstream openFile(const std::string &path);
@@ -34,4 +42,5 @@ public:
   void enableDebug();
   void disableDebug();
   const std::string logOrigin() const;
+  void setLogger(std::shared_ptr<Logger> &logger);
 };

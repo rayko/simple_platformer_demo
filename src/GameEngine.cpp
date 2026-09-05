@@ -22,6 +22,7 @@ void GameEngine::run() {
   }
 }
 
+const AssetStore &GameEngine::assetStore() const { return m_assets; }
 
 
 // Private
@@ -43,7 +44,9 @@ void GameEngine::init() {
   m_window.setKeyRepeatEnabled(false);
 
   // Switch to the first scene to load
-  changeScene("MainMenu", std::make_shared<Scenes::Menu>(this));
+  std::shared_ptr<Scenes::Menu> scene = std::make_shared<Scenes::Menu>(this);
+  scene->setLogger(m_logger);
+  changeScene("MainMenu", scene);
 }
 
 std::shared_ptr<Scenes::Base> GameEngine::currentScene() {
@@ -51,15 +54,19 @@ std::shared_ptr<Scenes::Base> GameEngine::currentScene() {
 }
 
 void GameEngine::changeScene(const std::string &name, std::shared_ptr<Scenes::Base> scene) {
-  logDebug("Loading scene " + name);
+  logInfo("Loading scene " + name);
+  logDebug("Setting current scene");
   m_currentSceneName = name;
+  logDebug("Saving on m_sceneMap");
   m_sceneMap[name] = scene;
-  // m_sceneMap[name]->init();
-  // ??
+  logDebug("Initializing scene");
+  m_sceneMap[name]->init();
 }
 
 void GameEngine::update() {
-  // TODO
+  sUserInput();
+  currentScene()->update();
+  m_currentFrame++;
 }
 
 void GameEngine::quit() { m_running = false; }

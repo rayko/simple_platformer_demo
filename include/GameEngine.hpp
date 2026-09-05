@@ -20,6 +20,7 @@ class GameEngine : public Core {
   SceneMap m_sceneMap;
   size_t m_simulationSpeed = 1;
   bool m_running = true;
+  size_t m_currentFrame = 0;
 
   // Not the best place for these, but since this is kinda
   // a singleton, it's ok
