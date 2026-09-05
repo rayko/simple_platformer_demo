@@ -38,6 +38,8 @@ class GameEngine : public Core {
   void quit();
   void takeScreenshot();
 
+  void handleKeyboardEvent(sf::Keyboard::Scancode key, Action::State state);
+
 public:
   GameEngine();
   GameEngine(std::shared_ptr<Logger> &logger);

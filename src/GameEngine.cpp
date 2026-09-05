@@ -73,17 +73,21 @@ void GameEngine::sUserInput() {
         // Special key, we handle this one here
         takeScreenshot();
       } else {
-        if (!currentScene()->respondsToKey(key->scancode)) { continue; }
-        const Action action = Action(sceneKeys.at(key->scancode), Action::State::Start);
-        currentScene()->doAction(action);
+        handleKeyboardEvent(key->scancode, Action::State::Start);
       }
     } else if (const auto *key = event->getIf<sf::Event::KeyReleased>()) {
-      if (!currentScene()->respondsToKey(key->scancode)) { continue; }
-      const Action action = Action(sceneKeys.at(key->scancode), Action::State::End);
-      currentScene()->doAction(action);
+      handleKeyboardEvent(key->scancode, Action::State::End);
     }
   }
 }
+
+void GameEngine::handleKeyboardEvent(sf::Keyboard::Scancode key, Action::State state) {
+  if (!currentScene()->respondsToKey(key)) { return; }
+  const Action action = Action(currentScene()->keyMap().at(key), state);
+  currentScene()->doAction(action);
+  logDebug("Keyboard: Sent action " + action.str() + " to current scene " + m_currentSceneName);
+}
+
 
 void GameEngine::takeScreenshot() {
   sf::Texture tex(m_window.getSize());
