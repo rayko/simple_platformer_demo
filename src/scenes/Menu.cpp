@@ -40,11 +40,18 @@ namespace Scenes {
   }
 
   void Menu::sDoAction(const Action &action) {
-    // TODO
+    // TODO Not sure what this should do yet
   }
 
   void Menu::doAction(const Action &action) {
-    // TODO
+    switch(action.name()){
+    case (Action::Name::Escape):
+      // TODO should call onEnd() when exiting
+      if (action.starting()) { m_finished = true; }
+      break;
+    default: break;
+
+    }
   }
 
   void Menu::sRender() {
@@ -71,7 +78,6 @@ namespace Scenes {
       window.draw(m_menuEntries[idx].textGfx);
       menuPos.y += m_entryPadding + m_menuEntries[idx].textGfx.getLocalBounds().size.y;
     }
-
     window.display();
   }
 }

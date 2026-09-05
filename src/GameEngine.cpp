@@ -67,6 +67,14 @@ void GameEngine::update() {
   sUserInput();
   currentScene()->update();
   m_currentFrame++;
+
+  if (currentScene()->isFinished()) {
+    // TODO We don't have scenes in order yet, if one exits, we have nothing
+    // more to do. Change this
+
+    logDebug("Current scene " + m_currentSceneName + " Finished, no more scenes");
+    quit();
+  }
 }
 
 void GameEngine::quit() { m_running = false; }
