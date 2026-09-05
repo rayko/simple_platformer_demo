@@ -7,7 +7,6 @@ namespace Scenes {
   }
 
   void Menu::update() {
-    logDebug("Rendering");
     sRender();
   }
 
@@ -26,6 +25,10 @@ namespace Scenes {
     // Menu Entries
     logDebug("Building Menu");
     std::shared_ptr<sf::Font> font = m_engine->assetStore().getFont("SimpleFont");
+
+    m_titleGfx = std::make_shared<sf::Text>(sf::Text(*font, "Simple Platformer Demo", m_titleCharSize));
+    m_titleGfx->setFillColor(m_titleColor);
+
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Entry 1", m_menuEntryCharSize), "entry1"));
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Entry 2", m_menuEntryCharSize), "entry2"));
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Entry 3", m_menuEntryCharSize), "entry3"));
@@ -47,28 +50,26 @@ namespace Scenes {
   void Menu::sRender() {
     sf::RenderWindow &window = m_engine->window();
     window.clear();
-    std::shared_ptr<sf::Font> titleFont = m_engine->assetStore().getFont("SimpleFont");
-    sf::Text title(*titleFont, m_title, m_titleCharSize);
-    title.setFillColor(m_titleColor);
 
     sf::Vector2u winSize = window.getSize();
     Vec2f titlePos{0, 0};
     // Centered
-    titlePos.x = ((float)winSize.x / 2) - (title.getLocalBounds().size.x / 2);
+    titlePos.x = ((float)winSize.x / 2) - (m_titleGfx->getLocalBounds().size.x / 2);
     titlePos.y = m_titlePosition.y;
-    title.setPosition(titlePos.toVector2f());
+    m_titleGfx->setPosition(titlePos.toVector2f());
 
     Vec2f menuPos = m_listPosition;
 
-    window.draw(title);
+    window.draw(*m_titleGfx);
     for (int idx = 0; idx < m_menuEntries.size(); idx++) {
       if (idx == m_menuIndex){
         m_menuEntries[idx].textGfx.setFillColor(m_menuEntrySelectColor);
       } else {
         m_menuEntries[idx].textGfx.setFillColor(m_menuEntryColor);
       }
+      m_menuEntries[idx].textGfx.setPosition(menuPos.toVector2f());
       window.draw(m_menuEntries[idx].textGfx);
-      menuPos.x += m_entryPadding + m_listPosition.x;
+      menuPos.y += m_entryPadding + m_menuEntries[idx].textGfx.getLocalBounds().size.y;
     }
 
     window.display();

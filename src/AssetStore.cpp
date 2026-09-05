@@ -11,7 +11,6 @@ AssetStore::AssetStore(std::shared_ptr<Logger> &logger) {
 
 std::shared_ptr<sf::Font> AssetStore::getFont(const std::string &name) const {
   int value = m_fonts.size();
-  logDebug("Font count: " + std::to_string(value));
   if (!m_fonts.contains(name))
     exitWithError("Queried missing font " + name);
 

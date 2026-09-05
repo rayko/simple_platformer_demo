@@ -18,19 +18,20 @@ namespace Scenes {
     };
 
   protected:
+    std::shared_ptr<sf::Text> m_titleGfx;
     std::string m_title;
-    int m_titleCharSize = 30;
+    int m_titleCharSize = 80;
     sf::Color m_titleColor = {255, 255, 255};
 
     std::vector<MenuEntry> m_menuEntries;
     sf::Color m_menuEntryColor = {255, 100, 100};
     sf::Color m_menuEntrySelectColor = {100, 255, 100};
     int m_menuIndex = 0;
-    int m_menuEntryCharSize = 15;
+    int m_menuEntryCharSize = 50;
 
     Vec2f m_titlePosition = {20, 20};
-    Vec2f m_listPosition = {20, 50};
-    int m_entryPadding = 5;
+    Vec2f m_listPosition = {50, 150};
+    int m_entryPadding = 20;
     // Define menu stuff: items, text, positions, etc
 
     void onEnd() override;
