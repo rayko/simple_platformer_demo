@@ -7,18 +7,22 @@ namespace Scenes {
     // TODO ???
   }
 
-  void Base::registerAction(int inKey, Action::Name name) {
-    m_actionMap[inKey] = name;
+  void Base::registerKeyboardAction(sf::Keyboard::Scancode inKey, Action::Name name) {
+    m_keyMap[inKey] = name;
   }
 
   size_t Base::width() const { return m_width; }
   size_t Base::height() const { return m_height; }
   size_t Base::currentFrame() const { return m_currentFrame; }
   bool Base::isFinished() const { return m_finished; }
-  const ActionMap &Base::getActionMap() const { return m_actionMap; }
+  const KeyboardMap &Base::keyMap() const { return m_keyMap; }
 
   void Base::drawLine(const Vec2f &p1, const Vec2f &p2) {
     // TODO
     // m_engine->window.draw(something)
+  }
+
+  bool Base::respondsToKey(sf::Keyboard::Scancode key) const {
+    return !(m_keyMap.find(key) == m_keyMap.end());
   }
 }

@@ -13,6 +13,7 @@
 #include "Core.hpp"
 #include "EntityManager.hpp"
 #include "Action.hpp"
+#include <SFML/Window/Keyboard.hpp>
 #include <map>
 
 // This is here to fix circular dependency. GameEngine will
@@ -22,14 +23,14 @@
 class GameEngine;
 
 // Helper type to define map of actions for scenes.
-typedef std::map<int, Action::Name> ActionMap;
+typedef std::map<sf::Keyboard::Scancode, Action::Name> KeyboardMap;
 
 namespace Scenes {
   class Base : public Core {
   protected:
     GameEngine *m_engine = nullptr;
     EntityManager m_entityManager;
-    ActionMap m_actionMap;
+    KeyboardMap m_keyMap;
     bool m_paused = false;
     bool m_finished = false;
     size_t m_currentFrame = 0;
@@ -56,12 +57,13 @@ namespace Scenes {
 
     virtual void sRender() = 0;
     void simulate(const size_t frames);
-    void registerAction(int inKey, Action::Name name);
+    void registerKeyboardAction(sf::Keyboard::Scancode inKey, Action::Name name);
     size_t width() const;
     size_t height() const;
     size_t currentFrame() const;
     bool isFinished() const;
-    const ActionMap &getActionMap() const;
+    const KeyboardMap &keyMap() const;
+    bool respondsToKey(sf::Keyboard::Scancode key) const;
     void drawLine(const Vec2f &p1, const Vec2f &p2);
   };
 }

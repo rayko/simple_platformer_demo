@@ -67,19 +67,19 @@ void GameEngine::quit() { m_running = false; }
 void GameEngine::sUserInput() {
   while (const std::optional event = m_window.pollEvent()) {
     if (event->is<sf::Event::Closed>()) { quit(); }
-    const ActionMap actions = currentScene()->getActionMap();
+    const KeyboardMap sceneKeys = currentScene()->keyMap();
     if (const auto *key = event->getIf<sf::Event::KeyPressed>()) {
       if (key->scancode == sf::Keyboard::Scancode::X) {
         // Special key, we handle this one here
         takeScreenshot();
       } else {
-        if (actions.find((int) key->scancode) == actions.end()) { continue; }
-        const Action action = Action(actions.at((int)key->scancode), Action::State::Start);
+        if (!currentScene()->respondsToKey(key->scancode)) { continue; }
+        const Action action = Action(sceneKeys.at(key->scancode), Action::State::Start);
         currentScene()->doAction(action);
       }
     } else if (const auto *key = event->getIf<sf::Event::KeyReleased>()) {
-      if (actions.find((int) key->scancode) == actions.end()) { continue; }
-      const Action action = Action(actions.at((int)key->scancode), Action::State::End);
+      if (!currentScene()->respondsToKey(key->scancode)) { continue; }
+      const Action action = Action(sceneKeys.at(key->scancode), Action::State::End);
       currentScene()->doAction(action);
     }
   }
