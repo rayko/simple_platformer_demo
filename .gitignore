@@ -75,3 +75,7 @@ tmp/*
 
 # Ignore VisualStudio stuff
 .vscode/*
+
+# Togo stuff
+.togo
+todos.json
