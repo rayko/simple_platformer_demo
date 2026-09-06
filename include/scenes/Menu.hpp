@@ -38,7 +38,7 @@ namespace Scenes {
     void runMenuEntry();
 
   public:
-    using Base::Base;
+    Menu(GameEngine *engine);
     void update() override;
     void init() override;
     void sDoAction(const Action &action) override;

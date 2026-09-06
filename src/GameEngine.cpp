@@ -59,8 +59,6 @@ void GameEngine::changeScene(const std::string &name, std::shared_ptr<Scenes::Ba
   m_currentSceneName = name;
   logDebug("Saving on m_sceneMap");
   m_sceneMap[name] = scene;
-  logDebug("Initializing scene");
-  m_sceneMap[name]->init();
 }
 
 void GameEngine::update() {

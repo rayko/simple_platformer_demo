@@ -2,6 +2,11 @@
 #include "GameEngine.hpp"
 
 namespace Scenes {
+  Menu::Menu(GameEngine *engine) : Base(engine) {
+    m_logOrigin = "Scenes::Menu";
+    init();
+  }
+
   void Menu::onEnd() {
     // TODO
   }
@@ -11,8 +16,7 @@ namespace Scenes {
   }
 
   void Menu::init() {
-    // TODO Find a better way to set this, I can't set it in constructor because it messes stuff up
-    m_logOrigin = "Scenes::Menu";
+    logDebug("Initializing");
 
     // Map keyboard keys to actions
     logDebug("Mapping keyboard");
