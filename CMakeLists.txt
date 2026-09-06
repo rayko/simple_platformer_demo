@@ -27,6 +27,7 @@ add_executable(simple_platformer_demo src/main.cpp
   src/EntityManager.cpp
   src/scenes/Base.cpp
   src/scenes/Menu.cpp
+  src/Physics.cpp
   src/GameEngine.cpp
   src/Logger.cpp
   src/Vec2f.cpp
