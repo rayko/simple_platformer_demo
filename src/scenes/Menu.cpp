@@ -44,10 +44,25 @@ namespace Scenes {
   }
 
   void Menu::doAction(const Action &action) {
+    // Ignoring action as "ending", we care about key press, not key releases here
+    if (action.ending()) return;
     switch(action.name()){
     case (Action::Name::Escape):
       // TODO should call onEnd() when exiting
       if (action.starting()) { m_finished = true; }
+      break;
+    case (Action::Name::Down):
+      m_menuIndex++;
+      if (m_menuIndex >= m_menuEntries.size())
+        m_menuIndex = 0;
+      break;
+    case (Action::Name::Up):
+      m_menuIndex--;
+      if (m_menuIndex < 0)
+        m_menuIndex = (m_menuEntries.size() - 1);
+      break;
+    case (Action::Name::Activate):
+      runMenuEntry();
       break;
     default: break;
 
@@ -79,5 +94,14 @@ namespace Scenes {
       menuPos.y += m_entryPadding + m_menuEntries[idx].textGfx.getLocalBounds().size.y;
     }
     window.display();
+  }
+
+  void Menu::runMenuEntry() {
+    const std::string menuName = m_menuEntries[m_menuIndex].name;
+    if (menuName == "exit") {
+      m_finished = true;
+      return;
+    }
+    logDebug("TODO Run menu action " + menuName);
   }
 }

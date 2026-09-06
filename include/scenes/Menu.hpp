@@ -35,6 +35,7 @@ namespace Scenes {
     // Define menu stuff: items, text, positions, etc
 
     void onEnd() override;
+    void runMenuEntry();
 
   public:
     using Base::Base;
