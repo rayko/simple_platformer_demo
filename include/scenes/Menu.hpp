@@ -17,7 +17,6 @@ namespace Scenes {
       std::string name;
     };
 
-  protected:
     std::shared_ptr<sf::Text> m_titleGfx;
     std::string m_title;
     int m_titleCharSize = 80;
