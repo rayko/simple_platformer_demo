@@ -6,6 +6,7 @@ namespace Scenes {
 
   Menu::Menu(GameEngine *engine) : Base(engine) {
     m_logOrigin = "Scenes::Menu";
+    setLogger(engine->getLogger());
     init();
   }
 
