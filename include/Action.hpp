@@ -23,6 +23,9 @@ public:
     Crouch,
     Activate,
     Escape,
+    ToggleGrid,
+    ToggleColliders,
+    ToggleTextures,
   };
 
 
