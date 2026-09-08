@@ -42,6 +42,9 @@ namespace Scenes {
     // when we detect it finished. Children should override
     // this.
     virtual void onEnd() = 0;
+    virtual void sDoAction(const Action &action) = 0;
+    virtual void sRender() = 0;
+    virtual void init() = 0;
 
   public:
     Base() {};
@@ -50,12 +53,8 @@ namespace Scenes {
 
     // More functions for children to define
     virtual void update() = 0;
-    virtual void init() = 0;
-
-    virtual void sDoAction(const Action &action) = 0;
     virtual void doAction(const Action &action) = 0;
 
-    virtual void sRender() = 0;
     void simulate(const size_t frames);
     void registerKeyboardAction(sf::Keyboard::Scancode inKey, Action::Name name);
     size_t width() const;

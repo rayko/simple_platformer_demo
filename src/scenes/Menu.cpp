@@ -2,18 +2,28 @@
 #include "GameEngine.hpp"
 
 namespace Scenes {
+  // Public
+
   Menu::Menu(GameEngine *engine) : Base(engine) {
     m_logOrigin = "Scenes::Menu";
     init();
   }
 
-  void Menu::onEnd() {
-    // TODO
-  }
-
   void Menu::update() {
     sRender();
   }
+
+  // This an exposed function to the public, for external stuff to send us
+  // actions. It may be GameEngine, or it may be something else (ie replay
+  // soruce, network, etc).
+  // We can handle global scene actions here if we want, to sepparate that
+  // from other internal action logic (ie player actions), as a pre-filter.
+  // Otherwise, we should forward the received action to sDoAction() system
+  // to handle it.
+  void Menu::doAction(const Action &action) { sDoAction(action); }
+
+
+  // Private
 
   void Menu::init() {
     logDebug("Initializing");
@@ -43,34 +53,46 @@ namespace Scenes {
     m_menuIndex = 0;
   }
 
+  // Handler of actions for the scene. This, being an ECS system should be
+  // private. Most of the internal logic of actions is implemented here.
+  // For menu here, we just navigate the menu with movement input.
+  // We can also tell GameEngine (we should have a pointer to it here), to
+  // change the scene.
   void Menu::sDoAction(const Action &action) {
-    // TODO Not sure what this should do yet
+    if (action.starting()) {
+      switch(action.name()) {
+      case (Action::Name::Escape):
+        onEnd();
+        break;
+      case (Action::Name::Down):
+        m_menuIndex++;
+        if (m_menuIndex >= m_menuEntries.size())
+          m_menuIndex = 0;
+        break;
+      case (Action::Name::Up):
+        m_menuIndex--;
+        if (m_menuIndex < 0)
+          m_menuIndex = (m_menuEntries.size() - 1);
+        break;
+      case (Action::Name::Activate):
+        runMenuEntry();
+        break;
+      default: break;
+      }
+
+      if (action.ending()) {
+        // We don't need to do anything on input release
+        return;
+      }
+    }
   }
 
-  void Menu::doAction(const Action &action) {
-    // Ignoring action as "ending", we care about key press, not key releases here
-    if (action.ending()) return;
-    switch(action.name()){
-    case (Action::Name::Escape):
-      // TODO should call onEnd() when exiting
-      if (action.starting()) { m_finished = true; }
-      break;
-    case (Action::Name::Down):
-      m_menuIndex++;
-      if (m_menuIndex >= m_menuEntries.size())
-        m_menuIndex = 0;
-      break;
-    case (Action::Name::Up):
-      m_menuIndex--;
-      if (m_menuIndex < 0)
-        m_menuIndex = (m_menuEntries.size() - 1);
-      break;
-    case (Action::Name::Activate):
-      runMenuEntry();
-      break;
-    default: break;
 
-    }
+  void Menu::onEnd() {
+    // End scene routine, anything else we need to do (cleanup, save state, etc)
+    // should go here, before we mark the scene done.
+    // We can switch to another scene here (ie next level) too
+    m_finished = true;
   }
 
   void Menu::sRender() {
@@ -101,6 +123,7 @@ namespace Scenes {
   }
 
   void Menu::runMenuEntry() {
+    // TODO this should be on sDoAction() as action logic
     const std::string menuName = m_menuEntries[m_menuIndex].name;
     if (menuName == "exit") {
       m_finished = true;
