@@ -35,7 +35,6 @@ class GameEngine : public Core {
   void update();
   void sUserInput();
   std::shared_ptr<Scenes::Base> currentScene();
-  void changeScene(const std::string &name, std::shared_ptr<Scenes::Base> scene);
   void quit();
   void takeScreenshot();
 
@@ -45,6 +44,7 @@ public:
   GameEngine();
   GameEngine(std::shared_ptr<Logger> &logger);
   void run();
+  void changeScene(const std::string &name, std::shared_ptr<Scenes::Base> scene);
 
   sf::RenderWindow &window();
   const AssetStore &assetStore() const;
