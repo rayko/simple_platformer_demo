@@ -1,5 +1,6 @@
 #include "scenes/Menu.hpp"
 #include "GameEngine.hpp"
+#include "scenes/PlayLevel.hpp"
 
 namespace Scenes {
   // Public
@@ -127,9 +128,12 @@ namespace Scenes {
     // TODO this should be on sDoAction() as action logic
     const std::string menuName = m_menuEntries[m_menuIndex].name;
     if (menuName == "exit") {
-      m_finished = true;
+      onEnd();
       return;
     }
-    logDebug("TODO Run menu action " + menuName);
+    if (menuName == "entry1") {
+      m_engine->changeScene("Level1", std::make_shared<PlayLevel>(m_engine, "level1.txt"));
+      return;
+    }
   }
 }

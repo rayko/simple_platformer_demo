@@ -2,8 +2,6 @@
 #include "GameEngine.hpp"
 #include "scenes/Menu.hpp"
 
-using Scenes::Menu;
-
 GameEngine::GameEngine() { m_logOrigin = "GameEngine"; }
 
 GameEngine::GameEngine(std::shared_ptr<Logger> &logger) {

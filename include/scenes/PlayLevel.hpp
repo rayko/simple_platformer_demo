@@ -33,7 +33,7 @@ namespace Scenes {
     void sRender() override;
 
   public:
-    PlayLevel(GameEngine *engine, std::string &lvlConfigFile);
+    PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
     void update() override;
     void doAction(const Action &action) override;
   };
