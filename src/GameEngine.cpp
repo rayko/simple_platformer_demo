@@ -44,9 +44,7 @@ void GameEngine::init() {
   m_window.setKeyRepeatEnabled(false);
 
   // Switch to the first scene to load
-  std::shared_ptr<Scenes::Menu> scene = std::make_shared<Scenes::Menu>(this);
-  scene->setLogger(m_logger);
-  changeScene("MainMenu", scene);
+  changeScene("MainMenu", std::make_shared<Scenes::Menu>(this));
 }
 
 std::shared_ptr<Scenes::Base> GameEngine::currentScene() {
