@@ -15,7 +15,7 @@ void Core::disableDebug() {
 
 const std::string Core::logOrigin() const { return m_logOrigin; }
 
-void Core::setLogger(std::shared_ptr<Logger> &logger) { m_logger = logger; }
+void Core::setLogger(std::shared_ptr<Logger> logger) { m_logger = logger; }
 
 
 // Private

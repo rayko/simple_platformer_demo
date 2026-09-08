@@ -42,5 +42,6 @@ public:
   void enableDebug();
   void disableDebug();
   const std::string logOrigin() const;
-  void setLogger(std::shared_ptr<Logger> &logger);
+  void setLogger(std::shared_ptr<Logger> logger);
+  std::shared_ptr<Logger> getLogger() const { return m_logger; }
 };
