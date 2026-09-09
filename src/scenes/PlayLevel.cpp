@@ -14,6 +14,8 @@ namespace Scenes {
   }
 
   void PlayLevel::update() {
+    m_view.move({3, 0});
+    m_engine->window().setView(m_view);
     sRender();
   }
 
@@ -32,20 +34,17 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::T, Action::Name::ToggleTextures);
     registerKeyboardAction(sf::Keyboard::Scancode::C, Action::Name::ToggleColliders);
     registerKeyboardAction(sf::Keyboard::Scancode::Escape, Action::Name::Escape);
+    registerKeyboardAction(sf::Keyboard::Scancode::P, Action::Name::Escape);
 
-    sf::RenderWindow &window = m_engine->window();
-    sf::Vector2f winSize = {(float) window.getSize().x, (float) window.getSize().y};
-    sf::View view = sf::View(sf::FloatRect({0.0f, 0.0f}, winSize));
-    window.setView(view);
-
+    m_width = m_engine->window().getSize().x;
+    m_height = m_engine->window().getSize().y;
+    m_view = sf::View(sf::FloatRect({0, 0}, {(float)m_width, (float)m_height}));
+    m_engine->window().setView(m_view);
 
     // Set the reference to world origin point. Since we are going to be
     // using a custom grid where the bottom-left corner is (0,0), we set
     // our world origin to x=0, and y=window.y which is the total y size.
-    m_worldOrigin.x = 0;
-    m_worldOrigin.y = m_engine->window().getSize().y;
-
-
+    m_worldOrigin = {0, (float) m_height};
   }
 
   void PlayLevel::onEnd() {
@@ -81,10 +80,6 @@ namespace Scenes {
     sf::RenderWindow &window = m_engine->window();
     window.clear();
 
-    sf::View view = window.getView();
-    view.move({3.0f, 0.0f}); // Remove this, was just for test
-    m_engine->window().setView(view);
-
     if (m_drawGrid)
       drawGrid();
 
@@ -93,13 +88,11 @@ namespace Scenes {
 
   void PlayLevel::drawGrid() {
     sf::RenderWindow &window = m_engine->window();
-    sf::Vector2u winSize = window.getSize();
-    sf::View view = window.getView();
-    sf::Vector2f viewCenter = view.getCenter();
+    sf::Vector2f viewCenter = m_view.getCenter();
     Vec2f viewOrigin;
 
-    viewOrigin.x = viewCenter.x - ((float)winSize.x / 2);
-    viewOrigin.y = viewCenter.y + ((float)winSize.y / 2);
+    viewOrigin.x = viewCenter.x - ((float) m_width / 2);
+    viewOrigin.y = viewCenter.y + ((float) m_height / 2);
     window.clear();
 
     Vec2f gridBlock = gridBlockFromPixel(viewOrigin);

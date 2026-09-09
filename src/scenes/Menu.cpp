@@ -53,6 +53,11 @@ namespace Scenes {
       item.textGfx.setFillColor(m_menuEntryColor);
     }
     m_menuIndex = 0;
+
+    m_width = m_engine->window().getSize().x;
+    m_height = m_engine->window().getSize().y;
+    m_view = sf::View(sf::FloatRect({0, 0}, {(float)m_width, (float)m_height}));
+    m_engine->window().setView(m_view);
   }
 
   // Handler of actions for the scene. This, being an ECS system should be

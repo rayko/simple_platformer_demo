@@ -13,6 +13,7 @@
 #include "Core.hpp"
 #include "EntityManager.hpp"
 #include "Action.hpp"
+#include <SFML/Graphics/View.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <map>
 
@@ -36,6 +37,8 @@ namespace Scenes {
     size_t m_currentFrame = 0;
     size_t m_width;
     size_t m_height;
+
+    sf::View m_view;
 
     void setPaused(bool value);
     // Callback we can define on a scene child to run
