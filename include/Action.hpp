@@ -26,6 +26,7 @@ public:
     ToggleGrid,
     ToggleColliders,
     ToggleTextures,
+    Pause
   };
 
 
