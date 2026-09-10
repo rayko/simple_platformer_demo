@@ -49,6 +49,7 @@ namespace Scenes {
     // coords), and returns the corresponding grid block that containes that pixel.
     Vec2f gridBlockFromPixel(const Vec2f &pos) const;
     void drawGrid();
+    Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);

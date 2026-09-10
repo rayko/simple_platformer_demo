@@ -59,6 +59,8 @@ namespace Scenes {
     logDebug("Loading level...");
     std::string token;
     Vec2f gridPos;
+    Vec2f worldPos;
+    Animation anim;
     std::shared_ptr<Entity> entity;
     std::string animName;
     while (fin >> token) {
@@ -81,16 +83,24 @@ namespace Scenes {
         // Create all tiles
         fin >> animName;
         fin >> gridPos.x >> gridPos.y;
+
+        anim = *m_engine->assetStore().getAnimation(animName);
+        worldPos = initialSpritePosition(gridPos, anim.getSize());
+
         entity = m_entityManager.addEntity("tile");
-        entity->addComponent<CTransform>(gridBlockOrigin(gridPos));
+        entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CAnimation>(animName);
         // TODO Setup collider
       } else if (token == "Dec") {
         // Create all decorations
         fin >> animName;
         fin >> gridPos.x >> gridPos.y;
+
+        anim = *m_engine->assetStore().getAnimation(animName);
+        worldPos = initialSpritePosition(gridPos, anim.getSize());
+
         entity = m_entityManager.addEntity("dec");
-        entity->addComponent<CTransform>(gridBlockOrigin(gridPos));
+        entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CAnimation>(animName);
       } else {
         logWarn("Unrecognized keyword: " + token);
@@ -138,13 +148,11 @@ namespace Scenes {
           anim->update();
         }
       }
-
     }
   }
 
   void PlayLevel::sMovement() {
-
-
+    // TODO
   }
 
   void PlayLevel::sRender() {
@@ -183,6 +191,7 @@ namespace Scenes {
 
     Vec2f gridBlock = gridBlockFromPixel(viewOrigin);
     Vec2f currentGridBlock;
+
     // TODO dynamically place grid based on view size instead of hardcoding
     for (int y = 0; y <= 12; y++)
       for (int x = 0; x <= 20; x++) {
@@ -191,7 +200,7 @@ namespace Scenes {
         pos = gridBlockOrigin(currentGridBlock);
         rect.setPosition(pos.toVector2f());
         blockName.setString(std::format("{}, {}", (int) currentGridBlock.x, (int) currentGridBlock.y));
-        blockName.setPosition(sf::Vector2f(pos.x + 10, pos.y - 20));
+        blockName.setPosition(sf::Vector2f(pos.x + 5, pos.y + 50));
 
         m_engine->window().draw(rect);
         m_engine->window().draw(blockName);
@@ -203,6 +212,7 @@ namespace Scenes {
     Vec2f origin = {0, y};
     origin.x += (m_gridSize.x * gridCords.x);
     origin.y -= (m_gridSize.y * gridCords.y);
+    origin.y -= m_gridSize.y;
     return origin;
   }
 
@@ -212,9 +222,31 @@ namespace Scenes {
 
     int y = std::floor(pos.y) - m_engine->window().getSize().y;
     y -= (y % (int)std::floor(m_gridSize.y));
-    y += m_gridSize.y; // Fix value to target bottom corner instead of top corner
 
-    return Vec2f(x / m_gridSize.x, (y / m_gridSize.y) - 1);
+    return Vec2f(x / m_gridSize.x, (y / m_gridSize.y));
+  }
+
+  // Derives a proper location from a grid coordinate onto
+  // a world coordinate to place a sprite at the desired
+  // grid position, ensuring the bottom of the sprite aligns
+  // with the bottom line of the corresponding grid position.
+  // Sprites bigger than 64 pixels need extra adjustment.
+  // We assume all sprites set their origin at their center here.
+  Vec2f PlayLevel::initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize) {
+    // Grid block origin references top left corner of the block
+    Vec2f worldPos = gridBlockOrigin(gridPos);
+
+    worldPos.x += spriteSize.x / 2; // Offset to the right
+
+    // Sprites are drawn from a point towards bottom-right.
+    // Sprites that are 64 pixels tall need only half-size
+    // on the Y offset. Taller sprites require more logic.
+    if (spriteSize.y > m_gridSize.y) {
+
+    } else {
+      worldPos.y += spriteSize.y / 2; // Offset down
+    }
+    return worldPos;
   }
 
 }
