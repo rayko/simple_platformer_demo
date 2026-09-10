@@ -14,8 +14,11 @@ namespace Scenes {
   }
 
   void PlayLevel::update() {
-    m_view.move({3, 0});
+    m_entityManager.update();
+    // m_view.move({3, 0});
     m_engine->window().setView(m_view);
+
+    sAnimation();
     sRender();
   }
 
@@ -44,7 +47,10 @@ namespace Scenes {
     // Set the reference to world origin point. Since we are going to be
     // using a custom grid where the bottom-left corner is (0,0), we set
     // our world origin to x=0, and y=window.y which is the total y size.
-    m_worldOrigin = {0, (float) m_height};
+    m_worldOrigin = {0, (float)m_height};
+
+    m_entityManager = EntityManager();
+    spawnTestEntities();
   }
 
   void PlayLevel::onEnd() {
@@ -76,9 +82,40 @@ namespace Scenes {
     }
   }
 
+  void PlayLevel::sAnimation() {
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CAnimation>()) {
+        auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
+        if (anim->finished()) {
+          entity->destroy();
+        } else {
+          anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());
+          if (anim->getName() == "AlexRun")
+            logDebug("Updating animation " + anim->str());
+          anim->update();
+        }
+      }
+
+    }
+  }
+
+  void PlayLevel::sMovement() {
+
+
+  }
+
   void PlayLevel::sRender() {
     sf::RenderWindow &window = m_engine->window();
     window.clear();
+
+    if (m_drawTextures) {
+      for (auto entity : m_entityManager.entities()){
+        if (entity->hasComponent<CAnimation>()) {
+          auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
+          window.draw(anim->getSprite());
+        }
+      }
+    }
 
     if (m_drawGrid)
       drawGrid();
@@ -93,7 +130,6 @@ namespace Scenes {
 
     viewOrigin.x = viewCenter.x - ((float) m_width / 2);
     viewOrigin.y = viewCenter.y + ((float) m_height / 2);
-    window.clear();
 
     Vec2f gridBlock = gridBlockFromPixel(viewOrigin);
     // TODO dynamically place grid based on view size instead of hardcoding
@@ -109,7 +145,7 @@ namespace Scenes {
     rect.setSize(m_gridSize.toVector2f());
     rect.setOutlineColor(sf::Color(255, 255, 255, 128));
     rect.setOutlineThickness(-1);
-    rect.setFillColor(sf::Color(0, 0, 0, 0));
+    rect.setFillColor(sf::Color::Transparent);
     rect.setPosition(pos.toVector2f());
 
     const std::string txt = std::format("{}, {}", (int) gridCord.x, (int) gridCord.y);
@@ -137,6 +173,48 @@ namespace Scenes {
     y += m_gridSize.y; // Fix value to target bottom corner instead of top corner
 
     return Vec2f(x / m_gridSize.x, (y / m_gridSize.y) - 1);
+  }
+
+  void PlayLevel::spawnTestEntities() {
+    std::shared_ptr<Entity> entity;
+    Vec2f gridBlock = {0, 0};
+    Vec2f pos;
+
+    entity = m_entityManager.addEntity("tile");
+    gridBlock = {5, 5};
+    pos = gridBlockOrigin(gridBlock);
+    entity->addComponent<CTransform>(pos);
+    entity->addComponent<CAnimation>("TileGnd1");
+
+    entity = m_entityManager.addEntity("tile");
+    gridBlock = {7, 5};
+    pos = gridBlockOrigin(gridBlock);
+    entity->addComponent<CTransform>(pos);
+    entity->addComponent<CAnimation>("AlexRun");
+
+    entity = m_entityManager.addEntity("tile");
+    gridBlock = {9, 5};
+    pos = gridBlockOrigin(gridBlock);
+    entity->addComponent<CTransform>(pos);
+    entity->addComponent<CAnimation>("AlexStand");
+
+    entity = m_entityManager.addEntity("tile");
+    gridBlock = {11, 5};
+    pos = gridBlockOrigin(gridBlock);
+    entity->addComponent<CTransform>(pos);
+    entity->addComponent<CAnimation>("Cloud1");
+
+    entity = m_entityManager.addEntity("tile");
+    gridBlock = {5, 7};
+    pos = gridBlockOrigin(gridBlock);
+    entity->addComponent<CTransform>(pos);
+    entity->addComponent<CAnimation>("ActiveTile1");
+
+    entity = m_entityManager.addEntity("tile");
+    gridBlock = {7, 7};
+    pos = gridBlockOrigin(gridBlock);
+    entity->addComponent<CTransform>(pos);
+    entity->addComponent<CAnimation>("Explosion");
   }
 
 }

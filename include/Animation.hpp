@@ -64,8 +64,9 @@ private:
   std::string m_name;
   std::shared_ptr<sf::Sprite> m_sprite;
   size_t m_frames = 0;
-  size_t m_currentFrame = 0;
+  size_t m_currentFrame = 0; // Our animation's current frame
   size_t m_frameDuration = 0;
+  size_t m_windowFrame = 0; // Count of render frames
 
   // These 2 vectors will land as a IntRect on the sprite,
   // defining the section of the texture for the frame. We

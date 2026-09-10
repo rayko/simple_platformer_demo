@@ -1,4 +1,5 @@
 #include "Animation.hpp"
+#include <iostream>
 
 // Public
 
@@ -25,9 +26,13 @@ void Animation::resetAnimation() {
 }
 
 void Animation::update() {
-  advanceFrame();
-  // TODO
-  // TODO handle timming, where do I get frame count from?
+  if (m_frames > 0) {
+    m_windowFrame++;
+    if (m_windowFrame % m_frameDuration == 0) {
+      std::cout << str() << std::endl;
+      advanceFrame();
+    }
+  }
 }
 
 bool Animation::finished() const { return m_finished; }

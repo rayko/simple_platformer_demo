@@ -33,6 +33,8 @@ namespace Scenes {
     void init() override;
     void sDoAction(const Action &action) override;
     void sRender() override;
+    void sAnimation();
+    void sMovement();
 
     // Parse gridCords custom system onto actual positions on the screen
     // to get the origin point og a single grid block.
@@ -46,6 +48,8 @@ namespace Scenes {
     void drawGridBlock(const Vec2f &gridCord);
     void drawGrid();
 
+    void spawnTestEntities(); // Just for debug, remove when done
+    
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
     void update() override;
