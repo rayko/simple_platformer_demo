@@ -87,11 +87,11 @@ namespace Scenes {
         anim = *m_engine->assetStore().getAnimation(animName);
         worldPos = initialSpritePosition(gridPos, anim.getSize());
 
-        entity = m_entityManager.addEntity("tile");
+        entity = m_entityManager.addEntity("Tile");
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CAnimation>(animName);
         // TODO Setup collider
-      } else if (token == "Dec") {
+      } else if (token == "FrontDec") {
         // Create all decorations
         fin >> animName;
         fin >> gridPos.x >> gridPos.y;
@@ -99,7 +99,18 @@ namespace Scenes {
         anim = *m_engine->assetStore().getAnimation(animName);
         worldPos = initialSpritePosition(gridPos, anim.getSize());
 
-        entity = m_entityManager.addEntity("dec");
+        entity = m_entityManager.addEntity("BackDec");
+        entity->addComponent<CTransform>(worldPos);
+        entity->addComponent<CAnimation>(animName);
+      } else if (token == "BackDec") {
+        // Create all decorations
+        fin >> animName;
+        fin >> gridPos.x >> gridPos.y;
+
+        anim = *m_engine->assetStore().getAnimation(animName);
+        worldPos = initialSpritePosition(gridPos, anim.getSize());
+
+        entity = m_entityManager.addEntity("BackDec");
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CAnimation>(animName);
       } else {
@@ -160,7 +171,26 @@ namespace Scenes {
     window.clear();
 
     if (m_drawTextures) {
-      for (auto entity : m_entityManager.entities()){
+      // Background stuff
+      for (auto entity : m_entityManager.entities("BackDec")) {
+        if (entity->hasComponent<CAnimation>()) {
+          auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
+          window.draw(anim->getSprite());
+        }
+      }
+
+      // Active stuff (ground, blocks, etc)
+      for (auto entity : m_entityManager.entities("Tile")) {
+        if (entity->hasComponent<CAnimation>()) {
+          auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
+          window.draw(anim->getSprite());
+        }
+      }
+
+      // Draw player here, before foreground
+
+      // Foreground stuff
+      for (auto entity : m_entityManager.entities("FrontDec")) {
         if (entity->hasComponent<CAnimation>()) {
           auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
           window.draw(anim->getSprite());
