@@ -60,7 +60,7 @@ namespace Scenes {
     std::string token;
     Vec2f gridPos;
     Vec2f worldPos;
-    Animation anim;
+    std::shared_ptr<Animation> anim;
     std::shared_ptr<Entity> entity;
     std::string animName;
     while (fin >> token) {
@@ -84,35 +84,32 @@ namespace Scenes {
         fin >> animName;
         fin >> gridPos.x >> gridPos.y;
 
-        anim = *m_engine->assetStore().getAnimation(animName);
-        worldPos = initialSpritePosition(gridPos, anim.getSize());
-
         entity = m_entityManager.addEntity("Tile");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation(animName));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
-        entity->addComponent<CAnimation>(animName);
         // TODO Setup collider
       } else if (token == "FrontDec") {
         // Create all decorations
         fin >> animName;
         fin >> gridPos.x >> gridPos.y;
 
-        anim = *m_engine->assetStore().getAnimation(animName);
-        worldPos = initialSpritePosition(gridPos, anim.getSize());
-
-        entity = m_entityManager.addEntity("BackDec");
+        entity = m_entityManager.addEntity("FrontDec");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation(animName));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
-        entity->addComponent<CAnimation>(animName);
       } else if (token == "BackDec") {
         // Create all decorations
         fin >> animName;
         fin >> gridPos.x >> gridPos.y;
 
-        anim = *m_engine->assetStore().getAnimation(animName);
-        worldPos = initialSpritePosition(gridPos, anim.getSize());
-
         entity = m_entityManager.addEntity("BackDec");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation(animName));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
-        entity->addComponent<CAnimation>(animName);
       } else {
         logWarn("Unrecognized keyword: " + token);
       }
@@ -151,7 +148,7 @@ namespace Scenes {
   void PlayLevel::sAnimation() {
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CAnimation>()) {
-        auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
+        auto anim = entity->getComponent<CAnimation>().animation;
         if (anim->finished()) {
           entity->destroy();
         } else {
@@ -174,16 +171,14 @@ namespace Scenes {
       // Background stuff
       for (auto entity : m_entityManager.entities("BackDec")) {
         if (entity->hasComponent<CAnimation>()) {
-          auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
-          window.draw(anim->getSprite());
+          window.draw(entity->getComponent<CAnimation>().animation->getSprite());
         }
       }
 
       // Active stuff (ground, blocks, etc)
       for (auto entity : m_entityManager.entities("Tile")) {
         if (entity->hasComponent<CAnimation>()) {
-          auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
-          window.draw(anim->getSprite());
+          window.draw(entity->getComponent<CAnimation>().animation->getSprite());
         }
       }
 
@@ -192,8 +187,7 @@ namespace Scenes {
       // Foreground stuff
       for (auto entity : m_entityManager.entities("FrontDec")) {
         if (entity->hasComponent<CAnimation>()) {
-          auto anim = m_engine->assetStore().getAnimation(entity->getComponent<CAnimation>().name);
-          window.draw(anim->getSprite());
+          window.draw(entity->getComponent<CAnimation>().animation->getSprite());
         }
       }
     }

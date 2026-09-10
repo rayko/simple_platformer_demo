@@ -28,7 +28,18 @@ std::shared_ptr<Animation> AssetStore::getAnimation(const std::string &name) con
   if (!m_animations.contains(name))
     exitWithError("Queried missing animation " + name);
 
-  return m_animations.at(name);
+  const AnimationData data = m_animations.at(name);
+  std::shared_ptr<sf::Texture> tex = m_textures.at(data.textureName);
+  const Vec2f size(data.width, data.height);
+  std::shared_ptr<Animation> anim = std::make_shared<Animation>(data.name, tex, size);
+  if (data.frames > 1) {
+    anim->setFrameCount(data.frames);
+    anim->setFrameDuration(data.frameDuration);
+    anim->setPlayMode(data.playMode);
+    anim->setLoopMode(data.loopMode);
+  }
+
+  return anim;
 }
 
 
@@ -159,15 +170,14 @@ void AssetStore::loadAnimation(const AnimationData &data) {
   if (!m_textures.contains(data.textureName))
     exitWithError("Animation " + data.name + " points to missing texture " + data.textureName);
 
-  std::shared_ptr<sf::Texture> tex = m_textures[data.textureName];
-  const Vec2f size(data.width, data.height);
-  std::string name = data.name;
-  m_animations[name] = std::make_shared<Animation>(name, *tex, size);
-  if (data.frames > 1) {
-    m_animations[name]->setFrameCount(data.frames);
-    m_animations[name]->setFrameDuration(data.frameDuration);
-    m_animations[name]->setPlayMode(data.playMode);
-    m_animations[name]->setLoopMode(data.loopMode);
-  }
-  // logDebug(m_animations[name]->str());
+  // std::shared_ptr<sf::Texture> tex = m_textures[data.textureName];
+  // const Vec2f size(data.width, data.height);
+  // std::string name = data.name;
+  m_animations[data.name] = data;
+  // if (data.frames > 1) {
+  //   m_animations[name]->setFrameCount(data.frames);
+  //   m_animations[name]->setFrameDuration(data.frameDuration);
+  //   m_animations[name]->setPlayMode(data.playMode);
+  //   m_animations[name]->setLoopMode(data.loopMode);
+  // }
 }

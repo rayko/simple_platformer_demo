@@ -9,7 +9,9 @@
 */
 
 #pragma once
+#include "Animation.hpp"
 #include "Vec2f.hpp"
+#include <memory>
 
 class Component {
 public:
@@ -67,10 +69,10 @@ public:
 
 class CAnimation : public Component {
 public:
-  std::string name = "default";
+  std::shared_ptr<Animation> animation;
 
   CAnimation() {};
-  CAnimation(const std::string &n) : name(n) {};
+  CAnimation(std::shared_ptr<Animation> anim) : animation(anim) {};
 };
 
 class CGravity : public Component {

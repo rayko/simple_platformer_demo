@@ -40,9 +40,7 @@ public:
   // (Bounc with PlayMode::Once will end after 1 bounce)
   enum class LoopMode { Forward, Backward, Bounce };
 
-  Animation() {};
-  // Animation(const std::string &name, const sf::Texture &tex, const Vec2f size);
-  Animation(const std::string &name, const sf::Texture &tex, const Vec2f size);
+  Animation(const std::string &name, const std::shared_ptr<sf::Texture> tex, const Vec2f size);
 
   void update();
   bool finished() const;
@@ -62,7 +60,7 @@ public:
 
 private:
   std::string m_name;
-  std::shared_ptr<sf::Sprite> m_sprite;
+  sf::Sprite m_sprite;
   size_t m_frames = 0;
   size_t m_currentFrame = 0; // Our animation's current frame
   size_t m_frameDuration = 0;

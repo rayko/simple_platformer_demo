@@ -1,19 +1,12 @@
 #include "Animation.hpp"
-#include <iostream>
 
 // Public
 
-// Animation::Animation(const std::string &name, const sf::Texture &tex, const Vec2f size)
-//   : m_animationName(name), m_sprite(tex), m_size(size) {
-//   m_sprite.setTextureRect(sf::IntRect({0, 0}, size.toVector2i()));
-// }
-
-Animation::Animation(const std::string &name, const sf::Texture &tex, const Vec2f size)
-    : m_name(name), m_size(size) {
-  m_sprite = std::make_shared<sf::Sprite>(tex);
-  m_sprite->setPosition(sf::Vector2f(0,0));
-  m_sprite->setTextureRect(sf::IntRect({0, 0}, size.toVector2i()));
-  m_sprite->setOrigin(sf::Vector2f(size.x / 2, size.y / 2));
+Animation::Animation(const std::string &name, std::shared_ptr<sf::Texture> tex, const Vec2f size)
+  : m_name(name), m_size(size), m_sprite(*tex) {
+  m_sprite.setPosition(sf::Vector2f(0,0));
+  m_sprite.setTextureRect(sf::IntRect({0, 0}, size.toVector2i()));
+  m_sprite.setOrigin(sf::Vector2f(size.x / 2, size.y / 2));
 }
 
 void Animation::setPlayMode(PlayMode mode) { m_playMode = mode; }
@@ -39,12 +32,11 @@ void Animation::update() {
 bool Animation::finished() const { return m_finished; }
 const std::string &Animation::getName() const { return m_name; }
 const Vec2f &Animation::getSize() const { return m_size; }
-sf::Sprite &Animation::getSprite() { return *m_sprite; }
+sf::Sprite &Animation::getSprite() { return m_sprite; }
 
 const std::string Animation::str() const {
   std::string obj = "<Animation>";
   obj += " " + m_name + " ";
-  obj += (m_sprite ? "OK " : "NO ");
   obj += "F(" + std::to_string(m_frames) + ") ";
   obj += "C(" + std::to_string(m_currentFrame) + ") ";
   obj += "x " + std::to_string(m_frameDuration) + " ";
@@ -106,5 +98,5 @@ void Animation::advanceFrame() {
   // Move our area within the texture sheet to the
   // current frame to update.
   m_texturePosition.x = 0 + (m_size.x * m_currentFrame);
-  m_sprite->setTextureRect(sf::IntRect(m_texturePosition.toVector2i(), m_size.toVector2i()));
+  m_sprite.setTextureRect(sf::IntRect(m_texturePosition.toVector2i(), m_size.toVector2i()));
 }
