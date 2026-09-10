@@ -48,7 +48,6 @@ namespace Scenes {
     // This function takes an (x,y) coordinate in normal world space (pixel
     // coords), and returns the corresponding grid block that containes that pixel.
     Vec2f gridBlockFromPixel(const Vec2f &pos) const;
-    void drawGridBlock(const Vec2f &gridCord);
     void drawGrid();
 
   public:

@@ -170,33 +170,32 @@ namespace Scenes {
     sf::RenderWindow &window = m_engine->window();
     sf::Vector2f viewCenter = m_view.getCenter();
     Vec2f viewOrigin;
-
-    viewOrigin.x = viewCenter.x - ((float) m_width / 2);
-    viewOrigin.y = viewCenter.y + ((float) m_height / 2);
-
-    Vec2f gridBlock = gridBlockFromPixel(viewOrigin);
-    // TODO dynamically place grid based on view size instead of hardcoding
-    for (int y = 0; y <= 12; y++)
-      for (int x = 0; x <= 20; x++)
-        drawGridBlock(Vec2f{gridBlock.x + x, gridBlock.y + y});
-  }
-
-  // Draws a single grid block of the given grid coordinates in world sapce.
-  void PlayLevel::drawGridBlock(const Vec2f &gridCord) {
-    Vec2f pos = gridBlockOrigin(gridCord);
+    Vec2f pos;
     sf::RectangleShape rect;
     rect.setSize(m_gridSize.toVector2f());
     rect.setOutlineColor(sf::Color(255, 255, 255, 128));
     rect.setOutlineThickness(-1);
     rect.setFillColor(sf::Color::Transparent);
-    rect.setPosition(pos.toVector2f());
+    sf::Text blockName(*m_gridTextFont, "", m_gridFontSize);
 
-    const std::string txt = std::format("{}, {}", (int) gridCord.x, (int) gridCord.y);
-    sf::Text blockName(*m_gridTextFont, txt, m_gridFontSize);
-    blockName.setPosition(sf::Vector2f(pos.x + 10, pos.y - 20));
+    viewOrigin.x = viewCenter.x - ((float) m_width / 2);
+    viewOrigin.y = viewCenter.y + ((float) m_height / 2);
 
-    m_engine->window().draw(rect);
-    m_engine->window().draw(blockName);
+    Vec2f gridBlock = gridBlockFromPixel(viewOrigin);
+    Vec2f currentGridBlock;
+    // TODO dynamically place grid based on view size instead of hardcoding
+    for (int y = 0; y <= 12; y++)
+      for (int x = 0; x <= 20; x++) {
+        currentGridBlock.x = gridBlock.x + x;
+        currentGridBlock.y = gridBlock.y + y;
+        pos = gridBlockOrigin(currentGridBlock);
+        rect.setPosition(pos.toVector2f());
+        blockName.setString(std::format("{}, {}", (int) currentGridBlock.x, (int) currentGridBlock.y));
+        blockName.setPosition(sf::Vector2f(pos.x + 10, pos.y - 20));
+
+        m_engine->window().draw(rect);
+        m_engine->window().draw(blockName);
+      }
   }
 
   Vec2f PlayLevel::gridBlockOrigin(const Vec2f &gridCords) const {
