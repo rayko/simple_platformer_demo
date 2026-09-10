@@ -11,7 +11,9 @@
 Animation::Animation(const std::string &name, const sf::Texture &tex, const Vec2f size)
     : m_name(name), m_size(size) {
   m_sprite = std::make_shared<sf::Sprite>(tex);
+  m_sprite->setPosition(sf::Vector2f(0,0));
   m_sprite->setTextureRect(sf::IntRect({0, 0}, size.toVector2i()));
+  m_sprite->setOrigin(sf::Vector2f(size.x / 2, size.y / 2));
 }
 
 void Animation::setPlayMode(PlayMode mode) { m_playMode = mode; }
