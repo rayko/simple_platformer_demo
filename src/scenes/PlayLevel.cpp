@@ -1,6 +1,7 @@
 #include "scenes/PlayLevel.hpp"
 #include "GameEngine.hpp"
 #include "scenes/Menu.hpp"
+#include <fstream>
 
 namespace Scenes {
   ///// Public
@@ -28,7 +29,6 @@ namespace Scenes {
   ///// Private
 
   void PlayLevel::init() {
-    // TODO
     logInfo("Loading scene");
     m_gridTextFont = m_engine->assetStore().getFont("SimpleFont");
 
@@ -50,7 +50,52 @@ namespace Scenes {
     m_worldOrigin = {0, (float)m_height};
 
     m_entityManager = EntityManager();
-    spawnTestEntities();
+    loadLevel(m_levelPath);
+  }
+
+  void PlayLevel::loadLevel(const std::string &filename) {
+    logInfo("Loading config " + filename);
+    std::ifstream fin = openFile(filename);
+    logDebug("Loading level...");
+    std::string token;
+    Vec2f gridPos;
+    std::shared_ptr<Entity> entity;
+    std::string animName;
+    while (fin >> token) {
+      // Ignore comments
+      if (token.starts_with("#")) {
+        fin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        continue;
+      }
+
+      if (token == "Player"){
+        // Load player attrs
+        fin >> m_playerAttrs.x >> m_playerAttrs.y;   // Grid Position (x,y)
+        fin >> m_playerAttrs.cx >> m_playerAttrs.cy; // Collider size (x,y)
+        fin >> m_playerAttrs.speed;                  // X speed (run/move)
+        fin >> m_playerAttrs.jumpVel;                // Jump speed (Y)
+        fin >> m_playerAttrs.maxSpeed;               // max speed (x or y)
+        fin >> m_playerAttrs.gravity;                // Duh!
+        fin >> m_playerAttrs.weaponName;             // Texture for bullet
+      } else if (token == "Tile") {
+        // Create all tiles
+        fin >> animName;
+        fin >> gridPos.x >> gridPos.y;
+        entity = m_entityManager.addEntity("tile");
+        entity->addComponent<CTransform>(gridBlockOrigin(gridPos));
+        entity->addComponent<CAnimation>(animName);
+        // TODO Setup collider
+      } else if (token == "Dec") {
+        // Create all decorations
+        fin >> animName;
+        fin >> gridPos.x >> gridPos.y;
+        entity = m_entityManager.addEntity("dec");
+        entity->addComponent<CTransform>(gridBlockOrigin(gridPos));
+        entity->addComponent<CAnimation>(animName);
+      } else {
+        logWarn("Unrecognized keyword: " + token);
+      }
+    }
   }
 
   void PlayLevel::onEnd() {
@@ -90,8 +135,6 @@ namespace Scenes {
           entity->destroy();
         } else {
           anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());
-          if (anim->getName() == "AlexRun")
-            logDebug("Updating animation " + anim->str());
           anim->update();
         }
       }
@@ -173,48 +216,6 @@ namespace Scenes {
     y += m_gridSize.y; // Fix value to target bottom corner instead of top corner
 
     return Vec2f(x / m_gridSize.x, (y / m_gridSize.y) - 1);
-  }
-
-  void PlayLevel::spawnTestEntities() {
-    std::shared_ptr<Entity> entity;
-    Vec2f gridBlock = {0, 0};
-    Vec2f pos;
-
-    entity = m_entityManager.addEntity("tile");
-    gridBlock = {5, 5};
-    pos = gridBlockOrigin(gridBlock);
-    entity->addComponent<CTransform>(pos);
-    entity->addComponent<CAnimation>("TileGnd1");
-
-    entity = m_entityManager.addEntity("tile");
-    gridBlock = {7, 5};
-    pos = gridBlockOrigin(gridBlock);
-    entity->addComponent<CTransform>(pos);
-    entity->addComponent<CAnimation>("AlexRun");
-
-    entity = m_entityManager.addEntity("tile");
-    gridBlock = {9, 5};
-    pos = gridBlockOrigin(gridBlock);
-    entity->addComponent<CTransform>(pos);
-    entity->addComponent<CAnimation>("AlexStand");
-
-    entity = m_entityManager.addEntity("tile");
-    gridBlock = {11, 5};
-    pos = gridBlockOrigin(gridBlock);
-    entity->addComponent<CTransform>(pos);
-    entity->addComponent<CAnimation>("Cloud1");
-
-    entity = m_entityManager.addEntity("tile");
-    gridBlock = {5, 7};
-    pos = gridBlockOrigin(gridBlock);
-    entity->addComponent<CTransform>(pos);
-    entity->addComponent<CAnimation>("ActiveTile1");
-
-    entity = m_entityManager.addEntity("tile");
-    gridBlock = {7, 7};
-    pos = gridBlockOrigin(gridBlock);
-    entity->addComponent<CTransform>(pos);
-    entity->addComponent<CAnimation>("Explosion");
   }
 
 }

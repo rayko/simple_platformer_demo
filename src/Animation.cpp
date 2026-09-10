@@ -29,7 +29,6 @@ void Animation::update() {
   if (m_frames > 0) {
     m_windowFrame++;
     if (m_windowFrame % m_frameDuration == 0) {
-      std::cout << str() << std::endl;
       advanceFrame();
     }
   }

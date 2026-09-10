@@ -36,6 +36,9 @@ namespace Scenes {
     void sAnimation();
     void sMovement();
 
+    // Reads level config file to set it up
+    void loadLevel(const std::string &filename);
+
     // Parse gridCords custom system onto actual positions on the screen
     // to get the origin point og a single grid block.
     // Our gridCords are mosty integers like (2,3) and similar. We get
@@ -48,8 +51,6 @@ namespace Scenes {
     void drawGridBlock(const Vec2f &gridCord);
     void drawGrid();
 
-    void spawnTestEntities(); // Just for debug, remove when done
-    
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
     void update() override;

@@ -45,9 +45,8 @@ namespace Scenes {
     m_titleGfx = std::make_shared<sf::Text>(sf::Text(*font, "Simple Platformer Demo", m_titleCharSize));
     m_titleGfx->setFillColor(m_titleColor);
 
-    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Entry 1", m_menuEntryCharSize), "entry1"));
-    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Entry 2", m_menuEntryCharSize), "entry2"));
-    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Entry 3", m_menuEntryCharSize), "entry3"));
+    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Sprite Test", m_menuEntryCharSize), "test1"));
+    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Level 1", m_menuEntryCharSize), "level1"));
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Exit", m_menuEntryCharSize), "exit"));
     for (MenuEntry item : m_menuEntries) {
       item.textGfx.setFillColor(m_menuEntryColor);
@@ -136,8 +135,8 @@ namespace Scenes {
       onEnd();
       return;
     }
-    if (menuName == "entry1") {
-      m_engine->changeScene("Level1", std::make_shared<PlayLevel>(m_engine, "level1.txt"));
+    if (menuName == "test1") {
+      m_engine->changeScene("test1", std::make_shared<PlayLevel>(m_engine, "test_level.txt"));
       return;
     }
   }
