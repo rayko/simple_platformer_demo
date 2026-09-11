@@ -55,6 +55,8 @@ namespace Scenes {
     void drawGrid();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
+    void spawnPlayer(const Vec2f &gridBlock);
+
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
     void update() override;

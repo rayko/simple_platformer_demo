@@ -51,6 +51,7 @@ namespace Scenes {
 
     m_entityManager = EntityManager();
     loadLevel(m_levelPath);
+    spawnPlayer(Vec2f(m_playerAttrs.x, m_playerAttrs.y));
   }
 
   void PlayLevel::loadLevel(const std::string &filename) {
@@ -122,6 +123,18 @@ namespace Scenes {
         logWarn("Unrecognized keyword: " + token);
       }
     }
+  }
+
+  void PlayLevel::spawnPlayer(const Vec2f &gridBlock) {
+    m_player = m_entityManager.addEntity("BackDec");
+    m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexAir"));
+    auto anim = m_player->getComponent<CAnimation>().animation;
+    m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
+    // TODOS
+    // Collider
+    // Input
+    // State
+    // Gravity
   }
 
   void PlayLevel::onEnd() {
