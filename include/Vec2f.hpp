@@ -39,6 +39,9 @@ class Vec2f {
   // Normalizes our vector (changes values)
   void normalize();
 
+  // Caps any of the components of the vector to maxValue
+  void cap(float maxValue);
+
   // Returns the angle in degress of the vector
   float angle() const;
 
