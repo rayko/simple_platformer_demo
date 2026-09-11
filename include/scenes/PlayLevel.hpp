@@ -29,6 +29,10 @@ namespace Scenes {
     int m_gridFontSize = 12;
     Vec2f m_worldOrigin; // Reference to where grid (0,0) should be
 
+    sf::Color m_bgColor = {128, 128, 128, 255};
+    sf::Color m_bgPauseColor = {64, 64, 64, 128};
+
+
     void onEnd() override;
     void init() override;
     void sDoAction(const Action &action) override;

@@ -63,6 +63,7 @@ namespace Scenes {
     std::shared_ptr<Animation> anim;
     std::shared_ptr<Entity> entity;
     std::string animName;
+    int value;
     while (fin >> token) {
       // Ignore comments
       if (token.starts_with("#")) {
@@ -110,6 +111,13 @@ namespace Scenes {
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
+      } else if (token == "BackgroundColor") {
+        fin >> value;
+        m_bgColor.r = value;
+        fin >> value;
+        m_bgColor.g = value;
+        fin >> value;
+        m_bgColor.b = value;
       } else {
         logWarn("Unrecognized keyword: " + token);
       }
@@ -165,7 +173,7 @@ namespace Scenes {
 
   void PlayLevel::sRender() {
     sf::RenderWindow &window = m_engine->window();
-    window.clear(sf::Color(152, 62, 1));
+    window.clear(m_bgColor);
 
     if (m_drawTextures) {
       // Background stuff
