@@ -165,7 +165,7 @@ namespace Scenes {
 
   void PlayLevel::sRender() {
     sf::RenderWindow &window = m_engine->window();
-    window.clear();
+    window.clear(sf::Color(152, 62, 1));
 
     if (m_drawTextures) {
       // Background stuff
