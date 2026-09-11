@@ -139,5 +139,10 @@ namespace Scenes {
       m_engine->changeScene("test1", std::make_shared<PlayLevel>(m_engine, "test_level.txt"));
       return;
     }
+
+    if (menuName == "level1") {
+      m_engine->changeScene("level1", std::make_shared<PlayLevel>(m_engine, "level1.txt"));
+      return;
+    }
   }
 }
