@@ -243,6 +243,9 @@ namespace Scenes {
       if (entity->hasComponent<CTransform>()) {
         entity->getComponent<CTransform>().prevPos = entity->getComponent<CTransform>().pos;
         entity->getComponent<CTransform>().pos += entity->getComponent<CTransform>().vel;
+        if (entity->hasComponent<CGravity>()){
+          entity->getComponent<CTransform>().vel.y += m_playerAttrs.gravity;
+        }
         entity->getComponent<CTransform>().vel.cap(m_playerAttrs.maxSpeed);
       }
       if (entity->hasComponent<CAnimation>()){
