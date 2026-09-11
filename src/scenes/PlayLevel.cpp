@@ -19,6 +19,7 @@ namespace Scenes {
     // m_view.move({3, 0});
     m_engine->window().setView(m_view);
 
+    sMovement();
     sAnimation();
     sRender();
   }
@@ -37,7 +38,13 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::T, Action::Name::ToggleTextures);
     registerKeyboardAction(sf::Keyboard::Scancode::C, Action::Name::ToggleColliders);
     registerKeyboardAction(sf::Keyboard::Scancode::Escape, Action::Name::Escape);
-    registerKeyboardAction(sf::Keyboard::Scancode::P, Action::Name::Escape);
+    registerKeyboardAction(sf::Keyboard::Scancode::P, Action::Name::Pause);
+
+    registerKeyboardAction(sf::Keyboard::Scancode::W, Action::Name::Up);
+    registerKeyboardAction(sf::Keyboard::Scancode::S, Action::Name::Down);
+    registerKeyboardAction(sf::Keyboard::Scancode::A, Action::Name::Left);
+    registerKeyboardAction(sf::Keyboard::Scancode::D, Action::Name::Right);
+    registerKeyboardAction(sf::Keyboard::Scancode::Space, Action::Name::Jump);
 
     m_width = m_engine->window().getSize().x;
     m_height = m_engine->window().getSize().y;
@@ -131,11 +138,10 @@ namespace Scenes {
     auto anim = m_player->getComponent<CAnimation>().animation;
     m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
     // TODOS
-    // Collider
     m_player->addComponent<CBoxCollider>(Vec2f(m_playerAttrs.cx, m_playerAttrs.cy));
-    // Input
+    m_player->addComponent<CInput>();
     // State
-    // Gravity
+    m_player->addComponent<CGravity>(m_playerAttrs.gravity);
   }
 
   void PlayLevel::onEnd() {
@@ -158,12 +164,54 @@ namespace Scenes {
       case (Action::Name::Escape):
         m_engine->changeScene("MainMenu", std::make_shared<Menu>(m_engine));
         break;
+      case (Action::Name::Up):
+        if (m_player)
+          m_player->getComponent<CInput>().up = true;
+        break;
+      case (Action::Name::Down):
+        if (m_player)
+          m_player->getComponent<CInput>().down = true;
+        break;
+      case (Action::Name::Left):
+        if (m_player)
+          m_player->getComponent<CInput>().left = true;
+        break;
+      case (Action::Name::Right):
+        if (m_player)
+          m_player->getComponent<CInput>().right = true;
+        break;
+      case (Action::Name::Jump):
+        if (m_player)
+          m_player->getComponent<CInput>().jump = true;
+        break;
       default: break;
       }
     }
 
     if (action.ending()) {
-
+      switch (action.name()) {
+      case (Action::Name::Up):
+        if (m_player)
+          m_player->getComponent<CInput>().up = false;
+        break;
+      case (Action::Name::Down):
+        if (m_player)
+          m_player->getComponent<CInput>().down = false;
+        break;
+      case (Action::Name::Left):
+        if (m_player)
+          m_player->getComponent<CInput>().left = false;
+        break;
+      case (Action::Name::Right):
+        if (m_player)
+          m_player->getComponent<CInput>().right = false;
+        break;
+      case (Action::Name::Jump):
+        if (m_player)
+          m_player->getComponent<CInput>().jump = false;
+        break;
+      default: break;
+      }
     }
   }
 
@@ -174,7 +222,6 @@ namespace Scenes {
         if (anim->finished()) {
           entity->destroy();
         } else {
-          anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());
           anim->update();
         }
       }
@@ -182,7 +229,27 @@ namespace Scenes {
   }
 
   void PlayLevel::sMovement() {
-    // TODO
+    if (m_player) {
+      if (m_player->getComponent<CInput>().left){
+        m_player->getComponent<CTransform>().vel.x = -m_playerAttrs.speed;
+      } else if (m_player->getComponent<CInput>().right) {
+        m_player->getComponent<CTransform>().vel.x = m_playerAttrs.speed;
+      } else {
+        m_player->getComponent<CTransform>().vel.x = 0;
+      }
+    }
+
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CTransform>()) {
+        entity->getComponent<CTransform>().prevPos = entity->getComponent<CTransform>().pos;
+        entity->getComponent<CTransform>().pos += entity->getComponent<CTransform>().vel;
+        entity->getComponent<CTransform>().vel.cap(m_playerAttrs.maxSpeed);
+      }
+      if (entity->hasComponent<CAnimation>()){
+        entity->getComponent<CAnimation>().animation->getSprite().setPosition(
+            entity->getComponent<CTransform>().pos.toVector2f());
+      }
+    }
   }
 
   void PlayLevel::sRender() {
