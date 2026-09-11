@@ -53,6 +53,7 @@ namespace Scenes {
     // coords), and returns the corresponding grid block that containes that pixel.
     Vec2f gridBlockFromPixel(const Vec2f &pos) const;
     void drawGrid();
+    void drawColliders();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
     void spawnPlayer(const Vec2f &gridBlock);

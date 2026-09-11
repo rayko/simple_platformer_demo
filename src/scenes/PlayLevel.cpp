@@ -91,7 +91,7 @@ namespace Scenes {
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
-        // TODO Setup collider
+        entity->addComponent<CBoxCollider>(Vec2f(64,64));
       } else if (token == "FrontDec") {
         // Create all decorations
         fin >> animName;
@@ -132,6 +132,7 @@ namespace Scenes {
     m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
     // TODOS
     // Collider
+    m_player->addComponent<CBoxCollider>(Vec2f(m_playerAttrs.cx, m_playerAttrs.cy));
     // Input
     // State
     // Gravity
@@ -216,7 +217,31 @@ namespace Scenes {
     if (m_drawGrid)
       drawGrid();
 
+    if (m_drawColliders)
+      drawColliders();
+
     window.display();
+  }
+
+  void PlayLevel::drawColliders() {
+    sf::RenderWindow &window = m_engine->window();
+    const sf::Color lineColor = {255, 0, 0, 64};
+    const sf::Color fillColor = {255, 0, 0, 32};
+    Vec2f colPos;
+    sf::RectangleShape rect;
+    rect.setOutlineColor(lineColor);
+    rect.setFillColor(fillColor);
+    rect.setOutlineThickness(-1);
+    for (auto entity : m_entityManager.entities()){
+      if (entity->hasComponent<CBoxCollider>() && entity->hasComponent<CTransform>()) {
+        colPos = entity->getComponent<CTransform>().pos;
+        colPos.x -= entity->getComponent<CBoxCollider>().size.x / 2;
+        colPos.y -= entity->getComponent<CBoxCollider>().size.y / 2;
+        rect.setPosition(colPos.toVector2f());
+        rect.setSize(entity->getComponent<CBoxCollider>().size.toVector2f());
+        window.draw(rect);
+      }
+    }
   }
 
   void PlayLevel::drawGrid() {
