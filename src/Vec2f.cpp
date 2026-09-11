@@ -64,10 +64,10 @@ void Vec2f::normalize() {
 
 void Vec2f::cap(float maxValue) {
   if (x > maxValue)      { x = maxValue; }
-  else if (x < maxValue) { x = -maxValue; }
+  else if (x < -maxValue) { x = -maxValue; }
 
   if (y > maxValue)      { y = maxValue; }
-  else if (y < maxValue) { y = -maxValue; }
+  else if (y < -maxValue) { y = -maxValue; }
 }
 
 Vec2f Vec2f::normal() const {
