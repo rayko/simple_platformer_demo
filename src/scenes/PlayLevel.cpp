@@ -133,11 +133,10 @@ namespace Scenes {
   }
 
   void PlayLevel::spawnPlayer(const Vec2f &gridBlock) {
-    m_player = m_entityManager.addEntity("BackDec");
+    m_player = m_entityManager.addEntity("Player");
     m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexAir"));
     auto anim = m_player->getComponent<CAnimation>().animation;
     m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
-    // TODOS
     m_player->addComponent<CBoxCollider>(Vec2f(m_playerAttrs.cx, m_playerAttrs.cy));
     m_player->addComponent<CInput>();
     // State
@@ -244,7 +243,7 @@ namespace Scenes {
         entity->getComponent<CTransform>().prevPos = entity->getComponent<CTransform>().pos;
         entity->getComponent<CTransform>().pos += entity->getComponent<CTransform>().vel;
         if (entity->hasComponent<CGravity>()){
-          entity->getComponent<CTransform>().vel.y += m_playerAttrs.gravity;
+          // entity->getComponent<CTransform>().vel.y += m_playerAttrs.gravity;
         }
         entity->getComponent<CTransform>().vel.cap(m_playerAttrs.maxSpeed);
       }
@@ -275,6 +274,7 @@ namespace Scenes {
       }
 
       // Draw player here, before foreground
+      window.draw(m_player->getComponent<CAnimation>().animation->getSprite());
 
       // Foreground stuff
       for (auto entity : m_entityManager.entities("FrontDec")) {
@@ -304,9 +304,7 @@ namespace Scenes {
     rect.setOutlineThickness(-1);
     for (auto entity : m_entityManager.entities()){
       if (entity->hasComponent<CBoxCollider>() && entity->hasComponent<CTransform>()) {
-        colPos = entity->getComponent<CTransform>().pos;
-        colPos.x -= entity->getComponent<CBoxCollider>().size.x / 2;
-        colPos.y -= entity->getComponent<CBoxCollider>().size.y / 2;
+        colPos = entity->getComponent<CTransform>().pos - entity->getComponent<CBoxCollider>().offset;
         rect.setPosition(colPos.toVector2f());
         rect.setSize(entity->getComponent<CBoxCollider>().size.toVector2f());
         window.draw(rect);

@@ -62,9 +62,12 @@ public:
 class CBoxCollider : public Component {
 public:
   Vec2f size;
+  Vec2f halfSize;
+  Vec2f offset = {0.0f ,0.0f};
 
   CBoxCollider() {};
-  CBoxCollider(const Vec2f &size) : size(size) {};
+  CBoxCollider(const Vec2f &size) : size(size), halfSize(size / 2), offset(size / 2) {};
+  CBoxCollider(const Vec2f &size, const Vec2f &offset) : size(size), halfSize(size / 2), offset(offset) {};
 };
 
 class CAnimation : public Component {
