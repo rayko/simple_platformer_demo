@@ -188,6 +188,7 @@ namespace Scenes {
             m_player->getComponent<CTransform>().prevPos.y -= overlap.y;
           } else if (m_player->getComponent<CTransform>().vel.y < 0){
             // from bottom
+            m_player->getComponent<CTransform>().vel.y = 0;
             m_player->getComponent<CTransform>().pos.y += overlap.y;
             m_player->getComponent<CTransform>().prevPos.y += overlap.y;
           }
