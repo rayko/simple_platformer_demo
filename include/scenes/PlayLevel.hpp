@@ -5,6 +5,7 @@
 */
 
 #pragma once
+#include "Physics.hpp"
 #include "scenes/Base.hpp"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -23,6 +24,7 @@ namespace Scenes {
     bool m_drawTextures = true;
     bool m_drawColliders = false;
     bool m_drawGrid = false;
+    bool m_drawDebugPanel = false;
     const Vec2f m_gridSize = {64, 64};
 
     std::shared_ptr<sf::Font> m_gridTextFont;
@@ -32,6 +34,7 @@ namespace Scenes {
     sf::Color m_bgColor = {128, 128, 128, 255};
     sf::Color m_bgPauseColor = {64, 64, 64, 128};
 
+    Physics m_physics;
 
     void onEnd() override;
     void init() override;
@@ -39,6 +42,7 @@ namespace Scenes {
     void sRender() override;
     void sAnimation();
     void sMovement();
+    void sCollisions();
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
@@ -54,6 +58,7 @@ namespace Scenes {
     Vec2f gridBlockFromPixel(const Vec2f &pos) const;
     void drawGrid();
     void drawColliders();
+    void drawDebugPanel();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
     void spawnPlayer(const Vec2f &gridBlock);

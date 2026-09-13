@@ -27,6 +27,7 @@ const std::string Action::strName() const {
   if (m_name == Name::ToggleColliders) { return "TOGGLE_COLLIDERS"; }
   if (m_name == Name::ToggleTextures)  { return "TOGGLE_TEXTURES"; }
   if (m_name == Name::Pause)           { return "PAUSE"; }
+  if (m_name == Name::ToggleInfo)      { return "TOGGLE_INFO"; }
 
   return "UNDEFINED";
 }

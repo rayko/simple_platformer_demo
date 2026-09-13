@@ -11,6 +11,7 @@ namespace Scenes {
 
     m_logOrigin = "Scenes::PlayLevel (" + m_levelPath + ")";
     setLogger(engine->getLogger());
+    m_physics = Physics();
     init();
   }
 
@@ -20,6 +21,7 @@ namespace Scenes {
     m_engine->window().setView(m_view);
 
     sMovement();
+    sCollisions();
     sAnimation();
     sRender();
   }
@@ -39,6 +41,7 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::C, Action::Name::ToggleColliders);
     registerKeyboardAction(sf::Keyboard::Scancode::Escape, Action::Name::Escape);
     registerKeyboardAction(sf::Keyboard::Scancode::P, Action::Name::Pause);
+    registerKeyboardAction(sf::Keyboard::Scancode::Z, Action::Name::ToggleInfo);
 
     registerKeyboardAction(sf::Keyboard::Scancode::W, Action::Name::Up);
     registerKeyboardAction(sf::Keyboard::Scancode::S, Action::Name::Down);
@@ -148,9 +151,56 @@ namespace Scenes {
     m_finished = true;
   }
 
+  void PlayLevel::sCollisions() {
+    Vec2f overlap = {-1, -1};
+    Vec2f prevOverlap = {-1, -1};
+    m_player->getComponent<CBoxCollider>().colliding = false;
+
+    // Player vs tiles
+    if (m_player->hasComponent<CBoxCollider>())
+      for (auto tile : m_entityManager.entities("Tile")) {
+        if (!tile->hasComponent<CBoxCollider>()) { continue; }
+        tile->getComponent<CBoxCollider>().colliding = false;
+        overlap = m_physics.getOverlap(m_player, tile);
+        if (overlap.x <= 0 || overlap.y <= 0) { continue; }
+        tile->getComponent<CBoxCollider>().colliding = true;
+        m_player->getComponent<CBoxCollider>().colliding = true;
+        prevOverlap = m_physics.getPreviousOverlap(m_player, tile);
+        if (overlap.x > 0 && prevOverlap.y > 0) {
+          // horizontal
+          if (m_player->getComponent<CTransform>().vel.x > 0) {
+            // from left
+            m_player->getComponent<CTransform>().pos.x -= overlap.x;
+            m_player->getComponent<CTransform>().prevPos.x -= overlap.x;
+          } else if (m_player->getComponent<CTransform>().vel.x < 0){
+            // from right
+            m_player->getComponent<CTransform>().pos.x += overlap.x;
+            m_player->getComponent<CTransform>().prevPos.x += overlap.x;
+          }
+        }
+
+        if (overlap.y > 0 && prevOverlap.x > 0) {
+          // Vertical
+          if (m_player->getComponent<CTransform>().vel.y > 0) {
+            // from top
+            m_player->getComponent<CTransform>().pos.y -= overlap.y;
+            m_player->getComponent<CTransform>().prevPos.y -= overlap.y;
+          } else if (m_player->getComponent<CTransform>().vel.y < 0){
+            // from bottom
+            m_player->getComponent<CTransform>().pos.y += overlap.y;
+            m_player->getComponent<CTransform>().prevPos.y += overlap.y;
+          }
+        }
+      }
+  }
+
+
   void PlayLevel::sDoAction(const Action &action) {
     if (action.starting()) {
-      switch(action.name()) {
+      switch (action.name()) {
+      case (Action::Name::ToggleInfo):
+        m_drawDebugPanel = !m_drawDebugPanel;
+        break;
       case (Action::Name::ToggleGrid):
         m_drawGrid = !m_drawGrid;
         break;
@@ -221,6 +271,7 @@ namespace Scenes {
         if (anim->finished()) {
           entity->destroy();
         } else {
+          anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());
           anim->update();
         }
       }
@@ -243,13 +294,9 @@ namespace Scenes {
         entity->getComponent<CTransform>().prevPos = entity->getComponent<CTransform>().pos;
         entity->getComponent<CTransform>().pos += entity->getComponent<CTransform>().vel;
         if (entity->hasComponent<CGravity>()){
-          // entity->getComponent<CTransform>().vel.y += m_playerAttrs.gravity;
+          entity->getComponent<CTransform>().vel.y += m_playerAttrs.gravity;
         }
         entity->getComponent<CTransform>().vel.cap(m_playerAttrs.maxSpeed);
-      }
-      if (entity->hasComponent<CAnimation>()){
-        entity->getComponent<CAnimation>().animation->getSprite().setPosition(
-            entity->getComponent<CTransform>().pos.toVector2f());
       }
     }
   }
@@ -290,20 +337,63 @@ namespace Scenes {
     if (m_drawColliders)
       drawColliders();
 
+    if (m_drawDebugPanel)
+      drawDebugPanel();
+
     window.display();
+  }
+
+  void PlayLevel::drawDebugPanel() {
+    sf::RenderWindow &window = m_engine->window();
+    sf::View view = window.getView();
+    Vec2f pos = {view.getCenter().x - (float) m_width / 2,  view.getCenter().y - (float) m_height / 2};
+    const sf::Color lineColor = {128, 128, 128, 200};
+    const sf::Color fillColor = {64, 64, 64, 200};
+    sf::Text text(*m_gridTextFont, "", 15);
+    std::string panelText;
+    sf::RectangleShape rect;
+    rect.setOutlineColor(lineColor);
+    rect.setFillColor(fillColor);
+    rect.setOutlineThickness(-1);
+
+    auto transform = m_player->getComponent<CTransform>();
+    auto anim = m_player->getComponent<CAnimation>().animation;
+    auto collider = m_player->getComponent<CBoxCollider>();
+
+    panelText += "Player\n";
+    panelText += "  Position: " + transform.pos.str() + "\n";
+    panelText += "  Previous: " + transform.prevPos.str() + "\n";
+    panelText += "  Velocity: " + transform.vel.str() + "\n";
+    panelText += "  Center: " + Vec2f(anim->getSprite().getOrigin().x, anim->getSprite().getOrigin().y).str() + "\n";
+    panelText += "  Collider Size: " + collider.size.str() + "\n";
+    panelText += "  Collider Size / 2: " + collider.halfSize.str() + "\n";
+    panelText += "  Collider Offset: " + collider.offset.str() + "\n";
+
+    text.setString(panelText);
+    text.setLineSpacing(1.8f);
+    rect.setPosition(sf::Vector2f(pos.x + 10, pos.y + 10));
+    rect.setSize(sf::Vector2f(text.getLocalBounds().size.x + 10, text.getLocalBounds().size.y + 10));
+    text.setPosition(sf::Vector2f(pos.x + 15, pos.y + 15));
+    window.draw(rect);
+    window.draw(text);
   }
 
   void PlayLevel::drawColliders() {
     sf::RenderWindow &window = m_engine->window();
     const sf::Color lineColor = {255, 0, 0, 64};
-    const sf::Color fillColor = {255, 0, 0, 32};
+    const sf::Color innactiveFillColor = {0, 255, 0, 32};
+    const sf::Color activeFillColor = {255, 0, 0, 32};
     Vec2f colPos;
     sf::RectangleShape rect;
     rect.setOutlineColor(lineColor);
-    rect.setFillColor(fillColor);
     rect.setOutlineThickness(-1);
     for (auto entity : m_entityManager.entities()){
       if (entity->hasComponent<CBoxCollider>() && entity->hasComponent<CTransform>()) {
+        if (entity->getComponent<CBoxCollider>().colliding) {
+          rect.setFillColor(activeFillColor);
+        } else {
+          rect.setFillColor(innactiveFillColor);
+        }
         colPos = entity->getComponent<CTransform>().pos - entity->getComponent<CBoxCollider>().offset;
         rect.setPosition(colPos.toVector2f());
         rect.setSize(entity->getComponent<CBoxCollider>().size.toVector2f());

@@ -63,7 +63,8 @@ class CBoxCollider : public Component {
 public:
   Vec2f size;
   Vec2f halfSize;
-  Vec2f offset = {0.0f ,0.0f};
+  Vec2f offset = {0.0f, 0.0f};
+  bool colliding = false;
 
   CBoxCollider() {};
   CBoxCollider(const Vec2f &size) : size(size), halfSize(size / 2), offset(size / 2) {};
