@@ -2,6 +2,7 @@
 #include "GameEngine.hpp"
 #include "scenes/Menu.hpp"
 #include <fstream>
+#include <cmath>
 
 namespace Scenes {
   ///// Public
@@ -17,8 +18,6 @@ namespace Scenes {
 
   void PlayLevel::update() {
     m_entityManager.update();
-    // m_view.move({3, 0});
-    m_engine->window().setView(m_view);
 
     sMovement();
     sCollisions();
@@ -367,6 +366,17 @@ namespace Scenes {
 
   void PlayLevel::sRender() {
     sf::RenderWindow &window = m_engine->window();
+
+    if (m_player) {
+      auto &pTransform = m_player->getComponent<CTransform>();
+      float viewX = std::max(m_width / 2.0f, pTransform.pos.x);
+      float viewY = std::min(m_height / 2.0f, pTransform.pos.y);
+      m_view.setCenter(sf::Vector2f(viewX, viewY));
+    }
+
+    m_engine->window().setView(m_view);
+
+
     window.clear(m_bgColor);
 
     if (m_drawTextures) {
