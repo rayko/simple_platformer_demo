@@ -53,6 +53,7 @@ public:
   bool down = false;
   bool right = false;
   bool left = false;
+  bool prevJump = false; // Just to detect switching states with jump
   bool jump = false;
   bool shoot = false;
 

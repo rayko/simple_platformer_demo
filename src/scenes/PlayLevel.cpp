@@ -186,7 +186,6 @@ namespace Scenes {
             m_player->getComponent<CTransform>().vel.y = 0;
             m_player->getComponent<CTransform>().pos.y -= overlap.y;
             m_player->getComponent<CTransform>().prevPos.y -= overlap.y;
-            m_playerJumping = false;
           } else if (m_player->getComponent<CTransform>().vel.y < 0){
             // from bottom
             m_player->getComponent<CTransform>().pos.y += overlap.y;
@@ -233,6 +232,7 @@ namespace Scenes {
         break;
       case (Action::Name::Jump):
         if (m_player)
+          m_player->getComponent<CInput>().prevJump = m_player->getComponent<CInput>().jump;
           m_player->getComponent<CInput>().jump = true;
         break;
       default: break;
@@ -259,6 +259,7 @@ namespace Scenes {
         break;
       case (Action::Name::Jump):
         if (m_player)
+          m_player->getComponent<CInput>().prevJump = m_player->getComponent<CInput>().jump;
           m_player->getComponent<CInput>().jump = false;
         break;
       default: break;
@@ -291,12 +292,19 @@ namespace Scenes {
       }
     }
 
-    if (m_player->getComponent<CInput>().jump && !m_playerJumping) {
-      m_playerJumping = true;
-      m_player->getComponent<CTransform>().vel.y = -m_playerAttrs.jumpVel;
-    } else if (m_playerJumping && !m_player->getComponent<CInput>().jump) {
-      if (m_player->getComponent<CTransform>().vel.y < 0)
-        m_player->getComponent<CTransform>().vel.y = 0;
+    if (!m_playerJumping) {
+      if (!m_player->getComponent<CInput>().prevJump && m_player->getComponent<CInput>().jump) {
+        // Activate jump
+        m_playerJumping = true;
+        m_player->getComponent<CTransform>().vel.y = -m_playerAttrs.jumpVel;
+      }
+    } else {
+      if (m_player->getComponent<CInput>().prevJump && !m_player->getComponent<CInput>().jump){
+        // Cancel jump (only if we are going up)
+        m_playerJumping = false;
+        if (m_player->getComponent<CTransform>().vel.y < 0)
+          m_player->getComponent<CTransform>().vel.y = 0;
+      }
     }
 
     for (auto entity : m_entityManager.entities()) {
