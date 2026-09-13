@@ -183,8 +183,10 @@ namespace Scenes {
           // Vertical
           if (m_player->getComponent<CTransform>().vel.y > 0) {
             // from top
+            m_player->getComponent<CTransform>().vel.y = 0;
             m_player->getComponent<CTransform>().pos.y -= overlap.y;
             m_player->getComponent<CTransform>().prevPos.y -= overlap.y;
+            m_playerJumping = false;
           } else if (m_player->getComponent<CTransform>().vel.y < 0){
             // from bottom
             m_player->getComponent<CTransform>().pos.y += overlap.y;
@@ -287,6 +289,14 @@ namespace Scenes {
       } else {
         m_player->getComponent<CTransform>().vel.x = 0;
       }
+    }
+
+    if (m_player->getComponent<CInput>().jump && !m_playerJumping) {
+      m_playerJumping = true;
+      m_player->getComponent<CTransform>().vel.y = -m_playerAttrs.jumpVel;
+    } else if (m_playerJumping && !m_player->getComponent<CInput>().jump) {
+      if (m_player->getComponent<CTransform>().vel.y < 0)
+        m_player->getComponent<CTransform>().vel.y = 0;
     }
 
     for (auto entity : m_entityManager.entities()) {

@@ -36,6 +36,9 @@ namespace Scenes {
 
     Physics m_physics;
 
+    bool m_playerJumping = false;
+    bool m_playerOnFloor = false;
+
     void onEnd() override;
     void init() override;
     void sDoAction(const Action &action) override;
