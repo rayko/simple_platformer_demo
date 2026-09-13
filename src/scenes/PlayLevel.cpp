@@ -152,6 +152,9 @@ namespace Scenes {
   }
 
   void PlayLevel::sCollisions() {
+    // TODO Set player states based on colisions
+    // - If not colliding with anythin -> airborne
+    // - If colliding with ground -> standing
     Vec2f overlap = {-1, -1};
     Vec2f prevOverlap = {-1, -1};
     m_player->getComponent<CBoxCollider>().colliding = false;
@@ -269,6 +272,7 @@ namespace Scenes {
   }
 
   void PlayLevel::sAnimation() {
+    // TODO Use CState on player to set animation
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CAnimation>()) {
         auto anim = entity->getComponent<CAnimation>().animation;
@@ -283,6 +287,9 @@ namespace Scenes {
   }
 
   void PlayLevel::sMovement() {
+    // TODO here
+    // - Animation direction set via scale and velocity
+    // - Set states for player to set animations
     if (m_player) {
       if (m_player->getComponent<CInput>().left){
         m_player->getComponent<CTransform>().vel.x = -m_playerAttrs.speed;
