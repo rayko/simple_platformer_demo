@@ -18,6 +18,14 @@ namespace Scenes {
       std::string weaponName;
     };
 
+    // This is just to keep consistency on sketchy state names
+    struct PlayerStates {
+      const std::string stand = "STAND";
+      const std::string run = "RUN";
+      const std::string airborne = "AIRBORNE";
+    };
+    PlayerStates m_playerStates;
+
     std::shared_ptr<Entity> m_player;
     const std::string m_levelPath;
     PlayerAttrs m_playerAttrs;

@@ -142,7 +142,7 @@ namespace Scenes {
     m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
     m_player->addComponent<CBoxCollider>(Vec2f(m_playerAttrs.cx, m_playerAttrs.cy));
     m_player->addComponent<CInput>();
-    // State
+    m_player->addComponent<CState>(m_playerStates.airborne);
     m_player->addComponent<CGravity>(m_playerAttrs.gravity);
   }
 
@@ -189,6 +189,7 @@ namespace Scenes {
             m_player->getComponent<CTransform>().vel.y = 0;
             m_player->getComponent<CTransform>().pos.y -= overlap.y;
             m_player->getComponent<CTransform>().prevPos.y -= overlap.y;
+            m_playerOnFloor = true;
           } else if (m_player->getComponent<CTransform>().vel.y < 0){
             // from bottom
             m_player->getComponent<CTransform>().vel.y = 0;
@@ -198,7 +199,6 @@ namespace Scenes {
         }
       }
   }
-
 
   void PlayLevel::sDoAction(const Action &action) {
     if (action.starting()) {
@@ -272,7 +272,19 @@ namespace Scenes {
   }
 
   void PlayLevel::sAnimation() {
-    // TODO Use CState on player to set animation
+    // Set player animation based on state
+    if (m_player){
+      if (m_player->hasComponent<CState>()) {
+        auto animName = m_player->getComponent<CAnimation>().animation->getName();
+        if (m_player->getComponent<CState>().state == m_playerStates.run && animName != "AlexRun")
+          m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexRun"));
+        if (m_player->getComponent<CState>().state == m_playerStates.stand && animName != "AlexStand")
+          m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexStand"));
+        if (m_player->getComponent<CState>().state == m_playerStates.airborne && animName != "AlexAir")
+          m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexAir"));
+      }
+    }
+
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CAnimation>()) {
         auto anim = entity->getComponent<CAnimation>().animation;
@@ -280,6 +292,7 @@ namespace Scenes {
           entity->destroy();
         } else {
           anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());
+          anim->getSprite().setScale(entity->getComponent<CTransform>().scale.toVector2f());
           anim->update();
         }
       }
@@ -290,30 +303,55 @@ namespace Scenes {
     // TODO here
     // - Animation direction set via scale and velocity
     // - Set states for player to set animations
+    CTransform &pTransform = m_player->getComponent<CTransform>();
+    CInput &pInput = m_player->getComponent<CInput>();
+    CState &pState = m_player->getComponent<CState>();
+
     if (m_player) {
-      if (m_player->getComponent<CInput>().left){
-        m_player->getComponent<CTransform>().vel.x = -m_playerAttrs.speed;
-      } else if (m_player->getComponent<CInput>().right) {
-        m_player->getComponent<CTransform>().vel.x = m_playerAttrs.speed;
+      if (pInput.left){
+        pTransform.vel.x = -m_playerAttrs.speed;
+        pTransform.scale.x = -1;
+      } else if (pInput.right) {
+        pTransform.vel.x = m_playerAttrs.speed;
+        pTransform.scale.x = 1;
       } else {
-        m_player->getComponent<CTransform>().vel.x = 0;
+        pTransform.vel.x = 0;
       }
     }
 
     if (!m_playerJumping) {
-      if (!m_player->getComponent<CInput>().prevJump && m_player->getComponent<CInput>().jump) {
+      if (!pInput.prevJump && pInput.jump) {
         // Activate jump
         m_playerJumping = true;
-        m_player->getComponent<CTransform>().vel.y = -m_playerAttrs.jumpVel;
+        m_playerOnFloor = false;
+        pTransform.vel.y = -m_playerAttrs.jumpVel;
       }
     } else {
-      if (m_player->getComponent<CInput>().prevJump && !m_player->getComponent<CInput>().jump){
+      if (pInput.prevJump && !pInput.jump){
         // Cancel jump (only if we are going up)
         m_playerJumping = false;
-        if (m_player->getComponent<CTransform>().vel.y < 0)
-          m_player->getComponent<CTransform>().vel.y = 0;
+        if (pTransform.vel.y < 0)
+          pTransform.vel.y = 0;
       }
     }
+
+    // Force floor unstick if we are moving substantially on Y
+    // This way, gravity can trigger airborne state (ie: dropping from ledge)
+    if (std::abs(pTransform.vel.y) > 2) {
+      m_playerOnFloor = false;
+    }
+
+    // Rough set of states for animations based on velocity (not the best way)
+    if (pTransform.vel.x == 0 && m_playerOnFloor){
+      pState.state = m_playerStates.stand;
+    } else if (m_playerOnFloor && pTransform.vel.x != 0) {
+      pState.state = m_playerStates.run;
+    } else if (!m_playerOnFloor){
+      pState.state = m_playerStates.airborne;
+    } else if (pTransform.vel.y > 0) {
+      pState.state = m_playerStates.airborne;
+    }
+
 
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CTransform>()) {
