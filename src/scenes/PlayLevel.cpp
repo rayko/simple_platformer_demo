@@ -23,6 +23,7 @@ namespace Scenes {
     sCollisions();
     sAnimation();
     sRender();
+    sLifespan();
   }
 
   void PlayLevel::doAction(const Action &action) { sDoAction(action); }
@@ -150,6 +151,33 @@ namespace Scenes {
     m_finished = true;
   }
 
+  void PlayLevel::sLifespan() {
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CLifespan>()) {
+        if (entity->getComponent<CLifespan>().remaining == 0)
+          entity->destroy();
+        else
+          entity->getComponent<CLifespan>().remaining--;
+      }
+    }
+  }
+
+  void PlayLevel::playerHitsTile(std::shared_ptr<Entity> &tile) {
+    auto anim = tile->getComponent<CAnimation>().animation;
+    if (anim->getName() == "ActiveTile1") {
+      logDebug("Player hit ActiveTile1");
+      tile->addComponent<CAnimation>(m_engine->assetStore().getAnimation("InnactiveTile1"));
+      // Make something else appear on screen above tile
+    } else if (anim->getName() == "WoodBox1") {
+      logDebug("Player hit ActiveTile1");
+      std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
+      fx->addComponent<CTransform>(tile->getComponent<CTransform>().pos);
+      fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Explosion"));
+      fx->addComponent<CLifespan>(60);
+      tile->destroy();
+    }
+  }
+
   void PlayLevel::sCollisions() {
     // TODO Set player states based on colisions
     // - If not colliding with anythin -> airborne
@@ -191,6 +219,7 @@ namespace Scenes {
             m_playerOnFloor = true;
           } else if (m_player->getComponent<CTransform>().vel.y < 0){
             // from bottom
+            playerHitsTile(tile);
             m_player->getComponent<CTransform>().vel.y = 0;
             m_player->getComponent<CTransform>().pos.y += overlap.y;
             m_player->getComponent<CTransform>().prevPos.y += overlap.y;

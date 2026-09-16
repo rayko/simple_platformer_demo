@@ -54,6 +54,7 @@ namespace Scenes {
     void sAnimation();
     void sMovement();
     void sCollisions();
+    void sLifespan();
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
@@ -73,6 +74,7 @@ namespace Scenes {
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
     void spawnPlayer(const Vec2f &gridBlock);
+    void playerHitsTile(std::shared_ptr<Entity> &tile);
 
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
