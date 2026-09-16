@@ -165,11 +165,9 @@ namespace Scenes {
   void PlayLevel::playerHitsTile(std::shared_ptr<Entity> &tile) {
     auto anim = tile->getComponent<CAnimation>().animation;
     if (anim->getName() == "ActiveTile1") {
-      logDebug("Player hit ActiveTile1");
       tile->addComponent<CAnimation>(m_engine->assetStore().getAnimation("InnactiveTile1"));
       // Make something else appear on screen above tile
     } else if (anim->getName() == "WoodBox1") {
-      logDebug("Player hit ActiveTile1");
       std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
       fx->addComponent<CTransform>(tile->getComponent<CTransform>().pos);
       fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Explosion"));

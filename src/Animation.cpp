@@ -21,6 +21,7 @@ void Animation::resetAnimation() {
 }
 
 void Animation::update() {
+  if (m_finished) { return; }
   if (m_frames > 0) {
     m_windowFrame++;
     if (m_windowFrame % m_frameDuration == 0) {
@@ -58,15 +59,19 @@ void Animation::advanceFrame() {
   case (LoopMode::Forward):
     m_currentFrame++;
     if (m_currentFrame >= m_frames) {
-      if (m_playMode == PlayMode::Once) { m_finished = true; }
-      m_currentFrame = 0;
+      if (m_playMode == PlayMode::Once)
+        m_finished = true;
+      else
+        m_currentFrame = 0;
     }
     break;
   case (LoopMode::Backward):
     m_currentFrame--;
     if (m_currentFrame < 0) {
-      if (m_playMode == PlayMode::Once) { m_finished = true; }
-      m_currentFrame = m_frames - 1;
+      if (m_playMode == PlayMode::Once)
+        m_finished = true;
+      else
+        m_currentFrame = m_frames - 1;
     }
     break;
   case (LoopMode::Bounce):
