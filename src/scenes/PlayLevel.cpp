@@ -272,7 +272,6 @@ namespace Scenes {
         break;
       case (Action::Name::Jump):
         if (m_player)
-          m_player->getComponent<CInput>().prevJump = m_player->getComponent<CInput>().jump;
           m_player->getComponent<CInput>().jump = true;
         break;
       default: break;
@@ -299,7 +298,6 @@ namespace Scenes {
         break;
       case (Action::Name::Jump):
         if (m_player)
-          m_player->getComponent<CInput>().prevJump = m_player->getComponent<CInput>().jump;
           m_player->getComponent<CInput>().jump = false;
         break;
       default: break;
@@ -355,7 +353,7 @@ namespace Scenes {
       }
     }
 
-    if (!m_playerJumping) {
+    if (!m_playerJumping && m_playerOnFloor) {
       if (!pInput.prevJump && pInput.jump) {
         // Activate jump
         m_playerJumping = true;
@@ -370,6 +368,8 @@ namespace Scenes {
           pTransform.vel.y = 0;
       }
     }
+
+    pInput.prevJump = pInput.jump;
 
     // Force floor unstick if we are moving substantially on Y
     // This way, gravity can trigger airborne state (ie: dropping from ledge)
