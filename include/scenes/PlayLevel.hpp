@@ -33,6 +33,7 @@ namespace Scenes {
     bool m_drawColliders = false;
     bool m_drawGrid = false;
     bool m_drawDebugPanel = false;
+    bool m_paused = false;    
     const Vec2f m_gridSize = {64, 64};
 
     std::shared_ptr<sf::Font> m_gridTextFont;

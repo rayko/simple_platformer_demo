@@ -19,11 +19,14 @@ namespace Scenes {
   void PlayLevel::update() {
     m_entityManager.update();
 
-    sMovement();
-    sCollisions();
-    sAnimation();
+    if (!m_paused) {
+      sMovement();
+      sCollisions();
+      sLifespan();
+      sAnimation();
+    }
+
     sRender();
-    sLifespan();
   }
 
   void PlayLevel::doAction(const Action &action) { sDoAction(action); }
@@ -229,6 +232,9 @@ namespace Scenes {
   void PlayLevel::sDoAction(const Action &action) {
     if (action.starting()) {
       switch (action.name()) {
+      case (Action::Name::Pause):
+        m_paused = !m_paused;
+        break;
       case (Action::Name::ToggleInfo):
         m_drawDebugPanel = !m_drawDebugPanel;
         break;
@@ -403,7 +409,6 @@ namespace Scenes {
 
     m_engine->window().setView(m_view);
 
-
     window.clear(m_bgColor);
 
     if (m_drawTextures) {
@@ -440,6 +445,15 @@ namespace Scenes {
 
     if (m_drawDebugPanel)
       drawDebugPanel();
+
+    if (m_paused) {
+      sf::Text pausedText(*m_gridTextFont, "PAUSED", 30);
+      sf::Vector2f ctr = m_view.getCenter();
+      ctr.y -= 100;
+      ctr.x -= pausedText.getLocalBounds().size.x / 2;
+      pausedText.setPosition(ctr);
+      window.draw(pausedText);
+    }
 
     window.display();
   }
