@@ -34,6 +34,8 @@ namespace Scenes {
     logDebug("Mapping keyboard");
     registerKeyboardAction(sf::Keyboard::Scancode::W, Action::Name::Up);
     registerKeyboardAction(sf::Keyboard::Scancode::S, Action::Name::Down);
+    registerKeyboardAction(sf::Keyboard::Scancode::Up, Action::Name::Up);
+    registerKeyboardAction(sf::Keyboard::Scancode::Down, Action::Name::Down);
     registerKeyboardAction(sf::Keyboard::Scancode::Enter, Action::Name::Activate);
     registerKeyboardAction(sf::Keyboard::Scancode::Space, Action::Name::Activate);
     registerKeyboardAction(sf::Keyboard::Scancode::Escape, Action::Name::Escape);
