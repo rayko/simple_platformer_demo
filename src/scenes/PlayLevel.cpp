@@ -46,15 +46,15 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::P, Action::Name::Pause);
     registerKeyboardAction(sf::Keyboard::Scancode::Z, Action::Name::ToggleInfo);
 
-    registerKeyboardAction(sf::Keyboard::Scancode::W, Action::Name::Up);
+    registerKeyboardAction(sf::Keyboard::Scancode::W, Action::Name::Jump);
     registerKeyboardAction(sf::Keyboard::Scancode::S, Action::Name::Down);
     registerKeyboardAction(sf::Keyboard::Scancode::A, Action::Name::Left);
     registerKeyboardAction(sf::Keyboard::Scancode::D, Action::Name::Right);
-    registerKeyboardAction(sf::Keyboard::Scancode::Up, Action::Name::Up);
+    registerKeyboardAction(sf::Keyboard::Scancode::Up, Action::Name::Jump);
     registerKeyboardAction(sf::Keyboard::Scancode::Down, Action::Name::Down);
     registerKeyboardAction(sf::Keyboard::Scancode::Left, Action::Name::Left);
     registerKeyboardAction(sf::Keyboard::Scancode::Right, Action::Name::Right);
-    registerKeyboardAction(sf::Keyboard::Scancode::Space, Action::Name::Jump);
+    registerKeyboardAction(sf::Keyboard::Scancode::Space, Action::Name::Shoot);
 
     m_width = m_engine->window().getSize().x;
     m_height = m_engine->window().getSize().y;
