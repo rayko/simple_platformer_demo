@@ -75,6 +75,7 @@ namespace Scenes {
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
     void spawnPlayer(const Vec2f &gridBlock);
+    void spawnBullet(std::shared_ptr<Entity> player);    
     void playerHitsTile(std::shared_ptr<Entity> &tile);
 
   public:

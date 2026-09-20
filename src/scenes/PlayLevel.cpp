@@ -236,6 +236,13 @@ namespace Scenes {
   void PlayLevel::sDoAction(const Action &action) {
     if (action.starting()) {
       switch (action.name()) {
+      case (Action::Name::Shoot):
+        if (m_player) {
+          if (m_player->getComponent<CInput>().canShoot) {
+            m_player->getComponent<CInput>().shoot = true;
+          }
+        }
+        break;
       case (Action::Name::Pause):
         m_paused = !m_paused;
         break;
@@ -280,6 +287,11 @@ namespace Scenes {
 
     if (action.ending()) {
       switch (action.name()) {
+      case (Action::Name::Shoot):
+        if (m_player) {
+          m_player->getComponent<CInput>().shoot = false;
+        }
+        break;
       case (Action::Name::Up):
         if (m_player)
           m_player->getComponent<CInput>().up = false;
@@ -334,14 +346,13 @@ namespace Scenes {
   }
 
   void PlayLevel::sMovement() {
-    // TODO here
-    // - Animation direction set via scale and velocity
-    // - Set states for player to set animations
-    CTransform &pTransform = m_player->getComponent<CTransform>();
-    CInput &pInput = m_player->getComponent<CInput>();
-    CState &pState = m_player->getComponent<CState>();
-
+    // Player logic
     if (m_player) {
+      CTransform &pTransform = m_player->getComponent<CTransform>();
+      CInput &pInput = m_player->getComponent<CInput>();
+      CState &pState = m_player->getComponent<CState>();
+
+      // Left/Right movement
       if (pInput.left){
         pTransform.vel.x = -m_playerAttrs.speed;
         pTransform.scale.x = -1;
@@ -351,43 +362,51 @@ namespace Scenes {
       } else {
         pTransform.vel.x = 0;
       }
-    }
 
-    if (!m_playerJumping && m_playerOnFloor) {
-      if (!pInput.prevJump && pInput.jump) {
-        // Activate jump
-        m_playerJumping = true;
+      // Jumping
+      if (!m_playerJumping && m_playerOnFloor) {
+        if (!pInput.prevJump && pInput.jump) {
+          // Activate jump
+          m_playerJumping = true;
+          m_playerOnFloor = false;
+          pTransform.vel.y = -m_playerAttrs.jumpVel;
+        }
+      } else {
+        if (pInput.prevJump && !pInput.jump){
+          // Cancel jump (only if we are going up)
+          m_playerJumping = false;
+          if (pTransform.vel.y < 0)
+            pTransform.vel.y = 0;
+        }
+      }
+
+      // Shooting
+      if (pInput.canShoot && pInput.shoot) {
+        pInput.canShoot = false;
+        spawnBullet(m_player);
+      } else if (!pInput.canShoot && !pInput.shoot) {
+        pInput.canShoot = true;
+      }
+
+      pInput.prevJump = pInput.jump;
+
+      // Force floor unstick if we are moving substantially on Y
+      // This way, gravity can trigger airborne state (ie: dropping from ledge)
+      if (std::abs(pTransform.vel.y) > 2) {
         m_playerOnFloor = false;
-        pTransform.vel.y = -m_playerAttrs.jumpVel;
       }
-    } else {
-      if (pInput.prevJump && !pInput.jump){
-        // Cancel jump (only if we are going up)
-        m_playerJumping = false;
-        if (pTransform.vel.y < 0)
-          pTransform.vel.y = 0;
+
+      // Rough set of states for animations based on velocity (not the best way)
+      if (pTransform.vel.x == 0 && m_playerOnFloor){
+        pState.state = m_playerStates.stand;
+      } else if (m_playerOnFloor && pTransform.vel.x != 0) {
+        pState.state = m_playerStates.run;
+      } else if (!m_playerOnFloor){
+        pState.state = m_playerStates.airborne;
+      } else if (pTransform.vel.y > 0) {
+        pState.state = m_playerStates.airborne;
       }
     }
-
-    pInput.prevJump = pInput.jump;
-
-    // Force floor unstick if we are moving substantially on Y
-    // This way, gravity can trigger airborne state (ie: dropping from ledge)
-    if (std::abs(pTransform.vel.y) > 2) {
-      m_playerOnFloor = false;
-    }
-
-    // Rough set of states for animations based on velocity (not the best way)
-    if (pTransform.vel.x == 0 && m_playerOnFloor){
-      pState.state = m_playerStates.stand;
-    } else if (m_playerOnFloor && pTransform.vel.x != 0) {
-      pState.state = m_playerStates.run;
-    } else if (!m_playerOnFloor){
-      pState.state = m_playerStates.airborne;
-    } else if (pTransform.vel.y > 0) {
-      pState.state = m_playerStates.airborne;
-    }
-
 
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CTransform>()) {
@@ -399,6 +418,22 @@ namespace Scenes {
         entity->getComponent<CTransform>().vel.cap(m_playerAttrs.maxSpeed);
       }
     }
+  }
+
+  void PlayLevel::spawnBullet(std::shared_ptr<Entity> player) {
+    const auto &pTransform = player->getComponent<CTransform>();
+    int direction = 1;
+    const float speed = m_playerAttrs.maxSpeed / 2;
+    if (pTransform.scale.x > 0) { direction = 1; }
+    else { direction = -1; }
+
+    std::shared_ptr<Entity> bullet = m_entityManager.addEntity("Bullet");
+    bullet->addComponent<CTransform>(pTransform.pos);
+    bullet->getComponent<CTransform>().pos.x += 10 * direction;
+    bullet->getComponent<CTransform>().scale.x = direction;
+    bullet->getComponent<CTransform>().vel = Vec2f(speed * direction, 0);
+    bullet->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Bullet1"));
+    bullet->addComponent<CLifespan>(50);
   }
 
   void PlayLevel::sRender() {
@@ -425,6 +460,12 @@ namespace Scenes {
 
       // Active stuff (ground, blocks, etc)
       for (auto entity : m_entityManager.entities("Tile")) {
+        if (entity->hasComponent<CAnimation>()) {
+          window.draw(entity->getComponent<CAnimation>().animation->getSprite());
+        }
+      }
+
+      for (auto entity : m_entityManager.entities("Bullet")) {
         if (entity->hasComponent<CAnimation>()) {
           window.draw(entity->getComponent<CAnimation>().animation->getSprite());
         }
