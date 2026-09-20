@@ -164,12 +164,10 @@ namespace Scenes {
         entity->getComponent<CLifespan>().remaining--;
 
         if (entity->getComponent<CLifespan>().remaining <= 0) {
-          if (entity->tag() == "Bullet") {
-            auto fx = m_entityManager.addEntity("FrontDec");
-            fx->addComponent<CTransform>(entity->getComponent<CTransform>().pos);
-            fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("BulletExpl1"));
-          }
-          entity->destroy();
+          if (entity->tag() == "Bullet")
+            expireBullet(entity);
+          else
+            entity->destroy();
         }
       }
     }
@@ -179,28 +177,67 @@ namespace Scenes {
     auto anim = tile->getComponent<CAnimation>().animation;
     if (anim->getName() == "ActiveTile1") {
       tile->addComponent<CAnimation>(m_engine->assetStore().getAnimation("InnactiveTile1"));
-      // Make something else appear on screen above tile
+      // TODO Make something else appear on screen above tile
     } else if (anim->getName() == "WoodBox1") {
-      std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
-      fx->addComponent<CTransform>(tile->getComponent<CTransform>().pos);
-      fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Explosion"));
-      tile->destroy();
+      destroyTile(tile);
+    }
+  }
+
+  void PlayLevel::expireBullet(std::shared_ptr<Entity> &bullet) {
+    std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
+    fx->addComponent<CTransform>(bullet->getComponent<CTransform>().pos);
+    fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("BulletExpl1"));
+    bullet->destroy();
+  }
+
+  void PlayLevel::destroyBullet(std::shared_ptr<Entity> &bullet, int direction) {
+    std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
+    fx->addComponent<CTransform>(bullet->getComponent<CTransform>().pos);
+    fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("BulletHit1"));
+    fx->getComponent<CTransform>().scale.x = direction;
+    bullet->destroy();
+  }
+
+  void PlayLevel::destroyTile(std::shared_ptr<Entity> &tile) {
+    std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
+    fx->addComponent<CTransform>(tile->getComponent<CTransform>().pos);
+    fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Explosion"));
+    tile->destroy();
+  }
+
+
+  void PlayLevel::checkBulletCollisions(){
+    Vec2f overlap = {-1, -1};
+    Vec2f prevOverlap = {-1, -1};
+    for (auto bullet : m_entityManager.entities("Bullet")){
+      for (auto tile : m_entityManager.entities("Tile")) {
+        if (!tile->hasComponent<CBoxCollider>()) { continue; }
+        overlap = m_physics.getOverlap(bullet, tile);
+        if (overlap.x <= 0 || overlap.y <= 0) { continue; }
+        prevOverlap = m_physics.getPreviousOverlap(bullet, tile);
+        if (overlap.x > 0 && prevOverlap.y > 0) {
+          // Horizontal
+          if (bullet->getComponent<CTransform>().vel.x > 0) {
+            // From left
+            destroyBullet(bullet, 1);
+          } else if (bullet->getComponent<CTransform>().vel.x < 0) {
+            // From right
+            destroyBullet(bullet, -1);
+          }
+          if (tile->getComponent<CAnimation>().animation->getName() == "WoodBox1")
+            destroyTile(tile);
+        }
+      }
     }
   }
 
   void PlayLevel::sCollisions() {
-    // TODO Set player states based on colisions
-    // - If not colliding with anythin -> airborne
-    // - If colliding with ground -> standing
     Vec2f overlap = {-1, -1};
     Vec2f prevOverlap = {-1, -1};
     m_player->getComponent<CBoxCollider>().colliding = false;
 
-    // Bullets
-    for (auto bullet : m_entityManager.entities("Bullet")) {
-      // PENDING
-    }
-    
+    checkBulletCollisions();
+
     // Player vs tiles
     if (m_player->hasComponent<CBoxCollider>())
       for (auto tile : m_entityManager.entities("Tile")) {

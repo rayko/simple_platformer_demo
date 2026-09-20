@@ -77,7 +77,12 @@ namespace Scenes {
     void spawnPlayer(const Vec2f &gridBlock);
     void spawnBullet(std::shared_ptr<Entity> player);    
     void playerHitsTile(std::shared_ptr<Entity> &tile);
+    void checkBulletCollisions();
 
+    void expireBullet(std::shared_ptr<Entity> &bullet);
+    void destroyBullet(std::shared_ptr<Entity> &bullet, int direction);
+    void destroyTile(std::shared_ptr<Entity> &tile);
+    
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
     void update() override;
