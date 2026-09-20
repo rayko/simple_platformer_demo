@@ -196,6 +196,11 @@ namespace Scenes {
     Vec2f prevOverlap = {-1, -1};
     m_player->getComponent<CBoxCollider>().colliding = false;
 
+    // Bullets
+    for (auto bullet : m_entityManager.entities("Bullet")) {
+      // PENDING
+    }
+    
     // Player vs tiles
     if (m_player->hasComponent<CBoxCollider>())
       for (auto tile : m_entityManager.entities("Tile")) {
@@ -438,6 +443,7 @@ namespace Scenes {
     bullet->getComponent<CTransform>().scale.x = direction;
     bullet->getComponent<CTransform>().vel = Vec2f(speed * direction, 0);
     bullet->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Bullet1"));
+    bullet->addComponent<CBoxCollider>(Vec2f(36,10));
     bullet->addComponent<CLifespan>(50);
   }
 
