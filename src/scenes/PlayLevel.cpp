@@ -161,10 +161,16 @@ namespace Scenes {
   void PlayLevel::sLifespan() {
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CLifespan>()) {
-        if (entity->getComponent<CLifespan>().remaining == 0)
+        entity->getComponent<CLifespan>().remaining--;
+
+        if (entity->getComponent<CLifespan>().remaining <= 0) {
+          if (entity->tag() == "Bullet") {
+            auto fx = m_entityManager.addEntity("FrontDec");
+            fx->addComponent<CTransform>(entity->getComponent<CTransform>().pos);
+            fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("BulletExpl1"));
+          }
           entity->destroy();
-        else
-          entity->getComponent<CLifespan>().remaining--;
+        }
       }
     }
   }
@@ -178,7 +184,6 @@ namespace Scenes {
       std::shared_ptr<Entity> fx = m_entityManager.addEntity("FrontDec");
       fx->addComponent<CTransform>(tile->getComponent<CTransform>().pos);
       fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Explosion"));
-      fx->addComponent<CLifespan>(60);
       tile->destroy();
     }
   }
@@ -520,6 +525,7 @@ namespace Scenes {
     auto anim = m_player->getComponent<CAnimation>().animation;
     auto collider = m_player->getComponent<CBoxCollider>();
 
+    panelText += std::format("Entities: {}\n", m_entityManager.entities().size());
     panelText += "Player\n";
     panelText += "  Position: " + transform.pos.str() + "\n";
     panelText += "  Previous: " + transform.prevPos.str() + "\n";
