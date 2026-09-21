@@ -243,6 +243,11 @@ namespace Scenes {
     }
   }
 
+  void PlayLevel::pickupCoin() {
+    logDebug("Picked up a coin");
+    m_playerCoins++;
+  }
+
   void PlayLevel::sCollisions() {
     Vec2f overlap = {-1, -1};
     Vec2f prevOverlap = {-1, -1};
@@ -257,6 +262,12 @@ namespace Scenes {
         tile->getComponent<CBoxCollider>().colliding = false;
         overlap = m_physics.getOverlap(m_player, tile);
         if (overlap.x <= 0 || overlap.y <= 0) { continue; }
+        if (tile->getComponent<CAnimation>().animation->getName() == "Coin") {
+          pickupCoin();
+          tile->destroy();
+          continue;
+        }
+
         tile->getComponent<CBoxCollider>().colliding = true;
         m_player->getComponent<CBoxCollider>().colliding = true;
         prevOverlap = m_physics.getPreviousOverlap(m_player, tile);
@@ -542,6 +553,16 @@ namespace Scenes {
         }
       }
     }
+
+    sf::Text coinCounter(*m_gridTextFont, "", 30);
+    coinCounter.setString(std::to_string(m_playerCoins));
+    sf::Vector2f counterPos = m_view.getCenter();
+    counterPos.x -= (float)window.getSize().x / 2;
+    counterPos.y -= (float)window.getSize().y / 2;
+    counterPos.x += 10;
+    counterPos.y += 10;
+    coinCounter.setPosition(counterPos);
+    window.draw(coinCounter);
 
     if (m_drawGrid)
       drawGrid();

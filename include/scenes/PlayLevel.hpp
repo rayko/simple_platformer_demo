@@ -48,6 +48,8 @@ namespace Scenes {
     bool m_playerJumping = false;
     bool m_playerOnFloor = false;
 
+    int m_playerCoins = 0;
+    
     void onEnd() override;
     void init() override;
     void sDoAction(const Action &action) override;
@@ -83,6 +85,7 @@ namespace Scenes {
     void expireBullet(std::shared_ptr<Entity> &bullet);
     void destroyBullet(std::shared_ptr<Entity> &bullet, int direction);
     void destroyTile(std::shared_ptr<Entity> &tile);
+    void pickupCoin();
 
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
