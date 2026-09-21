@@ -142,7 +142,6 @@ namespace Scenes {
     }
   }
 
-
   void PlayLevel::onEnd() {
     // TODO
     m_finished = true;
@@ -422,6 +421,11 @@ namespace Scenes {
       CInput &pInput = m_player->getComponent<CInput>();
       CState &pState = m_player->getComponent<CState>();
 
+      if (pTransform.pos.y > m_engine->window().getSize().y + 800) {
+        // Teleport player to beginning cause it's the simplest route
+        pTransform.pos = gridBlockOrigin(Vec2f(m_playerAttrs.x, m_playerAttrs.y));
+      }
+
       // Left/Right movement
       if (pInput.left){
         pTransform.vel.x = -m_playerAttrs.speed;
@@ -489,7 +493,6 @@ namespace Scenes {
       }
     }
   }
-
 
   void PlayLevel::spawnBullet(std::shared_ptr<Entity> &player) {
     const auto &pTransform = player->getComponent<CTransform>();
