@@ -33,7 +33,7 @@ namespace Scenes {
     bool m_drawColliders = false;
     bool m_drawGrid = false;
     bool m_drawDebugPanel = false;
-    bool m_paused = false;    
+    bool m_paused = false;
     const Vec2f m_gridSize = {64, 64};
 
     std::shared_ptr<sf::Font> m_gridTextFont;
@@ -75,14 +75,15 @@ namespace Scenes {
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
     void spawnPlayer(const Vec2f &gridBlock);
-    void spawnBullet(std::shared_ptr<Entity> player);    
+    void spawnBullet(std::shared_ptr<Entity> &player);
+    void spawnCoin(std::shared_ptr<Entity> &originTile);
     void playerHitsTile(std::shared_ptr<Entity> &tile);
     void checkBulletCollisions();
 
     void expireBullet(std::shared_ptr<Entity> &bullet);
     void destroyBullet(std::shared_ptr<Entity> &bullet, int direction);
     void destroyTile(std::shared_ptr<Entity> &tile);
-    
+
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);
     void update() override;

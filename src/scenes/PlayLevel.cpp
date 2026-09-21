@@ -142,16 +142,6 @@ namespace Scenes {
     }
   }
 
-  void PlayLevel::spawnPlayer(const Vec2f &gridBlock) {
-    m_player = m_entityManager.addEntity("Player");
-    m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexAir"));
-    auto anim = m_player->getComponent<CAnimation>().animation;
-    m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
-    m_player->addComponent<CBoxCollider>(Vec2f(m_playerAttrs.cx, m_playerAttrs.cy));
-    m_player->addComponent<CInput>();
-    m_player->addComponent<CState>(m_playerStates.airborne);
-    m_player->addComponent<CGravity>(m_playerAttrs.gravity);
-  }
 
   void PlayLevel::onEnd() {
     // TODO
@@ -177,7 +167,7 @@ namespace Scenes {
     auto anim = tile->getComponent<CAnimation>().animation;
     if (anim->getName() == "ActiveTile1") {
       tile->addComponent<CAnimation>(m_engine->assetStore().getAnimation("InnactiveTile1"));
-      // TODO Make something else appear on screen above tile
+      spawnCoin(tile);
     } else if (anim->getName() == "WoodBox1") {
       destroyTile(tile);
     }
@@ -188,6 +178,29 @@ namespace Scenes {
     fx->addComponent<CTransform>(bullet->getComponent<CTransform>().pos);
     fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("BulletExpl1"));
     bullet->destroy();
+  }
+
+  void PlayLevel::spawnPlayer(const Vec2f &gridBlock) {
+    m_player = m_entityManager.addEntity("Player");
+    m_player->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexAir"));
+    auto anim = m_player->getComponent<CAnimation>().animation;
+    m_player->addComponent<CTransform>(initialSpritePosition(gridBlock, anim->getSize()));
+    m_player->addComponent<CBoxCollider>(Vec2f(m_playerAttrs.cx, m_playerAttrs.cy));
+    m_player->addComponent<CInput>();
+    m_player->addComponent<CState>(m_playerStates.airborne);
+    m_player->addComponent<CGravity>(m_playerAttrs.gravity);
+  }
+
+  void PlayLevel::spawnCoin(std::shared_ptr<Entity> &originTile) {
+    const auto tTransform = originTile->getComponent<CTransform>();
+    Vec2f coinLocation = Vec2f(tTransform.pos.x, tTransform.pos.y - m_gridSize.y);
+    auto fx = m_entityManager.addEntity("FrontDec");
+    fx->addComponent<CTransform>(coinLocation);
+    fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Smoke"));
+    auto coin = m_entityManager.addEntity("Tile");
+    coin->addComponent<CTransform>(coinLocation);
+    coin->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Coin"));
+    coin->addComponent<CBoxCollider>(Vec2f(32, 32));
   }
 
   void PlayLevel::destroyBullet(std::shared_ptr<Entity> &bullet, int direction) {
@@ -204,7 +217,6 @@ namespace Scenes {
     fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Explosion"));
     tile->destroy();
   }
-
 
   void PlayLevel::checkBulletCollisions(){
     Vec2f overlap = {-1, -1};
@@ -467,7 +479,8 @@ namespace Scenes {
     }
   }
 
-  void PlayLevel::spawnBullet(std::shared_ptr<Entity> player) {
+
+  void PlayLevel::spawnBullet(std::shared_ptr<Entity> &player) {
     const auto &pTransform = player->getComponent<CTransform>();
     int direction = 1;
     const float speed = m_playerAttrs.maxSpeed / 2;
@@ -660,7 +673,7 @@ namespace Scenes {
     int y = std::floor(pos.y) - m_engine->window().getSize().y;
     y -= (y % (int)std::floor(m_gridSize.y));
 
-    return Vec2f(x / m_gridSize.x, (y / m_gridSize.y));
+    return Vec2f(x / m_gridSize.x, -(y / m_gridSize.y));
   }
 
   // Derives a proper location from a grid coordinate onto
