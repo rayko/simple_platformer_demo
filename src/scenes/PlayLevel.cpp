@@ -38,6 +38,8 @@ namespace Scenes {
     logInfo("Loading scene");
     m_gridTextFont = m_engine->assetStore().getFont("SimpleFont");
 
+    m_debugPanel = std::make_shared<UI::TextPanel>(m_gridTextFont);
+
     logDebug("Mapping actions");
     registerKeyboardAction(sf::Keyboard::Scancode::G, Action::Name::ToggleGrid);
     registerKeyboardAction(sf::Keyboard::Scancode::T, Action::Name::ToggleTextures);
@@ -589,39 +591,26 @@ namespace Scenes {
   }
 
   void PlayLevel::drawDebugPanel() {
-    sf::RenderWindow &window = m_engine->window();
-    sf::View view = window.getView();
-    Vec2f pos = {view.getCenter().x - (float) m_width / 2,  view.getCenter().y - (float) m_height / 2};
-    const sf::Color lineColor = {128, 128, 128, 200};
-    const sf::Color fillColor = {64, 64, 64, 200};
-    sf::Text text(*m_gridTextFont, "", 15);
-    std::string panelText;
-    sf::RectangleShape rect;
-    rect.setOutlineColor(lineColor);
-    rect.setFillColor(fillColor);
-    rect.setOutlineThickness(-1);
+    m_debugPanel->clear();
 
     auto transform = m_player->getComponent<CTransform>();
     auto anim = m_player->getComponent<CAnimation>().animation;
     auto collider = m_player->getComponent<CBoxCollider>();
 
-    panelText += std::format("Entities: {}\n", m_entityManager.entities().size());
-    panelText += "Player\n";
-    panelText += "  Position: " + transform.pos.str() + "\n";
-    panelText += "  Previous: " + transform.prevPos.str() + "\n";
-    panelText += "  Velocity: " + transform.vel.str() + "\n";
-    panelText += "  Center: " + Vec2f(anim->getSprite().getOrigin().x, anim->getSprite().getOrigin().y).str() + "\n";
-    panelText += "  Collider Size: " + collider.size.str() + "\n";
-    panelText += "  Collider Size / 2: " + collider.halfSize.str() + "\n";
-    panelText += "  Collider Offset: " + collider.offset.str() + "\n";
-
-    text.setString(panelText);
-    text.setLineSpacing(1.8f);
-    rect.setPosition(sf::Vector2f(pos.x + 10, pos.y + 10));
-    rect.setSize(sf::Vector2f(text.getLocalBounds().size.x + 10, text.getLocalBounds().size.y + 10));
-    text.setPosition(sf::Vector2f(pos.x + 15, pos.y + 15));
-    window.draw(rect);
-    window.draw(text);
+    m_debugPanel->addTextLine(std::format("Entities: {}", m_entityManager.entities().size()));
+    m_debugPanel->addTextLine("Player");
+    m_debugPanel->addTextLine("  Position: " + transform.pos.str());
+    m_debugPanel->addTextLine("  Previous: " + transform.prevPos.str());
+    m_debugPanel->addTextLine("  Velocity: " + transform.vel.str());
+    m_debugPanel->addTextLine("  Center: " + Vec2f(anim->getSprite().getOrigin().x, anim->getSprite().getOrigin().y).str());
+    m_debugPanel->addTextLine("  Collider Size: " + collider.size.str());
+    m_debugPanel->addTextLine("  Collider Size / 2: " + collider.halfSize.str());
+    m_debugPanel->addTextLine("  Collider Offset: " + collider.offset.str());
+    sf::Vector2f pos = { 0, 0 };
+    pos.x = m_view.getCenter().x - (m_width / 2) + 20;
+    pos.y = m_view.getCenter().y - (m_height / 2) + 20;
+    m_debugPanel->setPosition(pos);
+    m_debugPanel->draw(m_engine->window());
   }
 
   void PlayLevel::drawColliders() {

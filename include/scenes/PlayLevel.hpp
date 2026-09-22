@@ -7,6 +7,9 @@
 #pragma once
 #include "Physics.hpp"
 #include "scenes/Base.hpp"
+
+#include "ui/TextPanel.hpp"
+
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -35,6 +38,7 @@ namespace Scenes {
     bool m_drawDebugPanel = false;
     bool m_paused = false;
     const Vec2f m_gridSize = {64, 64};
+    std::shared_ptr<UI::TextPanel> m_debugPanel;
 
     std::shared_ptr<sf::Font> m_gridTextFont;
     int m_gridFontSize = 12;
