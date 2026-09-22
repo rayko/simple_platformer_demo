@@ -67,7 +67,16 @@ namespace Scenes {
       file.close();
     }
 
+    loadTileNames();
     loadLevel(m_levelPath);
+  }
+
+  void Editor::loadTileNames() {
+    for (auto &[name, anim] : m_engine->assetStore().animations()) {
+      if (anim.type == "Tile") {
+        m_tileNames.push_back(name);
+      }
+    }
   }
 
   void Editor::loadLevel(const std::string &filename) {
@@ -272,6 +281,18 @@ namespace Scenes {
     rect.setPosition(gridBlockOrigin(pos).toVector2f());
     m_engine->window().draw(rect);
   }
+
+  // void Editor::drawTileListPanel() {
+  //   sf::RectangleShape rect;
+  //   rect.setOutlineColor(sf::Color::Green);
+  //   rect.setOutlineThickness(2);
+  //   rect.setFillColor(sf::Color(64,64,64,128));
+  //   Vec2f panelSize = { 0,0 };
+  //   sf::Text name(*m_gridTextFont, "", 13);
+  //   for (std::string tileName : m_tileNames) {
+
+  //   }
+  // }
 
   void Editor::drawCursorCords() {
     sf::Text text(*m_gridTextFont, "", 15);

@@ -181,3 +181,7 @@ void AssetStore::loadAnimation(const AnimationData &data) {
   //   m_animations[name]->setLoopMode(data.loopMode);
   // }
 }
+
+const std::map<std::string, AnimationData> &AssetStore::animations() const {
+  return m_animations;
+}

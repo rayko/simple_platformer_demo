@@ -65,4 +65,5 @@ public:
   std::shared_ptr<sf::Texture> getTexture(const std::string &name) const;
   std::shared_ptr<sf::Font> getFont(const std::string &name) const;
   std::shared_ptr<Animation> getAnimation(const std::string &name) const;
+  const std::map<std::string, AnimationData> &animations() const;
 };

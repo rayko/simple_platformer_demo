@@ -33,6 +33,8 @@ namespace Scenes {
     bool m_drawGrid = false;
     const Vec2f m_gridSize = {64, 64};
 
+    std::vector<std::string> m_tileNames;
+
     std::shared_ptr<sf::Font> m_gridTextFont;
     int m_gridFontSize = 12;
     Vec2f m_worldOrigin; // Reference to where grid (0,0) should be
@@ -48,6 +50,7 @@ namespace Scenes {
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
+    void loadTileNames();
 
     // Parse gridCords custom system onto actual positions on the screen
     // to get the origin point og a single grid block.
@@ -61,6 +64,7 @@ namespace Scenes {
     void drawGrid();
     void drawCursor();
     void drawCursorCords();
+    void drawTileListPanel();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
   public:
