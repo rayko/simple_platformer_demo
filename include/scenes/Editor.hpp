@@ -25,6 +25,7 @@ namespace Scenes {
     bool m_moveDown = false;
     bool m_moveLeft = false;
     bool m_moveRight = false;
+    float m_cameraSpeed = 5.0f;
 
     bool m_drawFrontDec = true;
     bool m_drawTiles = true;
@@ -58,6 +59,8 @@ namespace Scenes {
     // coords), and returns the corresponding grid block that containes that pixel.
     Vec2f gridBlockFromPixel(const Vec2f &pos) const;
     void drawGrid();
+    void drawCursor();
+    void drawCursorCords();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
   public:

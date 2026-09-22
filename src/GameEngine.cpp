@@ -75,6 +75,11 @@ void GameEngine::quit() { m_running = false; }
 
 void GameEngine::sUserInput() {
   while (const std::optional event = m_window.pollEvent()) {
+    if (currentScene()->receivePointerLocation()) {
+      sf::Vector2i mousePosition = sf::Mouse::getPosition(window());
+      currentScene()->setPointerPos(Vec2f(mousePosition.x, mousePosition.y));
+    }
+
     if (event->is<sf::Event::Closed>()) { quit(); }
     const KeyboardMap sceneKeys = currentScene()->keyMap();
     if (const auto *key = event->getIf<sf::Event::KeyPressed>()) {

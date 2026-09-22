@@ -34,6 +34,8 @@ namespace Scenes {
     KeyboardMap m_keyMap;
     bool m_paused = false;
     bool m_finished = false;
+    bool m_receivePointerLocation = false;
+    Vec2f m_pointerPos;
     size_t m_currentFrame = 0;
     size_t m_width;
     size_t m_height;
@@ -58,6 +60,8 @@ namespace Scenes {
     virtual void update() = 0;
     virtual void doAction(const Action &action) = 0;
 
+    const bool receivePointerLocation() { return m_receivePointerLocation; }
+    void setPointerPos(Vec2f pos) { m_pointerPos = pos; }
     void simulate(const size_t frames);
     void registerKeyboardAction(sf::Keyboard::Scancode inKey, Action::Name name);
     size_t width() const;

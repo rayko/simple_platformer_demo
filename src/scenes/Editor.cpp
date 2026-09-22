@@ -10,6 +10,7 @@ namespace Scenes {
 
   Editor::Editor(GameEngine *engine) : m_levelPath("editor_level.txt"), Base(engine) {
     m_logOrigin = "Scenes::Editor (" + m_levelPath + ")";
+    m_receivePointerLocation = true;
     setLogger(engine->getLogger());
     init();
   }
@@ -200,6 +201,23 @@ namespace Scenes {
 
   void Editor::sMovement() {
     // Move camera
+    sf::Vector2f vel = {0, 0};
+    if (m_moveRight)
+      vel.x = m_cameraSpeed;
+    if (m_moveUp)
+      vel.y = -m_cameraSpeed;
+    if (m_moveDown)
+      vel.y = m_cameraSpeed;
+    if (m_moveLeft)
+      vel.x = -m_cameraSpeed;
+    sf::Vector2f cameraCenter = m_view.getCenter();
+
+    // Limit camera movement
+    if (vel.x < 0 && cameraCenter.x <= m_width / 2)
+      vel.x = 0;
+    if (vel.y > 0 && cameraCenter.y >= m_height / 2)
+      vel.y = 0;
+    m_view.move(vel);
   }
 
   void Editor::sRender() {
@@ -236,9 +254,31 @@ namespace Scenes {
     if (m_drawGrid)
       drawGrid();
 
+    drawCursorCords();
+    drawCursor();
     window.display();
   }
 
+  void Editor::drawCursor() {
+    sf::RectangleShape rect;
+    rect.setSize(m_gridSize.toVector2f());
+    rect.setOutlineColor(sf::Color(255, 0, 0));
+    rect.setOutlineThickness(1);
+    rect.setFillColor(sf::Color::Transparent);
+    Vec2f cursor = m_pointerPos;
+    cursor.x += m_view.getCenter().x - (m_width / 2);
+    cursor.y += m_view.getCenter().y - (m_height / 2);
+    Vec2f pos = gridBlockFromPixel(cursor);
+    rect.setPosition(gridBlockOrigin(pos).toVector2f());
+    m_engine->window().draw(rect);
+  }
+
+  void Editor::drawCursorCords() {
+    sf::Text text(*m_gridTextFont, "", 15);
+    text.setString(m_pointerPos.str());
+    text.setPosition(sf::Vector2f(10, 10));
+    m_engine->window().draw(text);
+  }
 
   void Editor::drawGrid() {
     sf::RenderWindow &window = m_engine->window();
