@@ -1,6 +1,7 @@
 #include "scenes/Menu.hpp"
 #include "GameEngine.hpp"
 #include "scenes/PlayLevel.hpp"
+#include "scenes/Editor.hpp"
 
 namespace Scenes {
   // Public
@@ -48,7 +49,8 @@ namespace Scenes {
     m_titleGfx->setFillColor(m_titleColor);
 
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Sprite Test", m_menuEntryCharSize), "test1"));
-    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Level 1", m_menuEntryCharSize), "level1"));
+    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Editor", m_menuEntryCharSize), "editor"));
+    m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Play", m_menuEntryCharSize), "level1"));
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Exit", m_menuEntryCharSize), "exit"));
     for (MenuEntry item : m_menuEntries) {
       item.textGfx.setFillColor(m_menuEntryColor);
@@ -144,6 +146,11 @@ namespace Scenes {
 
     if (menuName == "level1") {
       m_engine->changeScene("level1", std::make_shared<PlayLevel>(m_engine, "level1.txt"));
+      return;
+    }
+
+    if (menuName == "editor") {
+      m_engine->changeScene("editor", std::make_shared<Editor>(m_engine));
       return;
     }
   }

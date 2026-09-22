@@ -29,6 +29,7 @@ add_executable(simple_platformer_demo src/main.cpp
   src/scenes/Base.cpp
   src/scenes/Menu.cpp
   src/scenes/PlayLevel.cpp
+  src/scenes/Editor.cpp
   src/Physics.cpp
   src/GameEngine.cpp
   src/Logger.cpp

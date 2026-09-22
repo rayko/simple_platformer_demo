@@ -27,7 +27,11 @@ public:
     ToggleColliders,
     ToggleTextures,
     Pause,
-    ToggleInfo
+    ToggleInfo,
+    ToggleFrontDec,
+    ToggleBackDec,
+    ToggleTiles,
+    SaveLevel
   };
 
 
