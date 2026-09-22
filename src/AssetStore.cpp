@@ -87,7 +87,7 @@ void AssetStore::init() {
 // Helpers
 const AnimationData AssetStore::readAnimationCfg(std::ifstream &configData) {
   AnimationData item;
-  configData >> item.name >> item.textureName;
+  configData >> item.type >> item.name >> item.textureName;
   configData >> item.frames >> item.frameDuration;
   configData >> item.width >> item.height;
 

@@ -14,6 +14,7 @@
 
 struct AnimationData {
   std::string name;
+  std::string type;
   std::string textureName;
   int frames = 0;
   int frameDuration = 0;
