@@ -21,6 +21,8 @@ namespace UI {
     int m_textOffset = 10;
     int m_titleBotMargin = 20;
     int m_entryBotMargin = 10;
+    int m_firstEntryIdx = 0;
+    int m_maxdisplayItems = 4;
 
     void resize();
 
@@ -30,12 +32,15 @@ namespace UI {
       void init();
       bool hasSelection() { return m_hasSelection; }
       const std::string &selectionText() { return m_selectedEntryTxt; }
+      void setMaxDisplayItems(int value) { m_maxdisplayItems = value; }
       void setTitle(const std::string &txt);
       void addEntry(const std::string &txt);
       sf::Vector2f getSize() { return m_size; };
       void clickAt(sf::Vector2f &pos);
       bool hovering(sf::Vector2f &cursor) const;
       void draw(sf::RenderWindow &window);
+      void scrollUp();
+      void scrollDown();
 
   };
 } 

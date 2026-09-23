@@ -82,6 +82,7 @@ namespace Scenes {
     ui_helpInfo->addTextLine("  ESC         -> Quit"); 
 
     ui_tileList = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
+    ui_tileList->setMaxDisplayItems(15);
     ui_tileList->setTitle("Tiles");
     for (auto &[name, anim] : m_engine->assetStore().animations()) {
       if (anim.type == "Tile")
@@ -177,10 +178,20 @@ namespace Scenes {
 
 
   void Editor::sDoAction(const Action &action) {
-    sf::Vector2f cursor;
+    sf::Vector2f cursor = { viewCursorPosition().x, viewCursorPosition().y };
     // Reserved for future scroll events
     if (action.triggered()) {
       switch (action.name()) {
+      case (Action::Name::ScrollDown):
+        if (ui_tileList->hovering(cursor)) {
+          ui_tileList->scrollDown();
+        }
+        break;
+      case (Action::Name::ScrollUp):
+        if (ui_tileList->hovering(cursor)) {
+          ui_tileList->scrollUp();
+        }
+        break;
       default: break;
       }
     }
@@ -188,8 +199,6 @@ namespace Scenes {
     if (action.starting()) {
       switch (action.name()) {
       case (Action::Name::LeftClick):
-        cursor.x = viewCursorPosition().x;
-        cursor.y = viewCursorPosition().y;
         if (ui_tileList->hovering(cursor)) {
           ui_tileList->clickAt(cursor);
         }

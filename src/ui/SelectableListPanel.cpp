@@ -21,10 +21,21 @@ namespace UI {
 
     newSize.y += m_titleBotMargin;
 
-    for (auto textObj : m_entries) {
-      newSize.x = std::max(newSize.x, textObj.getLocalBounds().size.x + (m_textOffset * 2));
-      newSize.y += textObj.getLocalBounds().size.y;
+    // Set width based on widest entry
+    for (auto entry : m_entries) {
+      newSize.x = std::max(newSize.x, entry.getLocalBounds().size.x + (m_textOffset * 2));
+    }
+
+    // Add up height for each displayable entry
+    for (int count = 0; count < m_maxdisplayItems; count++) {
+      int idx = m_firstEntryIdx + count;
+      if (idx >= m_entries.size()) { break; }
+      newSize.y += m_entries[idx].getLocalBounds().size.y;
       newSize.y += m_entryBotMargin;
+    }
+
+    if (m_entries.size() > m_maxdisplayItems){
+      newSize.y += 20;
     }
 
     // Do not over-space the bottom of list
@@ -80,18 +91,51 @@ namespace UI {
     m_titleObj->setPosition(localPos);
     window.draw(*m_titleObj);
     localPos.y += m_titleObj->getLocalBounds().size.y + m_titleBotMargin;
-    for (sf::Text &entry : m_entries) {
-      entry.setPosition(localPos);
-      if (entry.getString() == m_selectedEntryTxt)
-        entry.setFillColor(m_selectedColor);
+
+    if (m_firstEntryIdx > 0) {
+      sf::Vector2f pos = localPos;
+      sf::Text upperItems(*m_font, "...", m_fontSize);
+      pos.x += (getSize().x / 2) - (upperItems.getLocalBounds().size.x / 2);
+      pos.y -= 20;
+      upperItems.setPosition(pos);
+      window.draw(upperItems);
+    }
+
+    for (int count = 0; count < m_maxdisplayItems; count++) {
+      int idx = m_firstEntryIdx + count;
+      if (idx >= m_entries.size()) { break; }
+      m_entries[idx].setPosition(localPos);
+      if (m_entries[idx].getString() == m_selectedEntryTxt)
+        m_entries[idx].setFillColor(m_selectedColor);
       else
-        entry.setFillColor(m_unSelectedColor);
-      window.draw(entry);
-      localPos.y += entry.getLocalBounds().size.y + m_entryBotMargin;
+        m_entries[idx].setFillColor(m_unSelectedColor);
+      window.draw(m_entries[idx]);
+      localPos.y += m_entries[idx].getLocalBounds().size.y + m_entryBotMargin;
+    }
+
+    if (m_firstEntryIdx + m_maxdisplayItems < (m_entries.size() - 1)) {
+      sf::Vector2f pos = localPos;
+      sf::Text upperItems(*m_font, "...", m_fontSize);
+      pos.x += (getSize().x / 2) - (upperItems.getLocalBounds().size.x / 2);
+      upperItems.setPosition(pos);
+      localPos.y += upperItems.getLocalBounds().size.y;
+      window.draw(upperItems);
     }
   }
 
   bool SelectableListPanel::hovering(sf::Vector2f &cursor) const {
     return m_box.getGlobalBounds().contains(cursor);
+  }
+
+  void SelectableListPanel::scrollDown() {
+    m_firstEntryIdx++;
+    if (m_firstEntryIdx + m_maxdisplayItems >= m_entries.size())
+      m_firstEntryIdx--;
+  }
+
+  void SelectableListPanel::scrollUp () {
+    m_firstEntryIdx--;
+    if (m_firstEntryIdx <= 0)
+      m_firstEntryIdx = 0;
   }
 }
