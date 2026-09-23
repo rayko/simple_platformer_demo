@@ -40,6 +40,7 @@ class GameEngine : public Core {
 
   void handleKeyboardEvent(sf::Keyboard::Scancode key, Action::State state);
   void handleMouseEvent(sf::Mouse::Button btn, Action::State state);
+  void handleMouseWheelEvent(Action::MWheelEvent scroll);
 
 public:
   GameEngine();

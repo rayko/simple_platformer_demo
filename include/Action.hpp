@@ -11,7 +11,8 @@
 
 class Action {
 public:
-  enum class State { Start, End };
+  enum class MWheelEvent { ScrollUp, ScrollDown, ScrollLeft, ScrollRight };
+  enum class State { Start, End, Triggered };
   enum class Name {
     None,
     Up,

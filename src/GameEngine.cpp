@@ -81,7 +81,7 @@ void GameEngine::sUserInput() {
     }
 
     if (event->is<sf::Event::Closed>()) { quit(); }
-    const KeyboardMap sceneKeys = currentScene()->keyMap();
+
     if (const auto *key = event->getIf<sf::Event::KeyPressed>()) {
       if (key->scancode == sf::Keyboard::Scancode::X) {
         // Special key, we handle this one here
@@ -93,13 +93,39 @@ void GameEngine::sUserInput() {
       handleKeyboardEvent(key->scancode, Action::State::End);
     }
 
-    const MouseMap sceneButtons = currentScene()->mouseMap();
     if (const auto *btn = event->getIf<sf::Event::MouseButtonPressed>()) {
       handleMouseEvent(btn->button, Action::State::Start);
     } else if (const auto *btn = event->getIf<sf::Event::MouseButtonReleased>()) {
       handleMouseEvent(btn->button, Action::State::End);
     }
+
+    // Wheel is handled differently so we convert scrolling to our
+    // custom set of events to send to the scene instead.
+    if (const auto *scroll = event->getIf<sf::Event::MouseWheelScrolled>()) {
+      switch(scroll->wheel) {
+        case (sf::Mouse::Wheel::Vertical):
+          if (scroll->delta > 0)
+            handleMouseWheelEvent(Action::MWheelEvent::ScrollUp);
+          else if (scroll->delta < 0)
+            handleMouseWheelEvent(Action::MWheelEvent::ScrollDown);
+          break;
+        case (sf::Mouse::Wheel::Horizontal):
+          if (scroll->delta > 0)
+            handleMouseWheelEvent(Action::MWheelEvent::ScrollLeft);
+          else if (scroll->delta < 0)
+            handleMouseWheelEvent(Action::MWheelEvent::ScrollRight);
+          break;
+        default: break;
+      }
+    }
   }
+}
+
+void GameEngine::handleMouseWheelEvent(Action::MWheelEvent scroll) {
+  if (!currentScene()->respondsToMouseWheel(scroll)) { return; }
+  const Action action = Action(currentScene()->mouseWheelMap().at(scroll), Action::State::Triggered);
+  currentScene()->doAction(action);
+  logDebug("Mouse: Sent action " + action.str() + " to current scene " + m_currentSceneName);
 }
 
 void GameEngine::handleMouseEvent(sf::Mouse::Button btn, Action::State state) {

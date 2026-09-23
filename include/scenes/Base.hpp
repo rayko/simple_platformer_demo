@@ -27,6 +27,7 @@ class GameEngine;
 // Helper type to define map of actions for scenes.
 typedef std::map<sf::Keyboard::Scancode, Action::Name> KeyboardMap;
 typedef std::map<sf::Mouse::Button, Action::Name> MouseMap;
+typedef std::map<Action::MWheelEvent, Action::Name> MouseWheelMap;
 
 namespace Scenes {
   class Base : public Core {
@@ -35,6 +36,7 @@ namespace Scenes {
     EntityManager m_entityManager;
     KeyboardMap m_keyMap;
     MouseMap m_mouseMap;
+    MouseWheelMap m_mouseWheelMap;
     bool m_paused = false;
     bool m_finished = false;
     bool m_receivePointerLocation = false;
@@ -69,14 +71,17 @@ namespace Scenes {
     void simulate(const size_t frames);
     void registerKeyboardAction(sf::Keyboard::Scancode inKey, Action::Name name);
     void registerMouseAction(sf::Mouse::Button inBtn, Action::Name name);
+    void registerMouseWheelAction(Action::MWheelEvent scroll, Action::Name name);
     size_t width() const;
     size_t height() const;
     size_t currentFrame() const;
     bool isFinished() const;
     const KeyboardMap &keyMap() const;
     const MouseMap &mouseMap() const;
+    const MouseWheelMap &mouseWheelMap() const;
     bool respondsToKey(sf::Keyboard::Scancode key) const;
     bool respondsToMouseBtn(sf::Mouse::Button btn) const;
+    bool respondsToMouseWheel(Action::MWheelEvent scroll) const;
     void drawLine(const Vec2f &p1, const Vec2f &p2);
   };
 }

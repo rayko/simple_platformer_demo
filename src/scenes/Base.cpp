@@ -15,12 +15,17 @@ namespace Scenes {
     m_mouseMap[inBtn] = name;
   }
 
+  void Base::registerMouseWheelAction(Action::MWheelEvent scroll, Action::Name name) {
+    m_mouseWheelMap[scroll] = name;
+  }
+
   size_t Base::width() const { return m_width; }
   size_t Base::height() const { return m_height; }
   size_t Base::currentFrame() const { return m_currentFrame; }
   bool Base::isFinished() const { return m_finished; }
   const KeyboardMap &Base::keyMap() const { return m_keyMap; }
   const MouseMap &Base::mouseMap() const { return m_mouseMap; }
+  const MouseWheelMap &Base::mouseWheelMap() const { return m_mouseWheelMap; }
 
   void Base::drawLine(const Vec2f &p1, const Vec2f &p2) {
     // TODO
@@ -33,5 +38,9 @@ namespace Scenes {
 
   bool Base::respondsToMouseBtn(sf::Mouse::Button btn) const {
     return !(m_mouseMap.find(btn) == m_mouseMap.end());
+  }
+
+  bool Base::respondsToMouseWheel(Action::MWheelEvent scroll) const {
+    return !(m_mouseWheelMap.find(scroll) == m_mouseWheelMap.end());
   }
 }

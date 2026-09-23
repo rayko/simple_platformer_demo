@@ -7,8 +7,9 @@ const Action::Name Action::name() const { return m_name; }
 const Action::State Action::state() const { return m_state; }
 
 const std::string Action::strState() const {
-  if (m_state == State::Start) { return "START"; }
-  if (m_state == State::End)   { return "END"; }
+  if (m_state == State::Start)       { return "START"; }
+  if (m_state == State::End)         { return "END"; }
+  if (m_state == State::Triggered)   { return "TRIG"; }
   return "UNDEFINED";
 }
 
