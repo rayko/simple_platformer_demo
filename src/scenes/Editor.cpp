@@ -277,8 +277,8 @@ namespace Scenes {
     drawCursor();
 
     sf::Vector2f pos = { 0, 0 };
-    pos.x = m_viewCenter.x + (m_width / 2) - 380;
-    pos.y = m_viewCenter.y + (m_height / 2) - 250;
+    pos.x = m_viewCenter.x + (m_width / 2) - ui_helpInfo->getSize().x - 10;
+    pos.y = m_viewCenter.y + (m_height / 2) - ui_helpInfo->getSize().y - 10;
     ui_helpInfo->setPosition(pos);
     ui_helpInfo->draw(window);
     window.display();

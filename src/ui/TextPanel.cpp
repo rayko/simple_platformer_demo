@@ -15,15 +15,18 @@ namespace UI {
     m_box.setOutlineThickness(m_lineSize);
   }
 
+  sf::Vector2f TextPanel::getSize() {
+    sf::Vector2f size(0,0);
+    size.x = m_textObj->getLocalBounds().size.x + (m_textOffset * 2);
+    size.y = m_textObj->getLocalBounds().size.y + (m_textOffset * 2);
+    return size;
+  }
+
   void TextPanel::draw(sf::RenderWindow &window) {
-    const sf::Vector2f offset(m_textOffset, m_textOffset);
-    sf::Vector2f boxSize = { 0, 0 };
     m_box.setPosition(m_pos);
-    m_textObj->setPosition(m_pos + offset);
+    m_textObj->setPosition(m_pos + sf::Vector2f(m_textOffset, m_textOffset));
     m_textObj->setString(m_text);
-    boxSize.x = m_textObj->getLocalBounds().size.x + (offset.x * 2);
-    boxSize.y = m_textObj->getLocalBounds().size.y + (offset.y * 2);
-    m_box.setSize(boxSize);
+    m_box.setSize(getSize());
     window.draw(m_box);
     window.draw(*m_textObj);
   }

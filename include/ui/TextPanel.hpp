@@ -20,6 +20,7 @@ namespace UI {
       void setText(const std::string &txt) { m_text = txt; }
       void clear() { m_text = ""; }
       void addTextLine(const std::string &txt) { m_text += std::format("{}\n", txt); };
+      sf::Vector2f getSize();
       void draw(sf::RenderWindow &window);
 
   };
