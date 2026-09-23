@@ -94,6 +94,7 @@ namespace Scenes {
     ui_placementType->addEntry("Front Decoration");
     ui_placementType->addEntry("Back Decoration");
     ui_placementType->addEntry("Normal Tile");
+    ui_placementType->preSelect("Normal Tile");
 
     loadTileNames();
     loadLevel(m_levelPath);

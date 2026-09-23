@@ -138,4 +138,13 @@ namespace UI {
     if (m_firstEntryIdx <= 0)
       m_firstEntryIdx = 0;
   }
+
+  void SelectableListPanel::preSelect(const std::string &txt) {
+    for (auto entry : m_entries) {
+      if (entry.getString() == txt) {
+        m_selectedEntryTxt = entry.getString();
+        m_hasSelection = true;
+      }
+    }
+  }
 }

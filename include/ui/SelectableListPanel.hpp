@@ -41,6 +41,6 @@ namespace UI {
       void draw(sf::RenderWindow &window);
       void scrollUp();
       void scrollDown();
-
+      void preSelect(const std::string &txt);
   };
 } 
