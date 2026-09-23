@@ -67,6 +67,15 @@ namespace Scenes {
       file.close();
     }
 
+    ui_helpInfo = std::make_shared<UI::TextPanel>(m_gridTextFont);
+    ui_helpInfo->addTextLine("Help");
+    ui_helpInfo->addTextLine("  W, A, S, D  -> Move"); 
+    ui_helpInfo->addTextLine("  F1          -> Toggle Grid"); 
+    ui_helpInfo->addTextLine("  F2          -> Toggle Front Decorations"); 
+    ui_helpInfo->addTextLine("  F3          -> Toggle Tiles"); 
+    ui_helpInfo->addTextLine("  F4          -> Toggle Back Decorations"); 
+    ui_helpInfo->addTextLine("  F5          -> Save Level"); 
+    ui_helpInfo->addTextLine("  ESC         -> Quit"); 
     loadTileNames();
     loadLevel(m_levelPath);
   }
@@ -265,6 +274,12 @@ namespace Scenes {
 
     drawCursorCords();
     drawCursor();
+
+    sf::Vector2f pos = { 0, 0 };
+    pos.x = m_view.getCenter().x + (m_width / 2) - 380;
+    pos.y = m_view.getCenter().y + (m_height / 2) - 250;
+    ui_helpInfo->setPosition(pos);
+    ui_helpInfo->draw(window);
     window.display();
   }
 

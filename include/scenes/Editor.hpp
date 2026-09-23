@@ -6,6 +6,7 @@
 
 #pragma once
 #include "scenes/Base.hpp"
+#include "ui/TextPanel.hpp"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -41,6 +42,9 @@ namespace Scenes {
 
     sf::Color m_bgColor = {128, 128, 128, 255};
     sf::Color m_bgPauseColor = {64, 64, 64, 128};
+
+    // UI Stuff
+    std::shared_ptr<UI::TextPanel> ui_helpInfo;
 
     void onEnd() override;
     void init() override;
