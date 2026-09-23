@@ -1,3 +1,4 @@
+#pragma once
 #include "ui/PanelBase.hpp"
 #include <memory>
 #include <SFML/Graphics.hpp>
