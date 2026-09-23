@@ -15,6 +15,7 @@
 #include "Action.hpp"
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <map>
 
 // This is here to fix circular dependency. GameEngine will
@@ -25,6 +26,7 @@ class GameEngine;
 
 // Helper type to define map of actions for scenes.
 typedef std::map<sf::Keyboard::Scancode, Action::Name> KeyboardMap;
+typedef std::map<sf::Mouse::Button, Action::Name> MouseMap;
 
 namespace Scenes {
   class Base : public Core {
@@ -32,6 +34,7 @@ namespace Scenes {
     GameEngine *m_engine = nullptr;
     EntityManager m_entityManager;
     KeyboardMap m_keyMap;
+    MouseMap m_mouseMap;
     bool m_paused = false;
     bool m_finished = false;
     bool m_receivePointerLocation = false;
@@ -65,12 +68,15 @@ namespace Scenes {
     void setPointerPos(Vec2f pos) { m_pointerPos = pos; }
     void simulate(const size_t frames);
     void registerKeyboardAction(sf::Keyboard::Scancode inKey, Action::Name name);
+    void registerMouseAction(sf::Mouse::Button inBtn, Action::Name name);
     size_t width() const;
     size_t height() const;
     size_t currentFrame() const;
     bool isFinished() const;
     const KeyboardMap &keyMap() const;
+    const MouseMap &mouseMap() const;
     bool respondsToKey(sf::Keyboard::Scancode key) const;
+    bool respondsToMouseBtn(sf::Mouse::Button btn) const;
     void drawLine(const Vec2f &p1, const Vec2f &p2);
   };
 }

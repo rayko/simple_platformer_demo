@@ -39,6 +39,7 @@ class GameEngine : public Core {
   void takeScreenshot();
 
   void handleKeyboardEvent(sf::Keyboard::Scancode key, Action::State state);
+  void handleMouseEvent(sf::Mouse::Button btn, Action::State state);
 
 public:
   GameEngine();

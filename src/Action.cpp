@@ -29,6 +29,12 @@ const std::string Action::strName() const {
   if (m_name == Name::Pause)           { return "PAUSE"; }
   if (m_name == Name::ToggleInfo)      { return "TOGGLE_INFO"; }
 
+  if (m_name == Name::LeftClick)       { return "LEFT_CLK"; }
+  if (m_name == Name::RightClick)      { return "RIGHT_CLK"; }
+  if (m_name == Name::MiddleClick)     { return "MID_CLK"; }
+  if (m_name == Name::ScrollUp)        { return "SCRL_UP"; }
+  if (m_name == Name::ScrollDown)      { return "SCRL_DOWN"; }
+
   return "UNDEFINED";
 }
 

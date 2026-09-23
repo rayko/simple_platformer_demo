@@ -92,7 +92,21 @@ void GameEngine::sUserInput() {
     } else if (const auto *key = event->getIf<sf::Event::KeyReleased>()) {
       handleKeyboardEvent(key->scancode, Action::State::End);
     }
+
+    const MouseMap sceneButtons = currentScene()->mouseMap();
+    if (const auto *btn = event->getIf<sf::Event::MouseButtonPressed>()) {
+      handleMouseEvent(btn->button, Action::State::Start);
+    } else if (const auto *btn = event->getIf<sf::Event::MouseButtonReleased>()) {
+      handleMouseEvent(btn->button, Action::State::End);
+    }
   }
+}
+
+void GameEngine::handleMouseEvent(sf::Mouse::Button btn, Action::State state) {
+  if (!currentScene()->respondsToMouseBtn(btn)) { return; }
+  const Action action = Action(currentScene()->mouseMap().at(btn), state);
+  currentScene()->doAction(action);
+  logDebug("Mouse: Sent action " + action.str() + " to current scene " + m_currentSceneName);
 }
 
 void GameEngine::handleKeyboardEvent(sf::Keyboard::Scancode key, Action::State state) {

@@ -31,7 +31,12 @@ public:
     ToggleFrontDec,
     ToggleBackDec,
     ToggleTiles,
-    SaveLevel
+    SaveLevel,
+    LeftClick,
+    RightClick,
+    MiddleClick,
+    ScrollUp,
+    ScrollDown
   };
 
 
