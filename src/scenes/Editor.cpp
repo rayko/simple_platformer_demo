@@ -82,6 +82,7 @@ namespace Scenes {
     ui_helpInfo->addTextLine("  ESC         -> Quit"); 
 
     ui_tileList = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
+    ui_tileList->setTitle("Tiles");
     for (auto &[name, anim] : m_engine->assetStore().animations()) {
       if (anim.type == "Tile")
         ui_tileList->addEntry(name);
