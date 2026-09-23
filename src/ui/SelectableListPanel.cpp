@@ -43,7 +43,6 @@ namespace UI {
   }
 
   void SelectableListPanel::setTitle(const std::string &txt) {
-    std::cout << "SETTING PANEL TITLE TO : " << txt << std::endl;
     m_title = txt;
     m_titleObj->setString(m_title);
     resize();
@@ -68,7 +67,6 @@ namespace UI {
         entry.setFillColor(m_selectedColor);
         m_selectedEntryTxt = entry.getString();
         m_hasSelection = true;
-        std::cout << "SELECTING " << m_selectedEntryTxt << std::endl << std::endl;
       } else {
         entry.setFillColor(m_unSelectedColor);
       }
