@@ -82,12 +82,18 @@ namespace Scenes {
     ui_helpInfo->addTextLine("  ESC         -> Quit"); 
 
     ui_tileList = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
-    ui_tileList->setMaxDisplayItems(15);
+    ui_tileList->setMaxDisplayItems(10);
     ui_tileList->setTitle("Tiles");
     for (auto &[name, anim] : m_engine->assetStore().animations()) {
       if (anim.type == "Tile")
         ui_tileList->addEntry(name);
     }
+
+    ui_placementType = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
+    ui_placementType->setTitle("Placement");
+    ui_placementType->addEntry("Front Decoration");
+    ui_placementType->addEntry("Back Decoration");
+    ui_placementType->addEntry("Normal Tile");
 
     loadTileNames();
     loadLevel(m_levelPath);
@@ -199,9 +205,11 @@ namespace Scenes {
     if (action.starting()) {
       switch (action.name()) {
       case (Action::Name::LeftClick):
-        if (ui_tileList->hovering(cursor)) {
+        if (ui_tileList->hovering(cursor))
           ui_tileList->clickAt(cursor);
-        }
+        if (ui_placementType->hovering(cursor))
+          ui_placementType->clickAt(cursor);
+        
         break;
       case (Action::Name::ToggleGrid):
         m_drawGrid = !m_drawGrid;
@@ -324,6 +332,13 @@ namespace Scenes {
     pos.y = m_viewCenter.y - (m_height / 2) + 10;
     ui_tileList->setPosition(pos);
     ui_tileList->draw(window);
+
+    pos.x = 0;
+    pos.y = 0;
+    pos.x = m_viewCenter.x + (m_width / 2) - ui_placementType->getSize().x - 10;
+    pos.y = m_viewCenter.y + (m_height / 2) - ui_helpInfo->getSize().y - ui_placementType->getSize().y - 30;
+    ui_placementType->setPosition(pos);
+    ui_placementType->draw(window);
 
     window.display();
   }

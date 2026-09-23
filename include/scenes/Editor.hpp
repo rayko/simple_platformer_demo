@@ -47,6 +47,7 @@ namespace Scenes {
     // UI Stuff
     std::shared_ptr<UI::TextPanel> ui_helpInfo;
     std::shared_ptr<UI::SelectableListPanel> ui_tileList;
+    std::shared_ptr<UI::SelectableListPanel> ui_placementType;
 
     void onEnd() override;
     void init() override;
