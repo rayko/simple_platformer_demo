@@ -64,11 +64,8 @@ namespace UI {
     if (!m_box.getGlobalBounds().contains(pos)) { return; }
     for (sf::Text &entry : m_entries) {
       if (entry.getGlobalBounds().contains(pos)) {
-        entry.setFillColor(m_selectedColor);
         m_selectedEntryTxt = entry.getString();
         m_hasSelection = true;
-      } else {
-        entry.setFillColor(m_unSelectedColor);
       }
     }
   }
@@ -85,6 +82,10 @@ namespace UI {
     localPos.y += m_titleObj->getLocalBounds().size.y + m_titleBotMargin;
     for (sf::Text &entry : m_entries) {
       entry.setPosition(localPos);
+      if (entry.getString() == m_selectedEntryTxt)
+        entry.setFillColor(m_selectedColor);
+      else
+        entry.setFillColor(m_unSelectedColor);
       window.draw(entry);
       localPos.y += entry.getLocalBounds().size.y + m_entryBotMargin;
     }
