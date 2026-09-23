@@ -82,10 +82,10 @@ namespace Scenes {
     ui_helpInfo->addTextLine("  ESC         -> Quit"); 
 
     ui_tileList = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
-    ui_tileList->setTitle("Tiles");
-    ui_tileList->addEntry("SomeGrass1");
-    ui_tileList->addEntry("Block2");
-    ui_tileList->addEntry("SomeOtherTile");
+    for (auto &[name, anim] : m_engine->assetStore().animations()) {
+      if (anim.type == "Tile")
+        ui_tileList->addEntry(name);
+    }
 
     loadTileNames();
     loadLevel(m_levelPath);
@@ -334,18 +334,6 @@ namespace Scenes {
     rect.setPosition(gridBlockOrigin(pos).toVector2f());
     m_engine->window().draw(rect);
   }
-
-  // void Editor::drawTileListPanel() {
-  //   sf::RectangleShape rect;
-  //   rect.setOutlineColor(sf::Color::Green);
-  //   rect.setOutlineThickness(2);
-  //   rect.setFillColor(sf::Color(64,64,64,128));
-  //   Vec2f panelSize = { 0,0 };
-  //   sf::Text name(*m_gridTextFont, "", 13);
-  //   for (std::string tileName : m_tileNames) {
-
-  //   }
-  // }
 
   void Editor::drawCursorCords() {
     sf::Text text(*m_gridTextFont, "", 15);
