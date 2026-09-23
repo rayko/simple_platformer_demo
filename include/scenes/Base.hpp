@@ -41,6 +41,7 @@ namespace Scenes {
     size_t m_height;
 
     sf::View m_view;
+    sf::Vector2f m_viewCenter = { 0, 0 }; 
 
     void setPaused(bool value);
     // Callback we can define on a scene child to run
