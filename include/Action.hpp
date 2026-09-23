@@ -46,6 +46,7 @@ public:
 
   bool starting() const;
   bool ending() const;
+  bool triggered() const;
   const Name name() const;
   const State state() const;
   const std::string strName() const;

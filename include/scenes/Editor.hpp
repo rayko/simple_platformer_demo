@@ -7,6 +7,7 @@
 #pragma once
 #include "scenes/Base.hpp"
 #include "ui/TextPanel.hpp"
+#include "ui/SelectableListPanel.hpp"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -45,6 +46,7 @@ namespace Scenes {
 
     // UI Stuff
     std::shared_ptr<UI::TextPanel> ui_helpInfo;
+    std::shared_ptr<UI::SelectableListPanel> ui_tileList;
 
     void onEnd() override;
     void init() override;
@@ -69,6 +71,7 @@ namespace Scenes {
     void drawCursor();
     void drawCursorCords();
     void drawTileListPanel();
+    Vec2f viewCursorPosition();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
   public:

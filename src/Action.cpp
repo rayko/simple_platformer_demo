@@ -3,6 +3,7 @@
 
 bool Action::starting() const { return m_state == State::Start; }
 bool Action::ending() const { return m_state == State::End; }
+bool Action::triggered() const { return m_state == State::Triggered; }
 const Action::Name Action::name() const { return m_name; }
 const Action::State Action::state() const { return m_state; }
 

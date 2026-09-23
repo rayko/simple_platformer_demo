@@ -44,6 +44,10 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::A, Action::Name::Left);
     registerKeyboardAction(sf::Keyboard::Scancode::D, Action::Name::Right);
 
+    registerMouseAction(sf::Mouse::Button::Left, Action::Name::LeftClick);
+    registerMouseWheelAction(Action::MWheelEvent::ScrollUp, Action::Name::ScrollUp);
+    registerMouseWheelAction(Action::MWheelEvent::ScrollDown, Action::Name::ScrollDown);
+
     m_width = m_engine->window().getSize().x;
     m_height = m_engine->window().getSize().y;
     m_view = sf::View(sf::FloatRect({0, 0}, {(float)m_width, (float)m_height}));
@@ -76,6 +80,13 @@ namespace Scenes {
     ui_helpInfo->addTextLine("  F4          -> Toggle Back Decorations"); 
     ui_helpInfo->addTextLine("  F5          -> Save Level"); 
     ui_helpInfo->addTextLine("  ESC         -> Quit"); 
+
+    ui_tileList = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
+    ui_tileList->setTitle("Tiles");
+    ui_tileList->addEntry("SomeGrass1");
+    ui_tileList->addEntry("Block2");
+    ui_tileList->addEntry("SomeOtherTile");
+
     loadTileNames();
     loadLevel(m_levelPath);
   }
@@ -165,8 +176,23 @@ namespace Scenes {
 
 
   void Editor::sDoAction(const Action &action) {
+    sf::Vector2f cursor;
+    // Reserved for future scroll events
+    if (action.triggered()) {
+      switch (action.name()) {
+      default: break;
+      }
+    }
+
     if (action.starting()) {
       switch (action.name()) {
+      case (Action::Name::LeftClick):
+        cursor.x = viewCursorPosition().x;
+        cursor.y = viewCursorPosition().y;
+        if (ui_tileList->hovering(cursor)) {
+          ui_tileList->clickAt(cursor);
+        }
+        break;
       case (Action::Name::ToggleGrid):
         m_drawGrid = !m_drawGrid;
         break;
@@ -281,7 +307,20 @@ namespace Scenes {
     pos.y = m_viewCenter.y + (m_height / 2) - ui_helpInfo->getSize().y - 10;
     ui_helpInfo->setPosition(pos);
     ui_helpInfo->draw(window);
+
+    pos.x = 0;
+    pos.y = 10;
+    pos.x = m_viewCenter.x + (m_width / 2) - ui_tileList->getSize().x - 10;
+    pos.y = m_viewCenter.y - (m_height / 2) + 10;
+    ui_tileList->setPosition(pos);
+    ui_tileList->draw(window);
+
     window.display();
+  }
+
+  Vec2f Editor::viewCursorPosition() {
+    return Vec2f(m_pointerPos.x + m_viewCenter.x - (m_width / 2),
+                m_pointerPos.y + m_viewCenter.y - (m_height / 2));
   }
 
   void Editor::drawCursor() {
@@ -290,9 +329,7 @@ namespace Scenes {
     rect.setOutlineColor(sf::Color(255, 0, 0));
     rect.setOutlineThickness(1);
     rect.setFillColor(sf::Color::Transparent);
-    Vec2f cursor = m_pointerPos;
-    cursor.x += m_view.getCenter().x - (m_width / 2);
-    cursor.y += m_view.getCenter().y - (m_height / 2);
+    Vec2f cursor = viewCursorPosition();
     Vec2f pos = gridBlockFromPixel(cursor);
     rect.setPosition(gridBlockOrigin(pos).toVector2f());
     m_engine->window().draw(rect);

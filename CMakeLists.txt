@@ -26,6 +26,7 @@ add_executable(simple_platformer_demo src/main.cpp
   src/Entity.cpp
   src/EntityManager.cpp
   src/ui/TextPanel.cpp
+  src/ui/SelectableListPanel.cpp
   src/scenes/Base.cpp
   src/scenes/Menu.cpp
   src/scenes/PlayLevel.cpp
