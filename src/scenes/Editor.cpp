@@ -236,6 +236,7 @@ namespace Scenes {
     if (vel.y > 0 && cameraCenter.y >= m_height / 2)
       vel.y = 0;
     m_view.move(vel);
+    m_viewCenter = m_view.getCenter();
   }
 
   void Editor::sRender() {
@@ -276,8 +277,8 @@ namespace Scenes {
     drawCursor();
 
     sf::Vector2f pos = { 0, 0 };
-    pos.x = m_view.getCenter().x + (m_width / 2) - 380;
-    pos.y = m_view.getCenter().y + (m_height / 2) - 250;
+    pos.x = m_viewCenter.x + (m_width / 2) - 380;
+    pos.y = m_viewCenter.y + (m_height / 2) - 250;
     ui_helpInfo->setPosition(pos);
     ui_helpInfo->draw(window);
     window.display();
