@@ -27,7 +27,7 @@ namespace Scenes {
     bool m_moveDown = false;
     bool m_moveLeft = false;
     bool m_moveRight = false;
-    float m_cameraSpeed = 5.0f;
+    float m_cameraSpeed = 8.0f;
 
     bool m_drawFrontDec = true;
     bool m_drawTiles = true;
