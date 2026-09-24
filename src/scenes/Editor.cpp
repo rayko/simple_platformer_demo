@@ -145,6 +145,7 @@ namespace Scenes {
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
+        m_tiles[std::format("{},{}", (int) gridPos.x, (int) gridPos.y)] = entity;
       } else if (token == "FrontDec") {
         // Create all decorations
         fin >> animName;
@@ -155,6 +156,7 @@ namespace Scenes {
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
+        m_fronDecTiles[std::format("{},{}", (int) gridPos.x, (int) gridPos.y)] = entity;
       } else if (token == "BackDec") {
         // Create all decorations
         fin >> animName;
@@ -165,6 +167,7 @@ namespace Scenes {
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
+        m_backDecTiles[std::format("{},{}", (int) gridPos.x, (int) gridPos.y)] = entity;
       } else if (token == "BackgroundColor") {
         fin >> value;
         m_bgColor.r = value;
