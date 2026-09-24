@@ -18,6 +18,7 @@ namespace Scenes {
   void Editor::update() {
     m_entityManager.update();
 
+    sLifespan();
     sTilingActions();
     sMovement();
     sAnimation();
@@ -235,6 +236,7 @@ namespace Scenes {
       switch (action.name()) {
       case (Action::Name::SaveLevel):
         saveLevel(m_levelPath);
+        spawnFlashMessage(std::format("Saved level to {}", m_levelPath));
         break;
       case (Action::Name::LeftClick):
         if (ui_tileList->hovering(cursor))
@@ -303,6 +305,12 @@ namespace Scenes {
     }
   }
 
+  void Editor::spawnFlashMessage(const std::string &txt) {
+    auto entity = m_entityManager.addEntity("UIMessage");
+    entity->addComponent<CTextBox>(m_gridTextFont, txt);
+    entity->addComponent<CLifespan>(60 * 3);
+  }
+
   std::shared_ptr<Entity> Editor::spawnEntity(const Vec2f &gridPos, const std::string &tag, const std::string &animName) {
     auto entity = m_entityManager.addEntity(tag);
     auto anim = m_engine->assetStore().getAnimation(animName);
@@ -350,6 +358,17 @@ namespace Scenes {
       if (!m_tiles.contains(key)) { return; }
       m_tiles[key]->destroy();
       m_tiles.erase(key);
+    }
+  }
+
+  void Editor::sLifespan() {
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CLifespan>()) {
+        entity->getComponent<CLifespan>().remaining--;
+        if (entity->getComponent<CLifespan>().remaining <= 0) {
+          entity->destroy();
+        }
+      }
     }
   }
 
@@ -451,12 +470,33 @@ namespace Scenes {
     ui_placementType->setPosition(pos);
     ui_placementType->draw(window);
 
+    drawFlashMessages();
     window.display();
   }
 
   Vec2f Editor::viewCursorPosition() {
     return Vec2f(m_pointerPos.x + m_viewCenter.x - (m_width / 2),
                 m_pointerPos.y + m_viewCenter.y - (m_height / 2));
+  }
+
+  void Editor::drawFlashMessages() {
+    sf::Vector2f anchor = { 0, 0 };
+    sf::RenderWindow &window = m_engine->window();
+    // Flash messages
+    anchor.x = m_viewCenter.x - (m_width / 2) + 10;
+    anchor.y = m_viewCenter.y + (m_height / 2) - 40;
+    for (auto entity : m_entityManager.entities("UIMessage")) {
+      if (!entity->hasComponent<CTextBox>()) { continue; }
+      entity->getComponent<CTextBox>().box.setPosition(anchor);
+      logDebug(std::format("Box pos {}, {}", anchor.x, anchor.y ));      
+      window.draw(entity->getComponent<CTextBox>().box);
+      anchor.x += 10;
+      anchor.y += 5;
+      entity->getComponent<CTextBox>().text->setPosition(anchor);
+      window.draw(*entity->getComponent<CTextBox>().text);
+      anchor.y -= 20;
+      anchor.x -= 10;
+    }
   }
 
   void Editor::drawCursor() {

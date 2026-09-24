@@ -11,6 +11,9 @@
 #pragma once
 #include "Animation.hpp"
 #include "Vec2f.hpp"
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <memory>
 
 class Component {
@@ -87,4 +90,27 @@ public:
 
   CGravity() {};
   CGravity(float spd) : speed(spd) {};
+};
+
+class CTextBox : public Component {
+public:
+  std::shared_ptr<sf::Text> text;
+  sf::RectangleShape box;
+  sf::Color boxLineColor = { 128, 128, 128 };
+  sf::Color boxFillColor = { 32, 32, 32, 192 };
+  int boxLineSize = 1;
+  int textSize = 15;
+
+  CTextBox() {};
+  CTextBox(std::shared_ptr<sf::Font> font, const std::string &txt) {
+    text = std::make_shared<sf::Text>(*font, txt, textSize);
+    text->setCharacterSize(textSize);
+    box.setFillColor(boxFillColor);
+    box.setOutlineColor(boxLineColor);
+    box.setOutlineThickness(boxLineSize);
+    box.setSize(sf::Vector2f(text->getLocalBounds().size.x + 20, text->getLocalBounds().size.y + 20));
+  }
+
+
+
 };

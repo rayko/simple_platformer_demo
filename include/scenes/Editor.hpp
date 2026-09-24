@@ -61,11 +61,13 @@ namespace Scenes {
     void sRender() override;
     void sMovement();
     void sAnimation();
+    void sLifespan();
     void sTilingActions();
 
     void placeTile(Vec2f &gridPos);
     void removeTile(Vec2f &gridPos);
     std::shared_ptr<Entity> spawnEntity(const Vec2f &gridPos, const std::string &tag, const std::string &animName);
+    void spawnFlashMessage(const std::string &txt);
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
@@ -85,6 +87,7 @@ namespace Scenes {
     void drawGrid();
     void drawCursor();
     void drawTileListPanel();
+    void drawFlashMessages();
     Vec2f viewCursorPosition();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
