@@ -69,6 +69,8 @@ namespace Scenes {
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
+    void saveLevel(const std::string &filename);
+    void writeLevelFileDefaults(std::ofstream &outputFile);
     void loadTileNames();
 
     // Parse gridCords custom system onto actual positions on the screen

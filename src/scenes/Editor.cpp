@@ -66,11 +66,7 @@ namespace Scenes {
     // Spawn level file for editor with default config
     if (!std::filesystem::exists(m_levelPath)) {
       std::ofstream file(m_levelPath);
-      file << "# Editor level - Rename file after done to edit a new blank level" << std::endl;
-
-      // Default Level settings
-      file << "BackgroundColor 82 64 128" << std::endl;
-      file << "Player 6 5 42 64 5.5  12 20 0.8 default" << std::endl << std::endl;
+      writeLevelFileDefaults(file);
       file.close();
     }
 
@@ -181,6 +177,36 @@ namespace Scenes {
     }
   }
 
+  void Editor::writeLevelFileDefaults(std::ofstream &outputFile) {
+    outputFile << "# Editor level - Rename file after done to edit a new blank level" << std::endl;
+
+    // Default Level settings
+    outputFile << "BackgroundColor 82 64 128" << std::endl;
+    outputFile << "Player 6 5 42 64 5.5  12 20 0.8 default" << std::endl << std::endl;
+  }
+
+  void Editor::saveLevel(const std::string &filename) {
+    std::ofstream file(m_levelPath);
+    writeLevelFileDefaults(file);
+
+    int x, y;
+    size_t splitterIdx;
+
+    for (auto &[key, entity] : m_tiles) {
+      splitterIdx = key.find(',');
+      x = std::stoi(key.substr(0, splitterIdx));
+      y = std::stoi(key.substr(splitterIdx + 1));
+      file << entity->tag() << " ";
+      file << entity->getComponent<CAnimation>().animation->getName() << " ";
+      file << x << " ";
+      file << y << std::endl;
+    }
+
+    file << std::endl;
+
+    file.close();
+  }
+
   void Editor::onEnd() {
     // TODO
     m_finished = true;
@@ -207,6 +233,9 @@ namespace Scenes {
 
     if (action.starting()) {
       switch (action.name()) {
+      case (Action::Name::SaveLevel):
+        saveLevel(m_levelPath);
+        break;
       case (Action::Name::LeftClick):
         if (ui_tileList->hovering(cursor))
           ui_tileList->clickAt(cursor);
