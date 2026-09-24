@@ -27,6 +27,8 @@ namespace Scenes {
     bool m_moveDown = false;
     bool m_moveLeft = false;
     bool m_moveRight = false;
+    bool m_placeTiles = false;
+    bool m_removeTiles = false;
     float m_cameraSpeed = 8.0f;
 
     bool m_drawFrontDec = true;
@@ -44,6 +46,10 @@ namespace Scenes {
     sf::Color m_bgColor = {128, 128, 128, 255};
     sf::Color m_bgPauseColor = {64, 64, 64, 128};
 
+    std::map<std::string, std::shared_ptr<Entity>> m_tiles;
+    std::map<std::string, std::shared_ptr<Entity>> m_fronDecTiles;
+    std::map<std::string, std::shared_ptr<Entity>> m_backDecTiles;
+
     // UI Stuff
     std::shared_ptr<UI::TextPanel> ui_helpInfo;
     std::shared_ptr<UI::SelectableListPanel> ui_tileList;
@@ -54,6 +60,12 @@ namespace Scenes {
     void sDoAction(const Action &action) override;
     void sRender() override;
     void sMovement();
+    void sAnimation();
+    void sTilingActions();
+
+    void placeTile(Vec2f &gridPos);
+    void removeTile(Vec2f &gridPos);
+    std::shared_ptr<Entity> spawnEntity(const Vec2f &gridPos, const std::string &tag, const std::string &animName);
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);

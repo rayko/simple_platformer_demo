@@ -18,7 +18,9 @@ namespace Scenes {
   void Editor::update() {
     m_entityManager.update();
 
+    sTilingActions();
     sMovement();
+    sAnimation();
     sRender();
   }
 
@@ -45,6 +47,7 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::D, Action::Name::Right);
 
     registerMouseAction(sf::Mouse::Button::Left, Action::Name::LeftClick);
+    registerMouseAction(sf::Mouse::Button::Right, Action::Name::RightClick);
     registerMouseWheelAction(Action::MWheelEvent::ScrollUp, Action::Name::ScrollUp);
     registerMouseWheelAction(Action::MWheelEvent::ScrollDown, Action::Name::ScrollDown);
 
@@ -183,7 +186,6 @@ namespace Scenes {
     m_finished = true;
   }
 
-
   void Editor::sDoAction(const Action &action) {
     sf::Vector2f cursor = { viewCursorPosition().x, viewCursorPosition().y };
     // Reserved for future scroll events
@@ -208,9 +210,13 @@ namespace Scenes {
       case (Action::Name::LeftClick):
         if (ui_tileList->hovering(cursor))
           ui_tileList->clickAt(cursor);
-        if (ui_placementType->hovering(cursor))
+        else if (ui_placementType->hovering(cursor))
           ui_placementType->clickAt(cursor);
-        
+        else
+          m_placeTiles = true;
+        break;
+      case (Action::Name::RightClick):
+        m_removeTiles = true;
         break;
       case (Action::Name::ToggleGrid):
         m_drawGrid = !m_drawGrid;
@@ -245,6 +251,12 @@ namespace Scenes {
 
     if (action.ending()) {
       switch (action.name()) {
+      case (Action::Name::LeftClick):
+        m_placeTiles = false;
+        break;
+      case (Action::Name::RightClick):
+        m_removeTiles = false;
+        break;
       case (Action::Name::Up):
         m_moveUp = false;
         break;
@@ -259,6 +271,76 @@ namespace Scenes {
         break;
       default: break;
       }
+    }
+  }
+
+  std::shared_ptr<Entity> Editor::spawnEntity(const Vec2f &gridPos, const std::string &tag, const std::string &animName) {
+    auto entity = m_entityManager.addEntity(tag);
+    auto anim = m_engine->assetStore().getAnimation(animName);
+    entity->addComponent<CAnimation>(anim);
+    entity->addComponent<CTransform>(initialSpritePosition(gridPos, anim->getSize()));
+    return entity;
+  }
+
+  void Editor::placeTile(Vec2f &gridPos) {
+    if (!ui_tileList->hasSelection()) { return; }
+    const std::string key = std::format("{},{}", (int) gridPos.x, (int) gridPos.y);
+    const std::string animName = ui_tileList->selectionText();
+    if (ui_placementType->selectionText() == "Front Decoration") {
+      // Front dec tiles
+      if (m_fronDecTiles.contains(key)) { return; }
+      auto entity = spawnEntity(gridPos, "FrontDec", animName);
+      m_fronDecTiles[key] = entity;
+    } else if (ui_placementType->selectionText() == "Back Decoration") {
+      // Back decoration tiles
+      if (m_backDecTiles.contains(key)) { return; }
+      auto entity = spawnEntity(gridPos, "BackDec", animName);
+      m_backDecTiles[key] = entity;
+    } else if (ui_placementType->selectionText() == "Normal Tile") {
+      // Normal tiles
+      if (m_tiles.contains(key)) { return; }
+      auto entity = spawnEntity(gridPos, "Tile", animName);
+      m_tiles[key] = entity;
+    }
+  }
+
+  void Editor::removeTile(Vec2f &gridPos) {
+    const std::string key = std::format("{},{}", (int) gridPos.x, (int) gridPos.y);
+    if (ui_placementType->selectionText() == "Front Decoration") {
+      // Front dec tiles
+      if (!m_fronDecTiles.contains(key)) { return; }
+      m_fronDecTiles[key]->destroy();
+      m_fronDecTiles.erase(key);
+    } else if (ui_placementType->selectionText() == "Back Decoration") {
+      // Back decoration tiles
+      if (!m_backDecTiles.contains(key)) { return; }
+      m_backDecTiles[key]->destroy();
+      m_backDecTiles.erase(key);
+    } else if (ui_placementType->selectionText() == "Normal Tile") {
+      // Normal tiles
+      if (!m_tiles.contains(key)) { return; }
+      m_tiles[key]->destroy();
+      m_tiles.erase(key);
+    }
+  }
+
+  void Editor::sAnimation() {
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CAnimation>()) {
+        auto anim = entity->getComponent<CAnimation>().animation;
+        anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());
+        anim->getSprite().setScale(entity->getComponent<CTransform>().scale.toVector2f());
+        anim->update();
+      }
+    }
+  }
+
+  void Editor::sTilingActions() {
+    Vec2f gridPos = gridBlockFromPixel(viewCursorPosition());
+    if (m_placeTiles) {
+      placeTile(gridPos);
+    } else if (m_removeTiles) {
+      removeTile(gridPos);
     }
   }
 
