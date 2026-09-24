@@ -50,6 +50,9 @@ namespace Scenes {
 
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Sprite Test", m_menuEntryCharSize), "test1"));
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Editor", m_menuEntryCharSize), "editor"));
+    if (std::filesystem::exists("editor_level.txt"))
+      m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Test Editor Level", m_menuEntryCharSize), "editorLevel"));
+
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Play", m_menuEntryCharSize), "level1"));
     m_menuEntries.push_back(MenuEntry(sf::Text(*font, "Exit", m_menuEntryCharSize), "exit"));
     for (MenuEntry item : m_menuEntries) {
@@ -151,6 +154,11 @@ namespace Scenes {
 
     if (menuName == "editor") {
       m_engine->changeScene("editor", std::make_shared<Editor>(m_engine));
+      return;
+    }
+
+    if (menuName == "editorLevel") {
+      m_engine->changeScene("editorLevel", std::make_shared<PlayLevel>(m_engine, "editor_level.txt"));
       return;
     }
   }
