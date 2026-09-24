@@ -84,7 +84,6 @@ namespace Scenes {
     Vec2f gridBlockFromPixel(const Vec2f &pos) const;
     void drawGrid();
     void drawCursor();
-    void drawCursorCords();
     void drawTileListPanel();
     Vec2f viewCursorPosition();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);

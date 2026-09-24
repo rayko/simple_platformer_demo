@@ -429,7 +429,6 @@ namespace Scenes {
     if (m_drawGrid)
       drawGrid();
 
-    drawCursorCords();
     drawCursor();
 
     sf::Vector2f pos = { 0, 0 };
@@ -470,13 +469,6 @@ namespace Scenes {
     Vec2f pos = gridBlockFromPixel(cursor);
     rect.setPosition(gridBlockOrigin(pos).toVector2f());
     m_engine->window().draw(rect);
-  }
-
-  void Editor::drawCursorCords() {
-    sf::Text text(*m_gridTextFont, "", 15);
-    text.setString(m_pointerPos.str());
-    text.setPosition(sf::Vector2f(10, 10));
-    m_engine->window().draw(text);
   }
 
   void Editor::drawGrid() {
