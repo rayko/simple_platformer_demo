@@ -113,7 +113,7 @@ namespace UI {
       localPos.y += m_entries[idx].getLocalBounds().size.y + m_entryBotMargin;
     }
 
-    if (m_firstEntryIdx + m_maxdisplayItems < (m_entries.size() - 1)) {
+    if (m_firstEntryIdx + m_maxdisplayItems < m_entries.size()) {
       sf::Vector2f pos = localPos;
       sf::Text upperItems(*m_font, "...", m_fontSize);
       pos.x += (getSize().x / 2) - (upperItems.getLocalBounds().size.x / 2);
@@ -129,7 +129,7 @@ namespace UI {
 
   void SelectableListPanel::scrollDown() {
     m_firstEntryIdx++;
-    if (m_firstEntryIdx + m_maxdisplayItems >= m_entries.size())
+    if (m_firstEntryIdx + m_maxdisplayItems > m_entries.size())
       m_firstEntryIdx--;
   }
 
