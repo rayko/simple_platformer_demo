@@ -208,6 +208,28 @@ namespace Scenes {
 
     file << std::endl;
 
+    for (auto &[key, entity] : m_fronDecTiles) {
+      splitterIdx = key.find(',');
+      x = std::stoi(key.substr(0, splitterIdx));
+      y = std::stoi(key.substr(splitterIdx + 1));
+      file << entity->tag() << " ";
+      file << entity->getComponent<CAnimation>().animation->getName() << " ";
+      file << x << " ";
+      file << y << std::endl;
+    }
+
+    file << std::endl;
+
+    for (auto &[key, entity] : m_backDecTiles) {
+      splitterIdx = key.find(',');
+      x = std::stoi(key.substr(0, splitterIdx));
+      y = std::stoi(key.substr(splitterIdx + 1));
+      file << entity->tag() << " ";
+      file << entity->getComponent<CAnimation>().animation->getName() << " ";
+      file << x << " ";
+      file << y << std::endl;
+    }
+
     file.close();
   }
 
