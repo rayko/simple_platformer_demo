@@ -491,7 +491,6 @@ namespace Scenes {
     for (auto entity : m_entityManager.entities("UIMessage")) {
       if (!entity->hasComponent<CTextBox>()) { continue; }
       entity->getComponent<CTextBox>().box.setPosition(anchor);
-      logDebug(std::format("Box pos {}, {}", anchor.x, anchor.y ));      
       window.draw(entity->getComponent<CTextBox>().box);
       anchor.x += 10;
       anchor.y += 5;
