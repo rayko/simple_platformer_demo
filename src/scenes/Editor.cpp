@@ -185,11 +185,11 @@ namespace Scenes {
     outputFile << "# Editor level - Rename file after done to edit a new blank level" << std::endl;
 
     // Default Level settings
-    outputFile << "# Color for the background in R G B";
+    outputFile << "# Color for the background in R G B" << std::endl;
     outputFile << "BackgroundColor 82 64 128" << std::endl;
 
-    outputFile << "# Player stats";
-    outputFile << "# <start pos X> <start pos Y> <col X> <col Y> <speed> <jump speed> <max speed> <gravity> <wpn name>";
+    outputFile << "# Player stats" << std::endl;
+    outputFile << "# <start pos X> <start pos Y> <col X> <col Y> <speed> <jump speed> <max speed> <gravity> <wpn name>" << std::endl;
     outputFile << "Player 6 5 42 64 5.5  14 20 0.8 default" << std::endl << std::endl;
   }
 
