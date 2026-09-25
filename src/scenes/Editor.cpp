@@ -186,7 +186,7 @@ namespace Scenes {
 
     // Default Level settings
     outputFile << "BackgroundColor 82 64 128" << std::endl;
-    outputFile << "Player 6 5 42 64 5.5  12 20 0.8 default" << std::endl << std::endl;
+    outputFile << "Player 6 5 42 64 5.5  14 20 0.8 default" << std::endl << std::endl;
   }
 
   void Editor::saveLevel(const std::string &filename) {
