@@ -111,6 +111,9 @@ namespace Scenes {
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CBoxCollider>(Vec2f(64,64));
+        if (anim->getName() == "WoodBox1") {
+          entity->addComponent<CGravity>(m_playerAttrs.gravity);
+        }
       } else if (token == "FrontDec") {
         // Create all decorations
         fin >> animName;
@@ -255,6 +258,31 @@ namespace Scenes {
     m_player->getComponent<CBoxCollider>().colliding = false;
 
     checkBulletCollisions();
+
+    // gravity tiles
+    for (auto tile : m_entityManager.entities("Tile")) {
+      if (!tile->hasComponent<CBoxCollider>()) { continue; }
+      if (!tile->hasComponent<CGravity>()) { continue; }
+      if (tile->getComponent<CAnimation>().animation->getName() == "WoodBox1") { 
+        for (auto otherTile : m_entityManager.entities("Tile")) {
+          if (tile->id() == otherTile->id()) { continue; }
+          if (!otherTile->hasComponent<CBoxCollider>()) { continue; }
+          overlap =m_physics.getOverlap(tile, otherTile);
+          if (overlap.x <= 0 || overlap.y <= 0) { continue; }
+          prevOverlap = m_physics.getPreviousOverlap(tile, otherTile);
+          if (overlap.y > 0 && prevOverlap.x > 0) {
+            // Vertical
+            if (tile->getComponent<CTransform>().vel.y > 0) {
+              // from top
+              tile->getComponent<CTransform>().vel.y = 0;
+              tile->getComponent<CTransform>().pos.y -= overlap.y;
+              tile->getComponent<CTransform>().prevPos.y -= overlap.y;
+            }
+          }
+        }
+      }
+      
+    }
 
     // Player vs tiles
     if (m_player->hasComponent<CBoxCollider>())
