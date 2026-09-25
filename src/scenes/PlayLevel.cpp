@@ -281,7 +281,6 @@ namespace Scenes {
           }
         }
       }
-      
     }
 
     // Player vs tiles
@@ -302,14 +301,18 @@ namespace Scenes {
         prevOverlap = m_physics.getPreviousOverlap(m_player, tile);
         if (overlap.x > 0 && prevOverlap.y > 0) {
           // horizontal
-          if (m_player->getComponent<CTransform>().vel.x > 0) {
-            // from left
-            m_player->getComponent<CTransform>().pos.x -= overlap.x;
-            m_player->getComponent<CTransform>().prevPos.x -= overlap.x;
-          } else if (m_player->getComponent<CTransform>().vel.x < 0){
-            // from right
-            m_player->getComponent<CTransform>().pos.x += overlap.x;
-            m_player->getComponent<CTransform>().prevPos.x += overlap.x;
+          if (overlap.y <= 5) {
+            m_player->getComponent<CTransform>().pos.y -= overlap.y; // Uppies
+          } else {
+            if (m_player->getComponent<CTransform>().vel.x > 0) {
+              // from left
+              m_player->getComponent<CTransform>().pos.x -= overlap.x;
+              m_player->getComponent<CTransform>().prevPos.x -= overlap.x;
+            } else if (m_player->getComponent<CTransform>().vel.x < 0){
+              // from right
+              m_player->getComponent<CTransform>().pos.x += overlap.x;
+              m_player->getComponent<CTransform>().prevPos.x += overlap.x;
+            }
           }
         }
 
@@ -496,7 +499,7 @@ namespace Scenes {
 
       // Force floor unstick if we are moving substantially on Y
       // This way, gravity can trigger airborne state (ie: dropping from ledge)
-      if (std::abs(pTransform.vel.y) > 2) {
+      if (std::abs(pTransform.vel.y) > 3) {
         m_playerOnFloor = false;
       }
 
