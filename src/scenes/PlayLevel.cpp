@@ -23,6 +23,7 @@ namespace Scenes {
       sMovement();
       sCollisions();
       sLifespan();
+      sEventTimers();
       sAnimation();
     }
 
@@ -145,6 +146,13 @@ namespace Scenes {
         logWarn("Unrecognized keyword: " + token);
       }
     }
+  
+    // Event tests
+    entity = m_entityManager.addEntity("EventTimer");
+    entity->addComponent<CEventTimer>((60 * 2), "Something happened");
+
+    entity = m_entityManager.addEntity("EventTimer");
+    entity->addComponent<CEventTimer>((60 * 4), "Nah, just kidding");
   }
 
   void PlayLevel::onEnd() {
@@ -250,6 +258,18 @@ namespace Scenes {
   void PlayLevel::pickupCoin() {
     logDebug("Picked up a coin");
     m_playerCoins++;
+  }
+
+  void PlayLevel::sEventTimers() {
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CEventTimer>()) {
+        entity->getComponent<CEventTimer>().remaining--;
+        if (entity->getComponent<CEventTimer>().remaining <= 0){
+          logDebug("EventTimer expired: " + entity->getComponent<CEventTimer>().name);
+          entity->destroy();
+        }
+      }
+    }
   }
 
   void PlayLevel::sCollisions() {

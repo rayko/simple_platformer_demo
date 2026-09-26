@@ -62,6 +62,7 @@ namespace Scenes {
     void sMovement();
     void sCollisions();
     void sLifespan();
+    void sEventTimers();
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
