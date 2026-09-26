@@ -110,7 +110,14 @@ public:
     box.setOutlineThickness(boxLineSize);
     box.setSize(sf::Vector2f(text->getLocalBounds().size.x + 20, text->getLocalBounds().size.y + 20));
   }
+};
 
+class CEventTimer : public Component {
+public:
+  std::string name;
+  size_t total;
+  size_t remaining;
 
-
+  CEventTimer() {};
+  CEventTimer(size_t frames) : total(frames), remaining(frames) {};
 };

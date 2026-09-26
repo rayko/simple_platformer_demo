@@ -12,7 +12,7 @@
 #include <vector>
 
 typedef std::tuple<CTransform, CLifespan, CInput, CBoxCollider, CAnimation,
-                   CGravity, CState, CTextBox>
+                   CGravity, CState, CTextBox, CEventTimer>
     ComponentTuple;
 
 class Entity {
