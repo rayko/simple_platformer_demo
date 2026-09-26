@@ -114,10 +114,11 @@ public:
 
 class CEventTimer : public Component {
 public:
-  std::string name;
+  std::string name = "default";
   size_t total;
   size_t remaining;
 
   CEventTimer() {};
   CEventTimer(size_t frames) : total(frames), remaining(frames) {};
+  CEventTimer(size_t frames, const std::string &n) : total(frames), remaining(frames), name(n) {};
 };
