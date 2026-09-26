@@ -91,6 +91,7 @@ namespace Scenes {
     void destroyBullet(std::shared_ptr<Entity> &bullet, int direction);
     void destroyTile(std::shared_ptr<Entity> &tile);
     void pickupCoin();
+    void handleTimedEvent(const std::string &name);
 
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);

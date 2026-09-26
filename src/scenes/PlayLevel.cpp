@@ -146,13 +146,6 @@ namespace Scenes {
         logWarn("Unrecognized keyword: " + token);
       }
     }
-  
-    // Event tests
-    entity = m_entityManager.addEntity("EventTimer");
-    entity->addComponent<CEventTimer>(seconds(2), "Something happened");
-
-    entity = m_entityManager.addEntity("EventTimer");
-    entity->addComponent<CEventTimer>(seconds(4), "Nah, just kidding");
   }
 
   void PlayLevel::onEnd() {
@@ -265,6 +258,12 @@ namespace Scenes {
     m_playerCoins++;
   }
 
+  void PlayLevel::handleTimedEvent(const std::string &name) {
+    std::shared_ptr<Entity> entity;
+    logDebug("Triggering timed event: " + name);
+
+    logWarn("Unhandled timed event name: " + name);
+  }
 
   ///// System Functions /////
 
@@ -288,7 +287,7 @@ namespace Scenes {
       if (entity->hasComponent<CEventTimer>()) {
         entity->getComponent<CEventTimer>().remaining--;
         if (entity->getComponent<CEventTimer>().remaining <= 0){
-          logDebug("EventTimer expired: " + entity->getComponent<CEventTimer>().name);
+          handleTimedEvent(entity->getComponent<CEventTimer>().name);
           entity->destroy();
         }
       }
@@ -581,7 +580,7 @@ namespace Scenes {
     }
 
     m_engine->window().setView(m_view);
-
+    m_viewCenter = m_view.getCenter();
     window.clear(m_bgColor);
 
     if (m_drawTextures) {
