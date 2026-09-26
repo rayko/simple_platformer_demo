@@ -28,6 +28,7 @@ class GameEngine : public Core {
   const std::string m_winTitle = "Simple Platformer Demo";
   const std::string m_engineConfigFile = "configs.txt";
   const std::string m_assetsConfigFile = "assets.txt";
+  const int maxFPS = 60;
 
   void init();
   void loadConfigs();
@@ -51,4 +52,6 @@ public:
   sf::RenderWindow &window();
   const AssetStore &assetStore() const;
   bool running();
+
+  size_t seconds(float secs);
 };

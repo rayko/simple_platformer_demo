@@ -22,6 +22,11 @@ void GameEngine::run() {
 
 const AssetStore &GameEngine::assetStore() const { return m_assets; }
 
+// Helper to return a number of frames based on input seconds
+// just to not have to deal with exact frame numbers on timed things.
+size_t GameEngine::seconds(float secs) {
+  return std::round(maxFPS * secs);
+}
 
 // Private
 
@@ -38,7 +43,7 @@ void GameEngine::init() {
   loadConfigs();
   loadAssets();
   m_window.create(sf::VideoMode(m_winSize), m_winTitle);
-  m_window.setFramerateLimit(60);
+  m_window.setFramerateLimit(maxFPS);
   m_window.setKeyRepeatEnabled(false);
 
   // Switch to the first scene to load
