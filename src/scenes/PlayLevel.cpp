@@ -160,20 +160,8 @@ namespace Scenes {
     m_finished = true;
   }
 
-  void PlayLevel::sLifespan() {
-    for (auto entity : m_entityManager.entities()) {
-      if (entity->hasComponent<CLifespan>()) {
-        entity->getComponent<CLifespan>().remaining--;
 
-        if (entity->getComponent<CLifespan>().remaining <= 0) {
-          if (entity->tag() == "Bullet")
-            expireBullet(entity);
-          else
-            entity->destroy();
-        }
-      }
-    }
-  }
+  //// Gameplay Mechanics and helpers ////
 
   void PlayLevel::playerHitsTile(std::shared_ptr<Entity> &tile) {
     auto anim = tile->getComponent<CAnimation>().animation;
@@ -201,6 +189,23 @@ namespace Scenes {
     m_player->addComponent<CInput>();
     m_player->addComponent<CState>(m_playerStates.airborne);
     m_player->addComponent<CGravity>(m_playerAttrs.gravity);
+  }
+
+  void PlayLevel::spawnBullet(std::shared_ptr<Entity> &player) {
+    const auto &pTransform = player->getComponent<CTransform>();
+    int direction = 1;
+    const float speed = m_playerAttrs.maxSpeed / 2;
+    if (pTransform.scale.x > 0) { direction = 1; }
+    else { direction = -1; }
+
+    std::shared_ptr<Entity> bullet = m_entityManager.addEntity("Bullet");
+    bullet->addComponent<CTransform>(pTransform.pos);
+    bullet->getComponent<CTransform>().pos.x += 10 * direction;
+    bullet->getComponent<CTransform>().scale.x = direction;
+    bullet->getComponent<CTransform>().vel = Vec2f(speed * direction, 0);
+    bullet->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Bullet1"));
+    bullet->addComponent<CBoxCollider>(Vec2f(36,10));
+    bullet->addComponent<CLifespan>(50);
   }
 
   void PlayLevel::spawnCoin(std::shared_ptr<Entity> &originTile) {
@@ -258,6 +263,24 @@ namespace Scenes {
   void PlayLevel::pickupCoin() {
     logDebug("Picked up a coin");
     m_playerCoins++;
+  }
+
+
+  ///// System Functions /////
+
+  void PlayLevel::sLifespan() {
+    for (auto entity : m_entityManager.entities()) {
+      if (entity->hasComponent<CLifespan>()) {
+        entity->getComponent<CLifespan>().remaining--;
+
+        if (entity->getComponent<CLifespan>().remaining <= 0) {
+          if (entity->tag() == "Bullet")
+            expireBullet(entity);
+          else
+            entity->destroy();
+        }
+      }
+    }
   }
 
   void PlayLevel::sEventTimers() {
@@ -547,23 +570,6 @@ namespace Scenes {
     }
   }
 
-  void PlayLevel::spawnBullet(std::shared_ptr<Entity> &player) {
-    const auto &pTransform = player->getComponent<CTransform>();
-    int direction = 1;
-    const float speed = m_playerAttrs.maxSpeed / 2;
-    if (pTransform.scale.x > 0) { direction = 1; }
-    else { direction = -1; }
-
-    std::shared_ptr<Entity> bullet = m_entityManager.addEntity("Bullet");
-    bullet->addComponent<CTransform>(pTransform.pos);
-    bullet->getComponent<CTransform>().pos.x += 10 * direction;
-    bullet->getComponent<CTransform>().scale.x = direction;
-    bullet->getComponent<CTransform>().vel = Vec2f(speed * direction, 0);
-    bullet->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Bullet1"));
-    bullet->addComponent<CBoxCollider>(Vec2f(36,10));
-    bullet->addComponent<CLifespan>(50);
-  }
-
   void PlayLevel::sRender() {
     sf::RenderWindow &window = m_engine->window();
 
@@ -640,6 +646,9 @@ namespace Scenes {
 
     window.display();
   }
+
+
+  //// Helper functions ////
 
   void PlayLevel::drawDebugPanel() {
     m_debugPanel->clear();
