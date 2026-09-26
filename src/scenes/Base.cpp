@@ -1,4 +1,5 @@
 #include "scenes/Base.hpp"
+#include "GameEngine.hpp"
 
 namespace Scenes {
   void Base::setPaused(bool value) { m_paused = value; }
@@ -42,5 +43,9 @@ namespace Scenes {
 
   bool Base::respondsToMouseWheel(Action::MWheelEvent scroll) const {
     return !(m_mouseWheelMap.find(scroll) == m_mouseWheelMap.end());
+  }
+
+  size_t Base::seconds(float secs) {
+    return m_engine->seconds(secs);
   }
 }

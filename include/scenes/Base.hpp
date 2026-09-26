@@ -57,6 +57,8 @@ namespace Scenes {
     virtual void sRender() = 0;
     virtual void init() = 0;
 
+    size_t seconds(float secs);
+
   public:
     Base() {};
     virtual ~Base() {};

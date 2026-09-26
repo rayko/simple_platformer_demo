@@ -149,10 +149,10 @@ namespace Scenes {
   
     // Event tests
     entity = m_entityManager.addEntity("EventTimer");
-    entity->addComponent<CEventTimer>((60 * 2), "Something happened");
+    entity->addComponent<CEventTimer>(seconds(2), "Something happened");
 
     entity = m_entityManager.addEntity("EventTimer");
-    entity->addComponent<CEventTimer>((60 * 4), "Nah, just kidding");
+    entity->addComponent<CEventTimer>(seconds(4), "Nah, just kidding");
   }
 
   void PlayLevel::onEnd() {
