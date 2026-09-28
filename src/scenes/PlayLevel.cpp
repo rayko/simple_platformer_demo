@@ -94,7 +94,6 @@ namespace Scenes {
 
       if (token == "Player"){
         // Load player attrs
-        fin >> m_playerAttrs.x >> m_playerAttrs.y;   // Grid Position (x,y)
         fin >> m_playerAttrs.cx >> m_playerAttrs.cy; // Collider size (x,y)
         fin >> m_playerAttrs.speed;                  // X speed (run/move)
         fin >> m_playerAttrs.jumpVel;                // Jump speed (Y)
