@@ -178,6 +178,31 @@ namespace Scenes {
         m_bgColor.g = value;
         fin >> value;
         m_bgColor.b = value;
+      } else if (token == "PlayerSpawn") {
+        fin >> m_playerAttrs.x >> m_playerAttrs.y;
+        m_playerSpawnGridPos.x = m_playerAttrs.x;
+        m_playerSpawnGridPos.y = m_playerAttrs.y;
+        entity = m_entityManager.addEntity("Player");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation("AlexAir"));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(m_playerSpawnGridPos, anim->getSize());
+        entity->addComponent<CTransform>(worldPos);
+        m_playerSpawnEntity = entity;
+      } else if (token == "ExitSwitch") {
+        fin >> m_exitSwitchGridPos.x >> m_exitSwitchGridPos.y;
+        entity = m_entityManager.addEntity("ExitSwitch");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitMachineIdle"));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(m_exitSwitchGridPos, anim->getSize());
+        entity->addComponent<CTransform>(worldPos);
+        m_exitSwitchEntity = entity;
+      } else if (token == "ExitDoor") {
+        fin >> m_exitDoorGridPos.x >> m_exitDoorGridPos.y;
+        entity = m_entityManager.addEntity("ExitDoor");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitDoorIdle"));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(m_exitDoorGridPos, anim->getSize());
+        entity->addComponent<CTransform>(worldPos);
       } else {
         logWarn("Unrecognized keyword: " + token);
       }
@@ -493,6 +518,24 @@ namespace Scenes {
         if (entity->hasComponent<CAnimation>()) {
           window.draw(entity->getComponent<CAnimation>().animation->getSprite());
         }
+      }
+    }
+
+    for (auto entity : m_entityManager.entities("ExitSwitch")) {
+      if (entity->hasComponent<CAnimation>()) {
+        window.draw(entity->getComponent<CAnimation>().animation->getSprite());
+      }
+    }
+
+    for (auto entity : m_entityManager.entities("ExitDoor")) {
+      if (entity->hasComponent<CAnimation>()) {
+        window.draw(entity->getComponent<CAnimation>().animation->getSprite());
+      }
+    }
+
+    for (auto entity : m_entityManager.entities("Player")) {
+      if (entity->hasComponent<CAnimation>()) {
+        window.draw(entity->getComponent<CAnimation>().animation->getSprite());
       }
     }
 

@@ -40,6 +40,16 @@ namespace Scenes {
 
     std::map<std::string, AnimationData> m_tileList;
 
+    // Special tiles
+    Vec2f m_playerSpawnGridPos = { 0, 0 };
+    std::shared_ptr<Entity> m_playerSpawnEntity = nullptr;
+
+    Vec2f m_exitSwitchGridPos = { 0, 0 };
+    std::shared_ptr<Entity> m_exitSwitchEntity = nullptr;
+
+    Vec2f m_exitDoorGridPos = { 0, 0 };
+    std::shared_ptr<Entity> m_exitDoorEntity = nullptr;
+
     std::shared_ptr<sf::Font> m_gridTextFont;
     int m_gridFontSize = 12;
     Vec2f m_worldOrigin; // Reference to where grid (0,0) should be
