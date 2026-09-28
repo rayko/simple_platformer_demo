@@ -30,6 +30,7 @@ namespace Scenes {
     PlayerStates m_playerStates;
 
     std::shared_ptr<Entity> m_player;
+    std::shared_ptr<Entity> m_levelExitDoor;
     const std::string m_levelPath;
     PlayerAttrs m_playerAttrs;
     bool m_drawTextures = true;
@@ -53,6 +54,7 @@ namespace Scenes {
     bool m_playerOnFloor = false;
 
     int m_playerCoins = 0;
+    int m_levelRequiredCoins = 0;
     
     void onEnd() override;
     void init() override;
@@ -76,7 +78,7 @@ namespace Scenes {
 
     // This function takes an (x,y) coordinate in normal world space (pixel
     // coords), and returns the corresponding grid block that containes that pixel.
-    Vec2f gridBlockFromPixel(const Vec2f &pos) const;
+    Vec2f gridBlockFromPixel(Vec2f &pos);
     void drawGrid();
     void drawColliders();
     void drawDebugPanel();
@@ -85,6 +87,7 @@ namespace Scenes {
     void spawnPlayer(const Vec2f &gridBlock);
     void spawnBullet(std::shared_ptr<Entity> &player);
     void spawnCoin(std::shared_ptr<Entity> &originTile);
+    void spawnCoinAt(Vec2f &gridPos);
     void playerHitsTile(std::shared_ptr<Entity> &tile);
     void checkBulletCollisions();
 
@@ -92,6 +95,7 @@ namespace Scenes {
     void destroyBullet(std::shared_ptr<Entity> &bullet, int direction);
     void destroyTile(std::shared_ptr<Entity> &tile);
     void pickupCoin();
+    void countRequiredCoins();
     void handleTimedEvent(const std::string &name);
     void handleInteraction(std::shared_ptr<Entity> &entity);
 

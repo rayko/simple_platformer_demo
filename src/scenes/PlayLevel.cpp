@@ -73,6 +73,7 @@ namespace Scenes {
 
     m_entityManager = EntityManager();
     loadLevel(m_levelPath);
+    // countRequiredCoins();
     spawnPlayer(Vec2f(m_playerAttrs.x, m_playerAttrs.y));
   }
 
@@ -113,9 +114,19 @@ namespace Scenes {
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CBoxCollider>(Vec2f(64,64));
-        if (anim->getName() == "WoodBox1") {
+        if (anim->getName() == "WoodBox1")
           entity->addComponent<CGravity>(m_playerAttrs.gravity);
+
+        if (anim->getName() == "Coin") {
+          entity->addComponent<CCoinReward>();
+          m_levelRequiredCoins++;
         }
+        
+        if (anim->getName() == "ActiveTile1") {
+          entity->addComponent<CCoinReward>();
+          m_levelRequiredCoins++;
+        }
+
       } else if (token == "FrontDec") {
         // Create all decorations
         fin >> animName;
@@ -166,6 +177,7 @@ namespace Scenes {
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CBoxCollider>(Vec2f(64,128));
+        m_levelExitDoor = entity;
       } else {
         logWarn("Unrecognized keyword: " + token);
       }
@@ -231,10 +243,17 @@ namespace Scenes {
     auto fx = m_entityManager.addEntity("FrontDec");
     fx->addComponent<CTransform>(coinLocation);
     fx->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Smoke"));
+    Vec2f gridPos = gridBlockFromPixel(coinLocation);
+    spawnCoinAt(gridPos);
+  }
+
+  void PlayLevel::spawnCoinAt(Vec2f &gridPos) {
     auto coin = m_entityManager.addEntity("Tile");
-    coin->addComponent<CTransform>(coinLocation);
-    coin->addComponent<CAnimation>(m_engine->assetStore().getAnimation("Coin"));
+    auto anim = m_engine->assetStore().getAnimation("Coin");
+    coin->addComponent<CAnimation>(anim);
+    coin->addComponent<CTransform>(initialSpritePosition(gridPos, anim->getSize()));
     coin->addComponent<CBoxCollider>(Vec2f(32, 32));
+    coin->addComponent<CCoinReward>();
   }
 
   void PlayLevel::destroyBullet(std::shared_ptr<Entity> &bullet, int direction) {
@@ -385,7 +404,7 @@ namespace Scenes {
         overlap = m_physics.getOverlap(m_player, tile);
         if (overlap.x <= 0 || overlap.y <= 0) { continue; }
         if (tile->getComponent<CAnimation>().animation->getName() == "Coin") {
-          pickupCoin();
+          m_playerCoins += tile->getComponent<CCoinReward>().amount;
           tile->destroy();
           continue;
         }
@@ -690,7 +709,7 @@ namespace Scenes {
     }
 
     sf::Text coinCounter(*m_gridTextFont, "", 30);
-    coinCounter.setString(std::to_string(m_playerCoins));
+    coinCounter.setString(std::format("{} / {}", m_playerCoins, m_levelRequiredCoins));
     sf::Vector2f counterPos = m_view.getCenter();
     counterPos.x -= (float)window.getSize().x / 2;
     counterPos.y -= (float)window.getSize().y / 2;
@@ -812,7 +831,7 @@ namespace Scenes {
     return origin;
   }
 
-  Vec2f PlayLevel::gridBlockFromPixel(const Vec2f &pos) const {
+  Vec2f PlayLevel::gridBlockFromPixel(Vec2f &pos) {
     int x = std::floor(pos.x);
     x -= (x % (int)std::floor(m_gridSize.x));
 
@@ -845,4 +864,11 @@ namespace Scenes {
     return worldPos;
   }
 
+  // This is sketchy. Make it better.
+  void PlayLevel::countRequiredCoins() {
+    for (auto entity : m_entityManager.entities()) {
+      if (!entity->hasComponent<CCoinReward>()) { continue; }
+      m_levelRequiredCoins += entity->getComponent<CCoinReward>().amount;
+    }
+  }
 }

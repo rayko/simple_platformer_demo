@@ -12,7 +12,8 @@
 #include <vector>
 
 typedef std::tuple<CTransform, CLifespan, CInput, CBoxCollider, CAnimation,
-                   CGravity, CState, CTextBox, CEventTimer, CInteractible>
+                   CGravity, CState, CTextBox, CEventTimer, CInteractible,
+                   CCoinReward>
     ComponentTuple;
 
 class Entity {

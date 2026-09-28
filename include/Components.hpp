@@ -142,3 +142,11 @@ public:
   CInteractible () {};
   CInteractible (const std::string &name) : triggerName(name) {};
 };
+
+class CCoinReward : public Component {
+public:
+  int amount = 1;
+
+  CCoinReward() {};
+  CCoinReward(int count) : amount(count) {};
+};
