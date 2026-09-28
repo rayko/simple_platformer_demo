@@ -60,6 +60,8 @@ public:
   bool jump = false;
   bool shoot = false;
   bool canShoot = true;
+  bool canInteract = true;
+  bool interact = false;
 
   CInput() {};
 };
