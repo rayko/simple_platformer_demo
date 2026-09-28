@@ -132,3 +132,11 @@ public:
   CEventTimer(size_t frames) : total(frames), remaining(frames) {};
   CEventTimer(size_t frames, const std::string &n) : total(frames), remaining(frames), name(n) {};
 };
+
+class CInteractible : public Component {
+public:
+  std::string triggerName = "default";
+  
+  CInteractible () {};
+  CInteractible (const std::string &name) : triggerName(name) {};
+};
