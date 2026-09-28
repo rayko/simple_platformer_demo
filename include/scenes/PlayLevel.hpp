@@ -63,6 +63,7 @@ namespace Scenes {
     void sCollisions();
     void sLifespan();
     void sEventTimers();
+    void sInteractions();
 
     // Reads level config file to set it up
     void loadLevel(const std::string &filename);
@@ -92,6 +93,7 @@ namespace Scenes {
     void destroyTile(std::shared_ptr<Entity> &tile);
     void pickupCoin();
     void handleTimedEvent(const std::string &name);
+    void handleInteraction(std::shared_ptr<Entity> &entity);
 
   public:
     PlayLevel(GameEngine *engine, const std::string &lvlConfigFile);

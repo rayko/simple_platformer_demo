@@ -24,6 +24,7 @@ namespace Scenes {
       sCollisions();
       sLifespan();
       sEventTimers();
+      sInteractions();
       sAnimation();
     }
 
@@ -58,6 +59,7 @@ namespace Scenes {
     registerKeyboardAction(sf::Keyboard::Scancode::Left, Action::Name::Left);
     registerKeyboardAction(sf::Keyboard::Scancode::Right, Action::Name::Right);
     registerKeyboardAction(sf::Keyboard::Scancode::Space, Action::Name::Shoot);
+    registerKeyboardAction(sf::Keyboard::Scancode::E, Action::Name::Interact);
 
     m_width = m_engine->window().getSize().x;
     m_height = m_engine->window().getSize().y;
@@ -154,10 +156,11 @@ namespace Scenes {
         worldPos = initialSpritePosition(gridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CBoxCollider>(Vec2f(64,64));
+        entity->addComponent<CInteractible>("OpenExit");
       } else if (token == "ExitDoor") {
         // Setup exit door location
         fin >> gridPos.x >> gridPos.y;
-        entity = m_entityManager.addEntity("ExitDoor");
+        entity = m_entityManager.addEntity("Tile");
         entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitDoorIdle"));
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(gridPos, anim->getSize());
@@ -286,7 +289,35 @@ namespace Scenes {
     logWarn("Unhandled timed event name: " + name);
   }
 
+  void PlayLevel::handleInteraction(std::shared_ptr<Entity> &entity) {
+    const std::string triggerName = entity->getComponent<CInteractible>().triggerName;
+    logDebug("Interacting with entity with trigger " + triggerName);
+
+    if (triggerName == "OpenExit") {
+      // TODO Check if can exit
+      return;
+    }
+
+    logWarn("Unhandled interaction trigger: " + triggerName);
+  }
+  
   ///// System Functions /////
+
+  void PlayLevel::sInteractions() {
+    Vec2f overlap;
+    for (auto entity : m_entityManager.entities()) {
+      if (!entity->hasComponent<CInteractible>()) { continue; }
+      if (!entity->hasComponent<CBoxCollider>()) { continue; }
+      overlap = m_physics.getOverlap(m_player, entity);
+      if (overlap.x <= 0 || overlap.y <= 0) { continue; }
+      // If we reach here, we are nerby an interactible entity (colliding)
+      // IDEA Show something on screen to inform it's possible to interact with entity
+      if (m_player->getComponent<CInput>().canInteract && m_player->getComponent<CInput>().interact) {
+        m_player->getComponent<CInput>().canInteract = false;
+        handleInteraction(entity);
+      }
+    }
+  }
 
   void PlayLevel::sLifespan() {
     for (auto entity : m_entityManager.entities()) {
@@ -330,7 +361,7 @@ namespace Scenes {
         for (auto otherTile : m_entityManager.entities("Tile")) {
           if (tile->id() == otherTile->id()) { continue; }
           if (!otherTile->hasComponent<CBoxCollider>()) { continue; }
-          overlap =m_physics.getOverlap(tile, otherTile);
+          overlap = m_physics.getOverlap(tile, otherTile);
           if (overlap.x <= 0 || overlap.y <= 0) { continue; }
           prevOverlap = m_physics.getPreviousOverlap(tile, otherTile);
           if (overlap.y > 0 && prevOverlap.x > 0) {
@@ -446,6 +477,10 @@ namespace Scenes {
         if (m_player)
           m_player->getComponent<CInput>().jump = true;
         break;
+      case (Action::Name::Interact):
+        if (m_player)
+          m_player->getComponent<CInput>().interact = true;
+        break;
       default: break;
       }
     }
@@ -476,6 +511,12 @@ namespace Scenes {
       case (Action::Name::Jump):
         if (m_player)
           m_player->getComponent<CInput>().jump = false;
+        break;
+      case (Action::Name::Interact):
+        if (m_player) {
+          m_player->getComponent<CInput>().interact = false;
+          m_player->getComponent<CInput>().canInteract = true;
+        }
         break;
       default: break;
       }
@@ -625,9 +666,6 @@ namespace Scenes {
         }
       }
 
-      // Draw player here, before foreground
-      window.draw(m_player->getComponent<CAnimation>().animation->getSprite());
-
       for (auto entity : m_entityManager.entities("ExitSwitch")) {
         if (entity->hasComponent<CAnimation>()) {
           window.draw(entity->getComponent<CAnimation>().animation->getSprite());
@@ -639,6 +677,9 @@ namespace Scenes {
           window.draw(entity->getComponent<CAnimation>().animation->getSprite());
         }
       }
+
+      // Draw player here, before foreground
+      window.draw(m_player->getComponent<CAnimation>().animation->getSprite());
 
       // Foreground stuff
       for (auto entity : m_entityManager.entities("FrontDec")) {
