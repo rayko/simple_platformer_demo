@@ -31,6 +31,7 @@ namespace Scenes {
 
     std::shared_ptr<Entity> m_player;
     std::shared_ptr<Entity> m_levelExitDoor;
+    std::shared_ptr<Entity> m_levelExitSwitch;
     const std::string m_levelPath;
     PlayerAttrs m_playerAttrs;
     bool m_drawTextures = true;

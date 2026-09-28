@@ -168,6 +168,7 @@ namespace Scenes {
         entity->addComponent<CTransform>(worldPos);
         entity->addComponent<CBoxCollider>(Vec2f(64,64));
         entity->addComponent<CInteractible>("OpenExit");
+        m_levelExitSwitch = entity;
       } else if (token == "ExitDoor") {
         // Setup exit door location
         fin >> gridPos.x >> gridPos.y;
@@ -313,7 +314,18 @@ namespace Scenes {
     logDebug("Interacting with entity with trigger " + triggerName);
 
     if (triggerName == "OpenExit") {
-      // TODO Check if can exit
+      if (m_playerCoins >= m_levelRequiredCoins) {
+        m_levelExitSwitch->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitMachineOpen"));
+        m_levelExitSwitch->getComponent<CAnimation>().destroyWhenFinished = false;
+        m_levelExitDoor->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitDoorOpen"));
+        m_levelExitDoor->getComponent<CAnimation>().destroyWhenFinished = false;
+        m_levelExitDoor->removeComponent<CBoxCollider>();
+        // Events to finish
+
+      } else {
+        // TODO
+        logDebug("Not enough coins");
+      }
       return;
     }
 
@@ -559,7 +571,7 @@ namespace Scenes {
     for (auto entity : m_entityManager.entities()) {
       if (entity->hasComponent<CAnimation>()) {
         auto anim = entity->getComponent<CAnimation>().animation;
-        if (anim->finished()) {
+        if (anim->finished() && entity->getComponent<CAnimation>().destroyWhenFinished) {
           entity->destroy();
         } else {
           anim->getSprite().setPosition(entity->getComponent<CTransform>().pos.toVector2f());

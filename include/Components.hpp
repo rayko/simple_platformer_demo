@@ -81,6 +81,7 @@ public:
 class CAnimation : public Component {
 public:
   std::shared_ptr<Animation> animation;
+  bool destroyWhenFinished = true;
 
   CAnimation() {};
   CAnimation(std::shared_ptr<Animation> anim) : animation(anim) {};
