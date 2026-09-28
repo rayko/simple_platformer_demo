@@ -38,7 +38,6 @@ namespace Scenes {
     bool m_drawGrid = false;
     const Vec2f m_gridSize = {64, 64};
 
-    std::vector<std::string> m_tileNames;
     std::map<std::string, AnimationData> m_tileList;
 
     std::shared_ptr<sf::Font> m_gridTextFont;

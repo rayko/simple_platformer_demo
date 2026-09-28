@@ -344,6 +344,32 @@ namespace Scenes {
   }
 
   std::shared_ptr<Entity> Editor::spawnEntity(const Vec2f &gridPos, const std::string &tag, const std::string &animName) {
+    AnimationData animData = m_tileList[animName];
+    // There can only be 1 ExitSwitch and ExitDoor tile per map
+    // Purge any existing tile before adding.
+    if (animData.type == "ExitSwitch" || animData.type == "ExitDoor") {
+      for (auto &[key, item] : m_tiles) {
+        if (item->hasComponent<CAnimation>() && item->getComponent<CAnimation>().animation->getName() == animName) {
+          m_tiles[key]->destroy();
+          m_tiles.erase(key);
+        }
+      }
+
+      for (auto &[key, item] : m_fronDecTiles) {
+        if (item->hasComponent<CAnimation>() && item->getComponent<CAnimation>().animation->getName() == animName) {
+          m_tiles[key]->destroy();
+          m_tiles.erase(key);
+        }
+      }
+
+      for (auto &[key, item] : m_backDecTiles) {
+        if (item->hasComponent<CAnimation>() && item->getComponent<CAnimation>().animation->getName() == animName) {
+          m_tiles[key]->destroy();
+          m_tiles.erase(key);
+        }
+      }
+    }
+
     auto entity = m_entityManager.addEntity(tag);
     auto anim = m_engine->assetStore().getAnimation(animName);
     entity->addComponent<CAnimation>(anim);
@@ -355,6 +381,7 @@ namespace Scenes {
     if (!ui_tileList->hasSelection()) { return; }
     const std::string key = std::format("{},{}", (int) gridPos.x, (int) gridPos.y);
     const std::string animName = ui_tileList->selectionText();
+
     if (ui_placementType->selectionText() == "Front Decoration") {
       // Front dec tiles
       if (m_fronDecTiles.contains(key)) { return; }
