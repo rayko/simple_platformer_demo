@@ -81,12 +81,12 @@ namespace Scenes {
     ui_helpInfo->addTextLine("  F5 -> Save Level"); 
     ui_helpInfo->addTextLine("  ES -> Quit"); 
 
+    loadTileNames();
     ui_tileList = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
     ui_tileList->setMaxDisplayItems(10);
     ui_tileList->setTitle("Tiles");
-    for (auto &[name, anim] : m_engine->assetStore().animations()) {
-      if (anim.type == "Tile")
-        ui_tileList->addEntry(name);
+    for (auto &[name, anim] : m_tileList) {
+      ui_tileList->addEntry(name);
     }
 
     ui_placementType = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
@@ -96,14 +96,17 @@ namespace Scenes {
     ui_placementType->addEntry("Normal Tile");
     ui_placementType->preSelect("Normal Tile");
 
-    loadTileNames();
     loadLevel(m_levelPath);
   }
 
   void Editor::loadTileNames() {
     for (auto &[name, anim] : m_engine->assetStore().animations()) {
       if (anim.type == "Tile") {
-        m_tileNames.push_back(name);
+        m_tileList[name] = anim;
+      } else if (anim.type == "ExitSwitch") {
+        m_tileList[name] = anim;
+      } else if (anim.type == "ExitDoor") {
+        m_tileList[name] = anim;
       }
     }
   }
