@@ -142,6 +142,28 @@ namespace Scenes {
         m_bgColor.g = value;
         fin >> value;
         m_bgColor.b = value;
+      } else if (token == "PlayerSpawn") {
+        // Setup player spawn location
+        fin >> m_playerAttrs.x >> m_playerAttrs.y;
+      } else if (token == "ExitSwitch") {
+        // Setup exit switch location
+        // TODO Hardcoded
+        fin >> gridPos.x >> gridPos.y;
+        entity = m_entityManager.addEntity("ExitSwitch");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitMachineIdle"));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(gridPos, anim->getSize());
+        entity->addComponent<CTransform>(worldPos);
+        entity->addComponent<CBoxCollider>(Vec2f(64,64));
+      } else if (token == "ExitDoor") {
+        // Setup exit door location
+        fin >> gridPos.x >> gridPos.y;
+        entity = m_entityManager.addEntity("ExitDoor");
+        entity->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitDoorIdle"));
+        anim = entity->getComponent<CAnimation>().animation;
+        worldPos = initialSpritePosition(gridPos, anim->getSize());
+        entity->addComponent<CTransform>(worldPos);
+        entity->addComponent<CBoxCollider>(Vec2f(64,128));
       } else {
         logWarn("Unrecognized keyword: " + token);
       }
@@ -606,6 +628,18 @@ namespace Scenes {
 
       // Draw player here, before foreground
       window.draw(m_player->getComponent<CAnimation>().animation->getSprite());
+
+      for (auto entity : m_entityManager.entities("ExitSwitch")) {
+        if (entity->hasComponent<CAnimation>()) {
+          window.draw(entity->getComponent<CAnimation>().animation->getSprite());
+        }
+      }
+
+      for (auto entity : m_entityManager.entities("ExitDoor")) {
+        if (entity->hasComponent<CAnimation>()) {
+          window.draw(entity->getComponent<CAnimation>().animation->getSprite());
+        }
+      }
 
       // Foreground stuff
       for (auto entity : m_entityManager.entities("FrontDec")) {
