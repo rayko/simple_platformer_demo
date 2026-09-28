@@ -211,6 +211,7 @@ namespace Scenes {
         anim = entity->getComponent<CAnimation>().animation;
         worldPos = initialSpritePosition(m_exitDoorGridPos, anim->getSize());
         entity->addComponent<CTransform>(worldPos);
+        m_exitDoorEntity = entity;
       } else {
         logWarn("Unrecognized keyword: " + token);
       }
@@ -380,31 +381,6 @@ namespace Scenes {
 
   std::shared_ptr<Entity> Editor::spawnEntity(const Vec2f &gridPos, const std::string &tag, const std::string &animName) {
     AnimationData animData = m_tileList[animName];
-    // There can only be 1 ExitSwitch and ExitDoor tile per map
-    // Purge any existing tile before adding.
-    if (animData.type == "ExitSwitch" || animData.type == "ExitDoor") {
-      for (auto &[key, item] : m_tiles) {
-        if (item->hasComponent<CAnimation>() && item->getComponent<CAnimation>().animation->getName() == animName) {
-          m_tiles[key]->destroy();
-          m_tiles.erase(key);
-        }
-      }
-
-      for (auto &[key, item] : m_fronDecTiles) {
-        if (item->hasComponent<CAnimation>() && item->getComponent<CAnimation>().animation->getName() == animName) {
-          m_tiles[key]->destroy();
-          m_tiles.erase(key);
-        }
-      }
-
-      for (auto &[key, item] : m_backDecTiles) {
-        if (item->hasComponent<CAnimation>() && item->getComponent<CAnimation>().animation->getName() == animName) {
-          m_tiles[key]->destroy();
-          m_tiles.erase(key);
-        }
-      }
-    }
-
     auto entity = m_entityManager.addEntity(tag);
     auto anim = m_engine->assetStore().getAnimation(animName);
     entity->addComponent<CAnimation>(anim);
@@ -413,25 +389,57 @@ namespace Scenes {
   }
 
   void Editor::placeTile(Vec2f &gridPos) {
-    if (!ui_tileList->hasSelection()) { return; }
+
     const std::string key = std::format("{},{}", (int) gridPos.x, (int) gridPos.y);
     const std::string animName = ui_tileList->selectionText();
+    const std::string tileType = ui_tileType->selectionText();
 
-    if (ui_placementType->selectionText() == "Front Decoration") {
-      // Front dec tiles
-      if (m_fronDecTiles.contains(key)) { return; }
-      auto entity = spawnEntity(gridPos, "FrontDec", animName);
-      m_fronDecTiles[key] = entity;
-    } else if (ui_placementType->selectionText() == "Back Decoration") {
-      // Back decoration tiles
-      if (m_backDecTiles.contains(key)) { return; }
-      auto entity = spawnEntity(gridPos, "BackDec", animName);
-      m_backDecTiles[key] = entity;
-    } else if (ui_placementType->selectionText() == "Normal Tile") {
-      // Normal tiles
-      if (m_tiles.contains(key)) { return; }
-      auto entity = spawnEntity(gridPos, "Tile", animName);
-      m_tiles[key] = entity;
+    if (tileType == "Tile") {
+      if (!ui_tileList->hasSelection()) { return; }
+      if (ui_placementType->selectionText() == "Front Decoration") {
+        // Front dec tiles
+        if (m_fronDecTiles.contains(key)) { return; }
+        auto entity = spawnEntity(gridPos, "FrontDec", animName);
+        m_fronDecTiles[key] = entity;
+      } else if (ui_placementType->selectionText() == "Back Decoration") {
+        // Back decoration tiles
+        if (m_backDecTiles.contains(key)) { return; }
+        auto entity = spawnEntity(gridPos, "BackDec", animName);
+        m_backDecTiles[key] = entity;
+      } else if (ui_placementType->selectionText() == "Normal Tile") {
+        // Normal tiles
+        if (m_tiles.contains(key)) { return; }
+        auto entity = spawnEntity(gridPos, "Tile", animName);
+        m_tiles[key] = entity;
+      }
+      return;
+    }
+
+    if (tileType == "Player Spawn") {
+      if (m_playerSpawnGridPos == gridPos) { return; }
+      m_playerSpawnEntity->destroy();
+      auto entity = spawnEntity(gridPos, "Player", "AlexAir");
+      m_playerSpawnEntity = entity;
+      m_playerSpawnGridPos = gridPos;
+      return;
+    }
+
+    if (tileType == "Exit Door") {
+      if (m_exitDoorGridPos == gridPos) { return; }
+      m_exitDoorEntity->destroy();
+      auto entity = spawnEntity(gridPos, "ExitDoor", "ExitDoorIdle");
+      m_exitDoorEntity = entity;
+      m_exitDoorGridPos = gridPos;
+      return;
+    }
+
+    if (tileType == "Exit Switch") {
+      if (m_exitSwitchGridPos == gridPos) { return; }
+      m_exitSwitchEntity->destroy();
+      auto entity = spawnEntity(gridPos, "ExitSwitch", "ExitMachineIdle");
+      m_exitSwitchEntity = entity;
+      m_exitSwitchGridPos = gridPos;
+      return;
     }
   }
 
