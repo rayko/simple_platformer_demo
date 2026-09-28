@@ -96,6 +96,14 @@ namespace Scenes {
     ui_placementType->addEntry("Normal Tile");
     ui_placementType->preSelect("Normal Tile");
 
+    ui_tileType = std::make_shared<UI::SelectableListPanel>(m_gridTextFont);
+    ui_tileType->setTitle("Object");
+    ui_tileType->addEntry("Tile");
+    ui_tileType->addEntry("Player Spawn");
+    ui_tileType->addEntry("Exit Switch");
+    ui_tileType->addEntry("Exit Door");
+    ui_tileType->preSelect("Tile");
+
     loadLevel(m_levelPath);
   }
 
@@ -300,6 +308,8 @@ namespace Scenes {
           ui_tileList->clickAt(cursor);
         else if (ui_placementType->hovering(cursor))
           ui_placementType->clickAt(cursor);
+        else if (ui_tileType->hovering(cursor))
+          ui_tileType->clickAt(cursor);
         else
           m_placeTiles = true;
         break;
@@ -564,6 +574,13 @@ namespace Scenes {
     pos.y = m_viewCenter.y - (m_height / 2) + 10;
     ui_tileList->setPosition(pos);
     ui_tileList->draw(window);
+
+    pos.x = 0;
+    pos.y = 10;
+    pos.x = m_viewCenter.x + (m_width / 2) - ui_tileList->getSize().x - ui_tileType->getSize().x - 20;
+    pos.y = m_viewCenter.y - (m_height / 2) + 10;
+    ui_tileType->setPosition(pos);
+    ui_tileType->draw(window);
 
     pos.x = 0;
     pos.y = 0;
