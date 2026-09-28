@@ -37,7 +37,8 @@ public:
     RightClick,
     MiddleClick,
     ScrollUp,
-    ScrollDown
+    ScrollDown,
+    Interact
   };
 
 
