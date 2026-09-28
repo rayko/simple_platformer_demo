@@ -223,11 +223,18 @@ namespace Scenes {
 
     // Default Level settings
     outputFile << "# Color for the background in R G B" << std::endl;
-    outputFile << "BackgroundColor 82 64 128" << std::endl;
+    outputFile << "BackgroundColor 82 64 128" << std::endl << std::endl;
 
     outputFile << "# Player stats" << std::endl;
     outputFile << "# <start pos X> <start pos Y> <col X> <col Y> <speed> <jump speed> <max speed> <gravity> <wpn name>" << std::endl;
     outputFile << "Player 6 5 42 64 5.5  14 20 0.8 default" << std::endl << std::endl;
+
+    outputFile << "# Special Tiles (only one per map)" << std::endl;
+    outputFile << std::format("PlayerSpawn {} {}", m_playerSpawnGridPos.x, m_playerSpawnGridPos.y) << std::endl;
+    outputFile << std::format("ExitSwitch {} {}", m_exitSwitchGridPos.x, m_exitSwitchGridPos.y) << std::endl;
+    outputFile << std::format("ExitDoor {} {}", m_exitDoorGridPos.x, m_exitDoorGridPos.y) << std::endl;
+    
+    outputFile << std::endl << std::endl << "# Tiles" << std::endl;
   }
 
   void Editor::saveLevel(const std::string &filename) {
