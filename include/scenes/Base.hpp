@@ -39,6 +39,8 @@ namespace Scenes {
     MouseWheelMap m_mouseWheelMap;
     bool m_paused = false;
     bool m_finished = false;
+    bool m_enableInput = true;
+    bool m_viewFollowPlayer = true;
     bool m_receivePointerLocation = false;
     Vec2f m_pointerPos;
     size_t m_currentFrame = 0;

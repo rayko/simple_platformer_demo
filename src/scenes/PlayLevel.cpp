@@ -306,6 +306,51 @@ namespace Scenes {
     std::shared_ptr<Entity> entity;
     logDebug("Triggering timed event: " + name);
 
+    if (name == "ClearLevelMessage") {
+      entity = m_entityManager.addEntity("Message");
+      entity->addComponent<CLifespan>(seconds(3));
+      entity->addComponent<CTextBox>(m_gridTextFont, "Level Cleared!", 30);
+      sf::Vector2f pos;
+      pos.x = m_viewCenter.x - (entity->getComponent<CTextBox>().box.getSize().x / 2);
+      pos.y = m_viewCenter.y - (entity->getComponent<CTextBox>().box.getSize().y / 2) - 100;
+      entity->getComponent<CTextBox>().box.setPosition(pos);
+      pos.x = m_viewCenter.x - (entity->getComponent<CTextBox>().text->getLocalBounds().size.x / 2);
+      pos.y = m_viewCenter.y - (entity->getComponent<CTextBox>().text->getLocalBounds().size.y / 2) - 100;
+      entity->getComponent<CTextBox>().text->setPosition(pos);
+    
+      return;
+    }
+
+    if (name == "OpenExitDoor") {
+      m_levelExitDoor->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitDoorOpen"));
+      m_levelExitDoor->getComponent<CAnimation>().destroyWhenFinished = false;
+      m_levelExitDoor->removeComponent<CBoxCollider>();
+
+      return;
+    }
+
+    if (name == "MoveToNextLevel") {
+      entity = m_entityManager.addEntity("Message");
+      entity->addComponent<CLifespan>(seconds(3));
+      entity->addComponent<CTextBox>(m_gridTextFont, "Go forth and collect more coins!", 30);
+      sf::Vector2f pos;
+      pos.x = m_viewCenter.x - (entity->getComponent<CTextBox>().box.getSize().x / 2);
+      pos.y = m_viewCenter.y - (entity->getComponent<CTextBox>().box.getSize().y / 2) - 100;
+      entity->getComponent<CTextBox>().box.setPosition(pos);
+      pos.x = m_viewCenter.x - (entity->getComponent<CTextBox>().text->getLocalBounds().size.x / 2);
+      pos.y = m_viewCenter.y - (entity->getComponent<CTextBox>().text->getLocalBounds().size.y / 2) - 100;
+      entity->getComponent<CTextBox>().text->setPosition(pos);
+      m_player->getComponent<CInput>().right = true;
+
+      return;
+    }
+
+    if (name == "FinishScene") {
+      onEnd();
+
+      return;
+    }
+
     logWarn("Unhandled timed event name: " + name);
   }
 
@@ -315,13 +360,27 @@ namespace Scenes {
 
     if (triggerName == "OpenExit") {
       if (m_playerCoins >= m_levelRequiredCoins) {
+        m_enableInput = false;
+        m_viewFollowPlayer = false;
         m_levelExitSwitch->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitMachineOpen"));
         m_levelExitSwitch->getComponent<CAnimation>().destroyWhenFinished = false;
-        m_levelExitDoor->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitDoorOpen"));
-        m_levelExitDoor->getComponent<CAnimation>().destroyWhenFinished = false;
-        m_levelExitDoor->removeComponent<CBoxCollider>();
-        // Events to finish
 
+        std::shared_ptr<Entity> entity;
+        size_t frames = seconds(1);
+        entity = m_entityManager.addEntity("TimedEvent");
+        entity->addComponent<CEventTimer>(frames, "ClearLevelMessage");
+
+        frames += seconds(2);
+        entity = m_entityManager.addEntity("TimedEvent");
+        entity->addComponent<CEventTimer>(frames, "OpenExitDoor");
+
+        frames += seconds(1);
+        entity = m_entityManager.addEntity("TimedEvent");
+        entity->addComponent<CEventTimer>(frames, "MoveToNextLevel");
+
+        frames += seconds(4);
+        entity = m_entityManager.addEntity("TimedEvent");
+        entity->addComponent<CEventTimer>(frames, "FinishScene");
       } else {
         // TODO
         logDebug("Not enough coins");
@@ -332,6 +391,7 @@ namespace Scenes {
     logWarn("Unhandled interaction trigger: " + triggerName);
   }
   
+
   ///// System Functions /////
 
   void PlayLevel::sInteractions() {
@@ -461,6 +521,10 @@ namespace Scenes {
   }
 
   void PlayLevel::sDoAction(const Action &action) {
+    // This is a little dangerous, nothing will work if this flag goes
+    // false, unless something else enables it again. Gud enuf for now.
+    if (!m_enableInput) { return; }
+
     if (action.starting()) {
       switch (action.name()) {
       case (Action::Name::Shoot):
@@ -665,7 +729,7 @@ namespace Scenes {
   void PlayLevel::sRender() {
     sf::RenderWindow &window = m_engine->window();
 
-    if (m_player) {
+    if (m_player && m_viewFollowPlayer) {
       auto &pTransform = m_player->getComponent<CTransform>();
       float viewX = std::max(m_width / 2.0f, pTransform.pos.x);
       float viewY = std::min(m_height / 2.0f, pTransform.pos.y);
@@ -729,6 +793,13 @@ namespace Scenes {
     counterPos.y += 10;
     coinCounter.setPosition(counterPos);
     window.draw(coinCounter);
+
+    for (auto entity : m_entityManager.entities("Message")) {
+      if (entity->hasComponent<CTextBox>()) {
+        window.draw(entity->getComponent<CTextBox>().box);
+        window.draw(*entity->getComponent<CTextBox>().text);
+      }
+    }
 
     if (m_drawGrid)
       drawGrid();
