@@ -121,7 +121,7 @@ namespace Scenes {
           entity->addComponent<CCoinReward>();
           m_levelRequiredCoins++;
         }
-        
+
         if (anim->getName() == "ActiveTile1") {
           entity->addComponent<CCoinReward>();
           m_levelRequiredCoins++;
@@ -330,7 +330,7 @@ namespace Scenes {
       pos.x = m_viewCenter.x - (entity->getComponent<CTextBox>().text->getLocalBounds().size.x / 2);
       pos.y = m_viewCenter.y - (entity->getComponent<CTextBox>().text->getLocalBounds().size.y / 2) - 100;
       entity->getComponent<CTextBox>().text->setPosition(pos);
-    
+
       return;
     }
 
@@ -406,7 +406,7 @@ namespace Scenes {
 
     logWarn("Unhandled interaction trigger: " + triggerName);
   }
-  
+
 
   ///// System Functions /////
 
@@ -464,7 +464,7 @@ namespace Scenes {
     for (auto tile : m_entityManager.entities("Tile")) {
       if (!tile->hasComponent<CBoxCollider>()) { continue; }
       if (!tile->hasComponent<CGravity>()) { continue; }
-      if (tile->getComponent<CAnimation>().animation->getName() == "WoodBox1") { 
+      if (tile->getComponent<CAnimation>().animation->getName() == "WoodBox1") {
         for (auto otherTile : m_entityManager.entities("Tile")) {
           if (tile->id() == otherTile->id()) { continue; }
           if (!otherTile->hasComponent<CBoxCollider>()) { continue; }
@@ -502,7 +502,7 @@ namespace Scenes {
         prevOverlap = m_physics.getPreviousOverlap(m_player, tile);
         if (overlap.x > 0 && prevOverlap.y > 0) {
           // horizontal
-          if (overlap.y <= 5) {
+          if (overlap.y <= 4) {
             m_player->getComponent<CTransform>().pos.y -= overlap.y; // Uppies
           } else {
             if (m_player->getComponent<CTransform>().vel.x > 0) {
@@ -515,9 +515,7 @@ namespace Scenes {
               m_player->getComponent<CTransform>().prevPos.x += overlap.x;
             }
           }
-        }
-
-        if (overlap.y > 0 && prevOverlap.x > 0) {
+        } else if (overlap.y > 0 && prevOverlap.x > 0) {
           // Vertical
           if (m_player->getComponent<CTransform>().vel.y > 0) {
             // from top
