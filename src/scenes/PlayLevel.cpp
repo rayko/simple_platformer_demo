@@ -860,8 +860,8 @@ namespace Scenes {
     m_debugPanel->addTextLine("  Collider Size / 2: " + collider.halfSize.str());
     m_debugPanel->addTextLine("  Collider Offset: " + collider.offset.str());
     sf::Vector2f pos = { 0, 0 };
-    pos.x = m_view.getCenter().x - (m_width / 2) + 20;
-    pos.y = m_view.getCenter().y - (m_height / 2) + 20;
+    pos.x = m_view.getCenter().x - ((float) m_width / 2) + 20;
+    pos.y = m_view.getCenter().y - ((float) m_height / 2) + 20;
     m_debugPanel->setPosition(pos);
     m_debugPanel->draw(m_engine->window());
   }
