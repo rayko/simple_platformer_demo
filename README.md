@@ -80,7 +80,7 @@ main classes.
 - Entity management
 - Rendering layers
 - Player interactions (exit switch)
-- "Cinematics" via timed events (played at level finish)
+- Simple "Cinematics" via timed events (played at level finish)
 - Baisc physics and AABB collision detections
 - Simple interactible UI elements (editor panels)
 - Built-in level editor
