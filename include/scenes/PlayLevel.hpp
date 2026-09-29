@@ -83,7 +83,7 @@ namespace Scenes {
     void drawGrid();
     void drawColliders();
     void drawDebugPanel();
-  bool amLastLevel();
+    bool amLastLevel();
     Vec2f initialSpritePosition(const Vec2f &gridPos, const Vec2f &spriteSize);
 
     void spawnPlayer(const Vec2f &gridBlock);
