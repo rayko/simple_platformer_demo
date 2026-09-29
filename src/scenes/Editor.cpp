@@ -514,9 +514,9 @@ namespace Scenes {
     sf::Vector2f cameraCenter = m_view.getCenter();
 
     // Limit camera movement
-    if (vel.x < 0 && cameraCenter.x <= m_width / 2)
+    if (vel.x < 0 && cameraCenter.x <= (float) m_width / 2)
       vel.x = 0;
-    if (vel.y > 0 && cameraCenter.y >= m_height / 2)
+    if (vel.y > 0 && cameraCenter.y >= (float) m_height / 2)
       vel.y = 0;
     m_view.move(vel);
     m_viewCenter = m_view.getCenter();
@@ -577,29 +577,29 @@ namespace Scenes {
     drawCursor();
 
     sf::Vector2f pos = { 0, 0 };
-    pos.x = m_viewCenter.x + (m_width / 2) - ui_helpInfo->getSize().x - 10;
-    pos.y = m_viewCenter.y + (m_height / 2) - ui_helpInfo->getSize().y - 10;
+    pos.x = m_viewCenter.x + ((float) m_width / 2) - ui_helpInfo->getSize().x - 10;
+    pos.y = m_viewCenter.y + ((float) m_height / 2) - ui_helpInfo->getSize().y - 10;
     ui_helpInfo->setPosition(pos);
     ui_helpInfo->draw(window);
 
     pos.x = 0;
     pos.y = 10;
-    pos.x = m_viewCenter.x + (m_width / 2) - ui_tileList->getSize().x - 10;
-    pos.y = m_viewCenter.y - (m_height / 2) + 10;
+    pos.x = m_viewCenter.x + ((float) m_width / 2) - ui_tileList->getSize().x - 10;
+    pos.y = m_viewCenter.y - ((float) m_height / 2) + 10;
     ui_tileList->setPosition(pos);
     ui_tileList->draw(window);
 
     pos.x = 0;
     pos.y = 10;
-    pos.x = m_viewCenter.x + (m_width / 2) - ui_tileList->getSize().x - ui_tileType->getSize().x - 20;
-    pos.y = m_viewCenter.y - (m_height / 2) + 10;
+    pos.x = m_viewCenter.x + ((float) m_width / 2) - ui_tileList->getSize().x - ui_tileType->getSize().x - 20;
+    pos.y = m_viewCenter.y - ((float) m_height / 2) + 10;
     ui_tileType->setPosition(pos);
     ui_tileType->draw(window);
 
     pos.x = 0;
     pos.y = 0;
-    pos.x = m_viewCenter.x + (m_width / 2) - ui_placementType->getSize().x - 10;
-    pos.y = m_viewCenter.y + (m_height / 2) - ui_helpInfo->getSize().y - ui_placementType->getSize().y - 30;
+    pos.x = m_viewCenter.x + ((float) m_width / 2) - ui_placementType->getSize().x - 10;
+    pos.y = m_viewCenter.y + ((float) m_height / 2) - ui_helpInfo->getSize().y - ui_placementType->getSize().y - 30;
     ui_placementType->setPosition(pos);
     ui_placementType->draw(window);
 
@@ -608,16 +608,16 @@ namespace Scenes {
   }
 
   Vec2f Editor::viewCursorPosition() {
-    return Vec2f(m_pointerPos.x + m_viewCenter.x - (m_width / 2),
-                m_pointerPos.y + m_viewCenter.y - (m_height / 2));
+    return Vec2f(m_pointerPos.x + m_viewCenter.x - ((float) m_width / 2),
+                m_pointerPos.y + m_viewCenter.y - ((float) m_height / 2));
   }
 
   void Editor::drawFlashMessages() {
     sf::Vector2f anchor = { 0, 0 };
     sf::RenderWindow &window = m_engine->window();
     // Flash messages
-    anchor.x = m_viewCenter.x - (m_width / 2) + 10;
-    anchor.y = m_viewCenter.y + (m_height / 2) - 40;
+    anchor.x = m_viewCenter.x - ((float) m_width / 2) + 10;
+    anchor.y = m_viewCenter.y + ((float) m_height / 2) - 40;
     for (auto entity : m_entityManager.entities("UIMessage")) {
       if (!entity->hasComponent<CTextBox>()) { continue; }
       entity->getComponent<CTextBox>().box.setPosition(anchor);
