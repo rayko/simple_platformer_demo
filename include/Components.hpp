@@ -108,20 +108,22 @@ public:
   CTextBox(std::shared_ptr<sf::Font> font, const std::string &txt) {
     text = std::make_shared<sf::Text>(*font, txt, textSize);
     text->setCharacterSize(textSize);
+    text->setLineSpacing(1.8f);
     box.setFillColor(boxFillColor);
     box.setOutlineColor(boxLineColor);
     box.setOutlineThickness(boxLineSize);
-    box.setSize(sf::Vector2f(text->getLocalBounds().size.x + 20, text->getLocalBounds().size.y + 20));
+    box.setSize(sf::Vector2f(text->getLocalBounds().size.x + 20, text->getLocalBounds().size.y + 30));
   }
 
   CTextBox(std::shared_ptr<sf::Font> font, const std::string &txt, int size) {
     textSize = size;
     text = std::make_shared<sf::Text>(*font, txt, textSize);
     text->setCharacterSize(textSize);
+    text->setLineSpacing(1.8f);
     box.setFillColor(boxFillColor);
     box.setOutlineColor(boxLineColor);
     box.setOutlineThickness(boxLineSize);
-    box.setSize(sf::Vector2f(text->getLocalBounds().size.x + 20, text->getLocalBounds().size.y + 20));
+    box.setSize(sf::Vector2f(text->getLocalBounds().size.x + 20, text->getLocalBounds().size.y + 30));
   }
 };
 
