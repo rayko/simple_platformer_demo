@@ -1,0 +1,80 @@
+# Editor level - Rename file after done to edit a new blank level
+# Color for the background in R G B
+BackgroundColor 82 64 128
+
+# Player stats
+# <start pos X> <start pos Y> <col X> <col Y> <speed> <jump speed> <max speed> <gravity> <wpn name>
+Player 42 64 5.5  14 20 0.8 default
+
+# Special Tiles (only one per map)
+PlayerSpawn 10 6
+ExitSwitch 25 3
+ExitDoor 28 3
+
+
+# Tiles
+Tile TileGnd1 1 2
+Tile TileGnd1 1 3
+Tile TileGnd1 1 4
+Tile TileGnd1 1 5
+Tile TileGnd1 1 6
+Tile TileGnd1 1 7
+Tile TileGnd1 1 8
+Tile TileGnd1 1 9
+Tile TileGnd1 10 2
+Tile WoodBox1 10 3
+Tile MetalBox1 10 5
+Tile TileGnd1 11 2
+Tile MetalBox1 11 5
+Tile TileGnd1 12 2
+Tile TileGnd1 13 2
+Tile TileGnd1 14 2
+Tile TileGnd1 15 2
+Tile MetalBox1 15 3
+Tile MetalBox1 15 5
+Tile TileGnd1 16 2
+Tile TileGnd1 17 2
+Tile TileGnd1 18 2
+Tile TileGnd1 19 2
+Tile WoodBox1 19 3
+Tile WoodBox1 19 4
+Tile WoodBox1 19 5
+Tile WoodBox1 19 6
+Tile WoodBox1 19 7
+Tile TileGnd1 2 2
+Tile TileGnd1 20 2
+Tile WoodBox1 20 3
+Tile WoodBox1 20 4
+Tile WoodBox1 20 5
+Tile WoodBox1 20 6
+Tile WoodBox1 20 7
+Tile TileGnd1 21 2
+Tile TileGnd1 22 2
+Tile TileGnd1 23 2
+Tile Coin 23 3
+Tile TileGnd1 24 2
+Tile TileGnd1 25 2
+Tile TileGnd1 26 2
+Tile TileGnd1 27 2
+Tile TileGnd1 27 4
+Tile TileGnd1 27 5
+Tile TileGnd1 28 2
+Tile TileGnd1 28 5
+Tile TileGnd1 29 2
+Tile TileGnd1 29 5
+Tile TileGnd1 3 2
+Tile TileGnd1 30 2
+Tile TileGnd1 30 3
+Tile TileGnd1 30 4
+Tile TileGnd1 30 5
+Tile TileGnd1 4 2
+Tile TileGnd1 5 2
+Tile TileGnd1 6 2
+Tile WoodBox1 6 3
+Tile MetalBox1 6 5
+Tile TileGnd1 7 2
+Tile TileGnd1 8 2
+Tile TileGnd1 9 2
+Tile MetalBox1 9 5
+
+

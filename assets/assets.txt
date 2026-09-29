@@ -1,0 +1,59 @@
+# Textures
+Texture TileGndFill1  assets/textures_64x64/tile_0001.png
+Texture TileBackFill1  assets/textures_64x64/tile_0009.png
+Texture TileGnd1      assets/textures_64x64/tile_0002.png
+Texture WoodBox1      assets/textures_64x64/tile_0003.png
+Texture MetalBox1     assets/textures_64x64/tile_0004.png
+Texture GrassGroup1   assets/textures_64x64/tile_0005.png
+Texture GrassGroup2   assets/textures_64x64/tile_0006.png
+Texture GrassLine1    assets/textures_64x64/tile_0007.png
+Texture GrassGroup3   assets/textures_64x64/tile_0008.png
+Texture ActiveTile1   assets/textures_64x64/active_tile.png
+Texture AlexStand     assets/textures_64x64/alex_stand.png
+Texture AlexRun       assets/textures_64x64/alex_run.png
+Texture AlexAir       assets/textures_64x64/alex_air.png
+Texture Cloud1        assets/textures_256x128/cloud.png
+Texture Explosion     assets/textures_64x64/explosion.png
+Texture Bullet1       assets/textures_64x64/bullet1.png
+Texture BulletHit1    assets/textures_64x64/bullet1Hit1.png
+Texture BulletExpl1   assets/textures_64x64/bulletExpl1.png
+Texture Coin          assets/textures_64x64/coin.png
+Texture Smoke         assets/textures_64x64/smoke.png
+Texture ExitMachine   assets/textures_64x64/exitMachine.png
+Texture ExitDoor      assets/textures_64x128/exitDoor.png
+
+# Animations
+# <type> <name> <texture name> <frames> <f_speed> <x size> <y size> <play mode> <loop mode>
+# type: mostly for loading, anything as "tile" will load in editor to place them, otherwise it has no purpose
+# f_speed -> rame duration of each animation frame in number of frames
+# x and y size -> define the size of the sprite
+# play mode -> for animations: 0 - static, 1 - play once, 2 loop
+# loop mode -> 0 - forward, 1 - backward, 2 - bounce
+Animation Tile    TileGndFill1    TileGndFill1  0  0   64  64   0  0
+Animation Tile    TileBackFill1    TileBackFill1  0  0   64  64   0  0
+Animation Tile    TileGnd1        TileGnd1      0  0   64  64   0  0
+Animation Tile    WoodBox1        WoodBox1      0  0   64  64   0  0
+Animation Tile    MetalBox1       MetalBox1     0  0   64  64   0  0
+Animation Tile    GrassGroup1     GrassGroup1   0  0   64  64   0  0
+Animation Tile    GrassGroup2     GrassGroup2   0  0   64  64   0  0
+Animation Tile    GrassLine1      GrassLine1    0  0   64  64   0  0
+Animation Tile    GrassGroup3     GrassGroup3   0  0   64  64   0  0
+Animation Player  AlexStand       AlexStand     0  0   64  64   0  0
+Animation Player  AlexAir         AlexAir       0  0   64  64   0  0
+Animation Tile    Cloud1          Cloud1        0  0   256 128  0  0
+Animation Tile    ActiveTile1     ActiveTile1   2  4   64  64   2  2
+Animation Tile    InnactiveTile1  ActiveTile1   0  0   64  64   0  0
+Animation Player  AlexRun         AlexRun       8  5   64  64   2  0
+Animation Fx      Explosion       Explosion     3  6   64  64   1  0
+Animation Player  Bullet1         Bullet1       3  6   64  64   2  0
+Animation Fx      BulletHit1      BulletHit1    4  6   64  64   1  0
+Animation Fx      BulletExpl1     BulletExpl1   4  6   64  64   1  0
+Animation Tile    Coin            Coin          4  6   64  64   2  0
+Animation Fx      Smoke           Smoke         5  3   64  64   1  0
+Animation ExitSwitch    ExitMachineIdle ExitMachine   0  0   64  64   0  0
+Animation Fx          ExitMachineOpen ExitMachine   3  6   64  64   1  0
+Animation ExitDoor    ExitDoorIdle    ExitDoor      0  0   64  128  0  0
+Animation Fx      ExitDoorOpen    ExitDoor      5  6   64  128  1  0
+
+# Fonts
+Font SimpleFont assets/fonts/SimpleFont.ttf

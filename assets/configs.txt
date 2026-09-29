@@ -1,0 +1,6 @@
+# General engine configurations
+
+# List of level paths, order matters. Feel free to mess with it.
+Level level1.txt
+Level level2.txt
+Level level3.txt
