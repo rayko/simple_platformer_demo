@@ -225,7 +225,7 @@ namespace Scenes {
     outputFile << "BackgroundColor 82 64 128" << std::endl << std::endl;
 
     outputFile << "# Player stats" << std::endl;
-    outputFile << "# <start pos X> <start pos Y> <col X> <col Y> <speed> <jump speed> <max speed> <gravity> <wpn name>" << std::endl;
+    outputFile << "# <col X> <col Y> <speed> <jump speed> <max speed> <gravity> <wpn name>" << std::endl;
     outputFile << "Player 42 64 5.5  14 20 0.8 default" << std::endl << std::endl;
 
     outputFile << "# Special Tiles (only one per map)" << std::endl;
