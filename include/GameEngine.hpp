@@ -29,6 +29,7 @@ class GameEngine : public Core {
   const std::string m_engineConfigFile = "configs.txt";
   const std::string m_assetsConfigFile = "assets.txt";
   const int maxFPS = 60;
+  std::vector<std::string> m_levelList;
 
   void init();
   void loadConfigs();
@@ -52,6 +53,7 @@ public:
   sf::RenderWindow &window();
   const AssetStore &assetStore() const;
   bool running();
+  const std::vector<std::string> &levelList() const;
 
   size_t seconds(float secs);
 };

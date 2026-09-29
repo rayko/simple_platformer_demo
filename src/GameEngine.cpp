@@ -1,6 +1,8 @@
-#include <SFML/Graphics.hpp>
 #include "GameEngine.hpp"
 #include "scenes/Menu.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <fstream>
 
 GameEngine::GameEngine() { m_logOrigin = "GameEngine"; }
 
@@ -28,10 +30,31 @@ size_t GameEngine::seconds(float secs) {
   return std::round(maxFPS * secs);
 }
 
+const std::vector<std::string> &GameEngine::levelList() const {
+  return m_levelList;
+}
+
 // Private
 
 void GameEngine::loadConfigs() {
   logInfo("Loading " + m_engineConfigFile);
+
+  std::string token;
+  std::ifstream fin = openFile(m_engineConfigFile);
+  while (fin >> token) {
+    // Ignore comments
+    if (token.starts_with("#")) {
+      fin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      continue;
+    }
+
+    if (token == "Level") {
+      fin >> token;
+      m_levelList.push_back(token);
+    } else {
+      logWarn("Unrecognized keyword: " + token);
+    }
+  }
 }
 
 void GameEngine::loadAssets() {

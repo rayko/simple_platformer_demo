@@ -186,8 +186,21 @@ namespace Scenes {
   }
 
   void PlayLevel::onEnd() {
-    // TODO
     m_finished = true;
+    if (amLastLevel()) {
+      // No more levels, go back to menu
+      m_engine->changeScene("MainMenu", std::make_shared<Menu>(m_engine));
+      return;
+    }
+
+    size_t levelIdx = 0;
+    for (std::string lvlPath : m_engine->levelList()) {
+      if (lvlPath == m_levelPath) { break; }
+      levelIdx++;
+    }
+
+    std::string nextLevel = m_engine->levelList()[levelIdx + 1];
+    m_engine->changeScene(nextLevel, std::make_shared<PlayLevel>(m_engine, nextLevel));
   }
 
 
@@ -330,9 +343,12 @@ namespace Scenes {
     }
 
     if (name == "MoveToNextLevel") {
+      std::string message = "Go forth and collect more coins!";
+      if (amLastLevel())
+        message = "All coins collected. Go touch real grass now :D";
       entity = m_entityManager.addEntity("Message");
       entity->addComponent<CLifespan>(seconds(3));
-      entity->addComponent<CTextBox>(m_gridTextFont, "Go forth and collect more coins!", 30);
+      entity->addComponent<CTextBox>(m_gridTextFont, message, 30);
       sf::Vector2f pos;
       pos.x = m_viewCenter.x - (entity->getComponent<CTextBox>().box.getSize().x / 2);
       pos.y = m_viewCenter.y - (entity->getComponent<CTextBox>().box.getSize().y / 2) - 100;
@@ -954,4 +970,9 @@ namespace Scenes {
       m_levelRequiredCoins += entity->getComponent<CCoinReward>().amount;
     }
   }
+
+  bool PlayLevel::amLastLevel() {
+    return m_levelPath == m_engine->levelList().back();
+  }
+
 }
