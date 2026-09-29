@@ -979,7 +979,7 @@ namespace Scenes {
       if (lvl == m_levelPath) { break; }
       idx++;
     }
-    return idx >= m_engine->levelList().size();
+    return m_levelPath == m_engine->levelList().back() || idx >= m_engine->levelList().size();
   }
 
 }
