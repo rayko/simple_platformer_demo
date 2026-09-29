@@ -377,6 +377,10 @@ namespace Scenes {
     if (triggerName == "OpenExit") {
       if (m_playerCoins >= m_levelRequiredCoins) {
         m_enableInput = false;
+        m_player->getComponent<CInput>().left = false;
+        m_player->getComponent<CInput>().right = false;
+        m_player->getComponent<CInput>().up = false;
+        m_player->getComponent<CInput>().jump = false;
         m_viewFollowPlayer = false;
         m_levelExitSwitch->addComponent<CAnimation>(m_engine->assetStore().getAnimation("ExitMachineOpen"));
         m_levelExitSwitch->getComponent<CAnimation>().destroyWhenFinished = false;
