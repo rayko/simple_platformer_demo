@@ -972,7 +972,12 @@ namespace Scenes {
   }
 
   bool PlayLevel::amLastLevel() {
-    return m_levelPath == m_engine->levelList().back();
+    size_t idx = 0;
+    for (const std::string lvl : m_engine->levelList()) {
+      if (lvl == m_levelPath) { break; }
+      idx++;
+    }
+    return idx >= m_engine->levelList().size();
   }
 
 }
