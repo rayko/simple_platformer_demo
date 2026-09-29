@@ -30,6 +30,7 @@ class GameEngine : public Core {
   const std::string m_assetsConfigFile = "assets.txt";
   const int maxFPS = 60;
   std::vector<std::string> m_levelList;
+  sf::View m_defaultView;
 
   void init();
   void loadConfigs();
@@ -51,6 +52,7 @@ public:
   void changeScene(const std::string &name, std::shared_ptr<Scenes::Base> scene);
 
   sf::RenderWindow &window();
+  sf::View defaultView();
   const AssetStore &assetStore() const;
   bool running();
   const std::vector<std::string> &levelList() const;

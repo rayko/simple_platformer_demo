@@ -62,8 +62,6 @@ namespace Scenes {
 
     m_width = m_engine->window().getSize().x;
     m_height = m_engine->window().getSize().y;
-    m_view = sf::View(sf::FloatRect({0, 0}, {(float)m_width, (float)m_height}));
-    m_engine->window().setView(m_view);
   }
 
   // Handler of actions for the scene. This, being an ECS system should be
@@ -112,6 +110,8 @@ namespace Scenes {
     sf::RenderWindow &window = m_engine->window();
     window.clear();
 
+    window.setView(m_engine->defaultView());
+    
     sf::Vector2u winSize = window.getSize();
     Vec2f titlePos{0, 0};
     // Centered

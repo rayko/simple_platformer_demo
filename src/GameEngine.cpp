@@ -62,12 +62,15 @@ void GameEngine::loadAssets() {
   m_assets.loadConfigs(m_assetsConfigFile);
 }
 
+sf::View GameEngine::defaultView() { return m_defaultView; }
+
 void GameEngine::init() {
   loadConfigs();
   loadAssets();
   m_window.create(sf::VideoMode(m_winSize), m_winTitle);
   m_window.setFramerateLimit(maxFPS);
   m_window.setKeyRepeatEnabled(false);
+  m_defaultView = m_window.getDefaultView();
 
   // Switch to the first scene to load
   changeScene("MainMenu", std::make_shared<Scenes::Menu>(this));
