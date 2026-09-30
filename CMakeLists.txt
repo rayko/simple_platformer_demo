@@ -11,11 +11,11 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 include(FetchContent)
 FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.1.0
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
+  GIT_REPOSITORY https://github.com/SFML/SFML.git
+  GIT_TAG 3.1.0
+  GIT_SHALLOW ON
+  EXCLUDE_FROM_ALL
+  SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
 include_directories(include)
@@ -59,23 +59,24 @@ install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" DESTINATION .)
 # endif()
 
 if(WIN32)
-    get_filename_component(MINGW_BIN_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
-    install(FILES
-        "${MINGW_BIN_DIR}/libgcc_s_seh-1.dll"
-        "${MINGW_BIN_DIR}/libstdc++-6.dll"
-        "${MINGW_BIN_DIR}/libwinpthread-1.dll"
-        DESTINATION .
-        OPTIONAL
-    )
+  get_filename_component(MINGW_BIN_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
+  install(FILES
+    "${MINGW_BIN_DIR}/libgcc_s_seh-1.dll"
+    "${MINGW_BIN_DIR}/libstdc++-6.dll"
+    "${MINGW_BIN_DIR}/libwinpthread-1.dll"
+    DESTINATION .
+    OPTIONAL
+  )
+  target_link_options(simple_platformer_demo PRIVATE -static-libgcc -static-libstdc++ -static)
 endif()
 
 set(CPACK_PACKAGE_NAME "simple_platformer_demo")
 set(CPACK_PACKAGE_VERSION "0.0.1")
 
 if(WIN32)
-    set(CPACK_GENERATOR "ZIP")
+  set(CPACK_GENERATOR "ZIP")
 else()
-    set(CPACK_GENERATOR "TGZ")
+  set(CPACK_GENERATOR "TGZ")
 endif()
 
 include(CPack)
