@@ -7,7 +7,7 @@ set -e
 BUILD_DIR="./build-release/win"
 RELEASE_DIR="./releases"
 TOOLCHAIN="./cmake/mingw-w64-x86_64.cmake"
-SHA_FILE="SHA256"
+SHA_FILE="SHA256.txt"
 
 cmake -B $BUILD_DIR -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN
 cmake --build $BUILD_DIR
