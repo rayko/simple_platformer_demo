@@ -19,23 +19,27 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 include_directories(include)
-add_executable(simple_platformer_demo src/main.cpp
-  src/Core.cpp
-  src/Animation.cpp
-  src/Action.cpp
-  src/Entity.cpp
-  src/EntityManager.cpp
-  src/ui/TextPanel.cpp
-  src/ui/SelectableListPanel.cpp
-  src/scenes/Base.cpp
-  src/scenes/Menu.cpp
-  src/scenes/PlayLevel.cpp
-  src/scenes/Editor.cpp
-  src/Physics.cpp
-  src/GameEngine.cpp
-  src/Logger.cpp
-  src/Vec2f.cpp
-  src/AssetStore.cpp)
+add_executable(simple_platformer_demo)
+
+target_sources(simple_platformer_demo PRIVATE src/main.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Core.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Animation.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Action.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Entity.cpp)
+target_sources(simple_platformer_demo PRIVATE src/EntityManager.cpp)
+target_sources(simple_platformer_demo PRIVATE src/ui/TextPanel.cpp)
+target_sources(simple_platformer_demo PRIVATE src/ui/SelectableListPanel.cpp)
+target_sources(simple_platformer_demo PRIVATE src/scenes/Base.cpp)
+target_sources(simple_platformer_demo PRIVATE src/scenes/Menu.cpp)
+target_sources(simple_platformer_demo PRIVATE src/scenes/PlayLevel.cpp)
+target_sources(simple_platformer_demo PRIVATE src/scenes/Editor.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Physics.cpp)
+target_sources(simple_platformer_demo PRIVATE src/GameEngine.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Logger.cpp)
+target_sources(simple_platformer_demo PRIVATE src/Vec2f.cpp)
+target_sources(simple_platformer_demo PRIVATE src/AssetStore.cpp)
+
+
 set_target_properties(simple_platformer_demo PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 target_compile_features(simple_platformer_demo PRIVATE cxx_std_20)
 target_link_libraries(simple_platformer_demo PRIVATE SFML::Graphics SFML::Window SFML::System)
