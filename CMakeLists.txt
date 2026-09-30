@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(SimplePlatformerDemo LANGUAGES CXX VERSION 0.1)
+project(simple_platformer_demo LANGUAGES CXX VERSION 0.0.1)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -44,6 +44,9 @@ target_compile_features(simple_platformer_demo PRIVATE cxx_std_20)
 target_link_libraries(simple_platformer_demo PRIVATE SFML::Graphics SFML::Window SFML::System)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT main)
 
+# This makes GAME_VERSION avaialble inside code
+target_compile_definitions(simple_platformer_demo PRIVATE GAME_VERSION="${PROJECT_VERSION}")
+
 install(TARGETS simple_platformer_demo DESTINATION .)
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" DESTINATION .)
 
@@ -58,6 +61,14 @@ install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" DESTINATION .)
 #     )
 # endif()
 
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_NAME "simple_platformer_demo")
+set(CPACK_PACKAGE_VENDOR "Rayko")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Simple 2D Platformer Demo built with C++ and SFML")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+# set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+
 if(WIN32)
   get_filename_component(MINGW_BIN_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
   install(FILES
@@ -68,11 +79,20 @@ if(WIN32)
     OPTIONAL
   )
   target_link_options(simple_platformer_demo PRIVATE -static-libgcc -static-libstdc++ -static)
-  target_sources(simple_platformer_demo PRIVATE resources/resource.rc)
-endif()
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/resource.rc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/resource.rc"
+    @ONLY
+  )
 
-set(CPACK_PACKAGE_NAME "simple_platformer_demo")
-set(CPACK_PACKAGE_VERSION "0.0.1")
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon32.ico"
+    "${CMAKE_CURRENT_BINARY_DIR}/icon32.ico"
+    COPYONLY
+  )
+
+  target_sources(simple_platformer_demo PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
+endif()
 
 if(WIN32)
   set(CPACK_GENERATOR "ZIP")
@@ -94,13 +114,5 @@ if(UNIX AND NOT APPLE)
   )
 endif()
 
-set(CPACK_PACKAGE_NAME "simple_platformer_demo")
-set(CPACK_PACKAGE_VENDOR "Rayko")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Simple 2D Platformer Demo built with C++ and SFML")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
-set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
-# set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 
 include(CPack)
