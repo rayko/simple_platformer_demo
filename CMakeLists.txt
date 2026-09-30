@@ -68,6 +68,7 @@ if(WIN32)
     OPTIONAL
   )
   target_link_options(simple_platformer_demo PRIVATE -static-libgcc -static-libstdc++ -static)
+  target_sources(simple_platformer_demo PRIVATE resources/resource.rc)
 endif()
 
 set(CPACK_PACKAGE_NAME "simple_platformer_demo")
@@ -78,5 +79,28 @@ if(WIN32)
 else()
   set(CPACK_GENERATOR "TGZ")
 endif()
+
+# Linux desktop/icon thingies
+if(UNIX AND NOT APPLE)
+  install(
+    FILES resources/simple_platformer_demo.desktop
+    DESTINATION share/applications
+  )
+
+  install(
+    FILES resources/icon32.png
+    DESTINATION share/icons/hicolor/256x256/apps
+    RENAME simple_platformer_demo.png
+  )
+endif()
+
+set(CPACK_PACKAGE_NAME "simple_platformer_demo")
+set(CPACK_PACKAGE_VENDOR "Rayko")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Simple 2D Platformer Demo built with C++ and SFML")
+set(CPACK_PACKAGE_VERSION_MAJOR "0")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+# set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 
 include(CPack)

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Simple Platformer Demo
+Comment=A 2D platformer demo built with SFML
+Exec=simple_platformer_demo
+Icon=simple_platformer_demo
+Categories=Game;
+Terminal=false

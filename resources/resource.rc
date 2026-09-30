@@ -1,0 +1,31 @@
+#include <windows.h>
+
+101 ICON "icon32.ico"
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0,0,1,0
+PRODUCTVERSION  0,0,1,0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0x0L
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0" // US English, Unicode
+        BEGIN
+            VALUE "CompanyName",      "Rayko"
+            VALUE "FileDescription",  "Simple Platformer Demo"
+            VALUE "FileVersion",      "0.0.1.0"
+            VALUE "InternalName",     "simple_platformer_demo"
+            VALUE "LegalCopyright",   "Copyright (C) 2026 Rayko"
+            VALUE "OriginalFilename", "simple_platformer_demo.exe"
+            VALUE "ProductName",      "Simple Platformer Demo"
+            VALUE "ProductVersion",   "0.0.1.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END
