@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Simple helper to produce all releases in one step. Calls pre-made release scripts
+# already defined.
+
+set -e
+
+echo ">> BUILDING RELEASE FOR ALL PLATFORMS <<"
+echo ">> BUILD LINUX RELEASE <<"
+scripts/release-linux
+
+echo ">> BUILD WINDOWS RELEASE <<"
+scripts/release-windows

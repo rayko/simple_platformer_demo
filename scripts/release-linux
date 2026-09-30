@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Release build for linux x64 platform
+
+set -e
+
+BUILD_DIR="./build-release/linux"
+RELEASE_DIR="./releases"
+TOOLCHAIN="./cmake/linux-clang-x86_64.cmake"
+SHA_FILE="SHA256"
+
+cmake -B $BUILD_DIR -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_INSTALL_RPATH=OFF -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN
+cmake --build $BUILD_DIR
+cpack --config $BUILD_DIR/CPackConfig.cmake -B releases
+cd $RELEASE_DIR && sha256sum simple_platformer_demo* > $SHA_FILE
+cat $SHA_FILE
