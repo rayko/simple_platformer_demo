@@ -79,3 +79,4 @@ tmp/*
 # Togo stuff
 .togo
 todos.json
+releases/
